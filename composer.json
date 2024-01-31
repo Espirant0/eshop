@@ -1,0 +1,26 @@
+{
+    "name": "up/market",
+    "autoload": {
+        "psr-4": {
+            "Up\\Market\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikhail Korol",
+            "email": "mishakorol101@gmail.com"
+        },
+        {
+            "name": "Mikhail Bakinovskiy"
+        },
+        {
+            "name": "Alexandr Obynochniy"
+        },
+        {
+            "name": "Vadim Staropopov"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    }
+}

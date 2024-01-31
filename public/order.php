@@ -47,7 +47,7 @@
 					<p><input type="text" name="name" id="" class="order_input" required></p>
 					<p>Ваш номер телефона</p>
 					<p><input type="text" name="phone" id="" class="order_input" maxlength="11" required></p>
-					<p>Ваше адрес</p>
+					<p>Ваш адрес</p>
 					<p><input type="text" name="address" id="" class="order_input" required></p>
 					<a href="confirmed.php"><button type="submit" class="order_btn">Оформить заказ</button></a>
 			</div>

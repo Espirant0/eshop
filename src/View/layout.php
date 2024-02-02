@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var string $title
  * @var array $content
  */
 ?>
@@ -14,7 +15,7 @@
 	<link rel="stylesheet" href="../../public/resources/css/reset.css">
 	<link rel="stylesheet" href="../../public/resources/css/style.css">
 	<link rel="stylesheet" href="../../public/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title>Main</title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="grid">

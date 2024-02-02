@@ -1,6 +1,9 @@
 <?php
-/** @var array $content */
+/**
+ * @var array $content
+ */
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -36,7 +39,7 @@
 		</div>
 	</div>
 	<div class="main_section">
-		<?=$content?>
+
 	</div>
 </div>
 </body>

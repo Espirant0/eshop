@@ -1,8 +1,9 @@
 {
-    "name": "up/market",
+    "name": "app/eshop",
     "autoload": {
         "psr-4": {
-            "Up\\Market\\": "src/"
+            "App\\": "src",
+            "Core\\": "core"
         }
     },
     "authors": [

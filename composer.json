@@ -2,7 +2,7 @@
     "name": "up/market",
     "autoload": {
         "psr-4": {
-            "Up\\Market\\": "src/"
+            "Up\\": "src/"
         }
     },
     "authors": [

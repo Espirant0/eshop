@@ -1,11 +1,11 @@
 <?php
 
-namespace Up\Controller;
+namespace App\Controller;
 
-class DetailController
+class DetailController extends BaseController
 {
-    public function showDetailPage($id)
+    public function showDetailPage($detail_id): void
     {
-        return 'Detail page' . $id;
+        $this->render('DetailPage/detail.php', ['detail_id' => $detail_id]);
     }
 }

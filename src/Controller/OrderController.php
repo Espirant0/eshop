@@ -1,16 +1,17 @@
 <?php
 
-namespace Up\Controller;
+namespace App\Controller;
 
-class OrderController
+class OrderController extends BaseController
 {
-    public function showOrderPage()
+    // пока передаю пустой массив, потому что не знаю, что будем передавать (если будем)
+    public function showOrderPage(): void
     {
-        return 'Order page';
+        $this->render('OrderPage/order.php', []);
     }
 
-    public function showConfirmedOrderPage()
+    public function showConfirmedOrderPage(): void
     {
-        return 'Confirmed order page';
+        $this->render('ConfirmPage/confirmed.php', []);
     }
 }

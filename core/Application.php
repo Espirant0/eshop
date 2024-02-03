@@ -1,24 +1,21 @@
 <?php
 
-namespace Up\Routing;
+namespace Core;
 
 class Application
 {
-    public function run()
+    public function run(): void
     {
-        $route = Router::find($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+        $route = Routing\Router::find($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
         if ($route)
         {
             $action = $route->action;
-            $variables = $route->getVariables();
-            echo $action(...$variables);
+            $action(...$route->getVariables());
+            return;
         }
-        else
-        {
-            http_response_code(404);
-            echo 'Page not found';
-            exit;
-        }
+
+        http_response_code(404);
+        echo 'Page not found';
     }
 }

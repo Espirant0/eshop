@@ -1,11 +1,11 @@
 <?php
 
-namespace Up\Controller;
+namespace App\Controller;
 
-class IndexController
+class IndexController extends BaseController
 {
-    public function showIndexPage()
+    public function showIndexPage($category_id): void
     {
-        return 'Index page';
+        $this->render('MainPage/index.php', ['category_id' => $category_id]);
     }
 }

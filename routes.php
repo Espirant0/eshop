@@ -1,19 +1,13 @@
 <?php
 
-use Up\Controller\DetailController;
-use Up\Controller\IndexController;
-use Up\Controller\OrderController;
-use Up\Routing\Router;
+use Core\Routing\Router;
 
-Router::get('/', [new IndexController(), 'showIndexPage']);
+Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
-Router::get('/category_name', function()
-{
-    echo '/public/category_name';
-});
+Router::get('/category_name', [new App\Controller\IndexController(), 'showIndexPage']);
 
-Router::get('/detail/good_id', [new DetailController(), 'showDetailPage']);
+Router::get('/detail/good_id', [new App\Controller\DetailController(), 'showDetailPage']);
 
-Router::get('/order', [new OrderController(), 'showOrderPage']);
+Router::get('/order', [new App\Controller\OrderController(), 'showOrderPage']);
 
-Router::get('/order/confirm', [new OrderController(), 'showConfirmedOrderPage'] );
+Router::get('/order/confirm', [new App\Controller\OrderController(), 'showConfirmedOrderPage'] );

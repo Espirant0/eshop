@@ -12,10 +12,10 @@ class CategoryList
 	/**
 	 * @param $categories category[]
 	 */
-	public function __construct(array $categories)
-	{
-		$this->categories = $categories;
-	}
+	#public function __construct(array $categories)
+	#{
+	#	$this->categories = $categories;
+	#}
 
 	/**
 	 * @return category[]

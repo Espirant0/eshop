@@ -291,3 +291,12 @@ a {
     text-align: center;
     max-width: 150px;
 }
+
+.pages{
+    display: flex;
+    justify-content: center;
+}
+.page_number{
+    padding: 5px;
+    font-size: 20px;
+}

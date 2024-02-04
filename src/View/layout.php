@@ -39,7 +39,9 @@ use App\Model\CategoryList;
 	<div class="top_line">
 		<div class="search_line">
 			<div class="input__line">
-				<input type="text" placeholder="Поиск по каталогу" class="input_main">
+				<label>
+					<input type="text" placeholder="Поиск по каталогу" class="input_main">
+				</label>
 			</div>
 			<button class="search_btn">Искать</button>
 		</div>

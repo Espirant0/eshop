@@ -75,6 +75,6 @@
 <div class="pages">
 	<a href="" class="first page_number">1</a>
 	<a href="" class="second page_number">2</a>
-	<p>...</p>
+	<p class="page_number">...</p>
 	<a href="" class="last page_number">6</a>
 </div>

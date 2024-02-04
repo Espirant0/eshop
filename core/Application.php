@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use App\Controller\PageNotFoundController;
+
 class Application
 {
     public function run(): void
@@ -16,6 +18,7 @@ class Application
         }
 
         http_response_code(404);
-        echo 'Page not found';
+        $err=new PageNotFoundController();
+		$err->PageNotFoundViewer();
     }
 }

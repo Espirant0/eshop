@@ -11,10 +11,29 @@ abstract class BaseController
         if (!file_exists($template))
         {
             http_response_code(404);
-            echo 'page not found';
+            #echo 'page not found';
+			include_once __DIR__ . '/../View/NotFoundPage/404.php';
             return;
         }
-
-        include_once $template;
+		extract($params);
+		include_once $template;
     }
+	public function strRender(string $templateName, array $params): ?string
+	{
+		$template = __DIR__ . '/../View/' . $templateName;
+
+		if (!file_exists($template))
+		{
+			http_response_code(404);
+			#echo 'page not found';
+			ob_start();
+			include_once __DIR__ . '/../View/NotFoundPage/404.php';
+			return ob_get_clean();
+		}
+		extract($params);
+		ob_start();
+		include_once $template;
+		var_dump(ob_get_clean());
+		return ob_get_clean();
+	}
 }

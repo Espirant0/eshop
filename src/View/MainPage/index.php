@@ -1,5 +1,5 @@
 <div class="cards">
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -7,7 +7,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -15,7 +15,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -23,7 +23,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -31,7 +31,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -39,7 +39,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -47,7 +47,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -55,7 +55,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>
@@ -63,7 +63,7 @@
 			<p class="item_price">1000$</p>
 		</div>
 	</a>
-	<a href="../DetailPage/detail.php">
+	<a href="/Detail/ID">
 		<div class="item_card">
 			<img src="/resources/img/item.jpg" alt="" class="item_img">
 			<p class="item_title">MacBook Pro</p>

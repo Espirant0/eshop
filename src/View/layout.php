@@ -1,8 +1,14 @@
 <?php
 /**
  * @var string $title
- * @var array $content
+ * @var string $content
+ * @var Category $category
+ * @var CategoryList $category_list
  */
+
+use App\Model\Category;
+use App\Model\CategoryList;
+
 ?>
 
 <!doctype html>
@@ -12,22 +18,21 @@
 	<meta name="viewport"
 		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="../../public/resources/css/reset.css">
-	<link rel="stylesheet" href="../../public/resources/css/style.css">
-	<link rel="stylesheet" href="../../public/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title><?=$title?></title>
+	<link rel="stylesheet" href="/resources/css/reset.css">
+	<link rel="stylesheet" href="/resources/css/style.css">
+	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
+	<title><?=TITLE?></title>
 </head>
 <body>
 <div class="grid">
 	<div class="menu">
 		<div class="menu_container">
 			<ul class="tags">
-				<a href="MainPage/index.php"><li><p>Главная</p></li></a>
-				<a href=""><li><p>Электроника</p></li></a>
-				<a href=""><li><p>Электроника</p></li></a>
-				<a href=""><li><p>Электроника</p></li></a>
-				<a href=""><li><p>Электроника</p></li></a>
-				<a href=""><li><p>Электроника</p></li></a>
+				<a href="/"><li><p>Главная</p></li></a>
+				<?php $category_listed=$category_list->getCategories()?>
+				<?php foreach($category_listed as $category):?>
+				<a href="<?="/category_name"?>"><li><span><?=$category->getName();?></span></li></a>
+					<?php endforeach;?>
 			</ul>
 		</div>
 	</div>
@@ -40,10 +45,10 @@
 		</div>
 	</div>
 	<div class="main_section">
-
+		<?=$content?>
 	</div>
 </div>
 </body>
-<script src="../../public/resources/js/lightbox2-2.11.4/dist/js/lightbox-plus-jquery.js"></script>
-<script src="../../public/resources/js/script.js"></script>
+<script src="/resources/js/lightbox2-2.11.4/dist/js/lightbox-plus-jquery.js"></script>
+<script src="/resources/js/script.js"></script>
 </html>

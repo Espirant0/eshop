@@ -12,7 +12,7 @@
 		</div>
 		<div class="right_col">
 			<div class="headline">
-				<p class="main_title">MacBook Pro</p>
+				<p class="main_title">Format 1415 (2021)</p>
 			</div>
 			<div class="line"></div>
 			<p class="about">О товаре</p>
@@ -23,16 +23,16 @@
 					<li class="ul_left_col">Стоимость</li>
 				</ul>
 				<ul>
-					<li class="ul_right_col">1000$</li>
-					<li class="ul_right_col">1000$</li>
-					<li class="ul_right_col">1000$</li>
+					<li class="ul_right_col">500$</li>
+					<li class="ul_right_col">500$</li>
+					<li class="ul_right_col">500$</li>
 				</ul>
 			</div>
 			<div class="item_tags">
-				<a href="../MainPage/index.php" class="item_tag">Ноутбук</a>
-				<a href="../MainPage/index.php" class="item_tag">Компьютер</a>
-				<a href="../MainPage/index.php" class="item_tag">Электроника</a>
-				<a href="../MainPage/index.php" class="item_tag">Гаджет</a>
+				<a href="../MainPage/index.php" class="item_tag">Велосипед</a>
+				<a href="../MainPage/index.php" class="item_tag">Спортивный</a>
+				<a href="../MainPage/index.php" class="item_tag">Горный</a>
+				<a href="../MainPage/index.php" class="item_tag">Для детей</a>
 			</div>
 			<a href="/OrderPage/order"><button class="order_btn" type="submit">Заказать</button></a>
 			<p class="description_title">Описание товара</p>

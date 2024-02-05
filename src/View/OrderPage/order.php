@@ -2,9 +2,9 @@
 	<a href="/Detail/ID">
 		<div class="item_card_order">
 			<img src="/resources/img/item.jpg" alt="" class="item_img_order">
-			<p class="item_title">MacBook Pro</p>
+			<p class="item_title">Format 1415 (2021)</p>
 			<div class="line"></div>
-			<p class="item_price">1000$</p>
+			<p class="item_price">500$</p>
 		</div>
 	</a>
 	<div class="form_inner">

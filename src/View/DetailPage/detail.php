@@ -29,10 +29,10 @@
 				</ul>
 			</div>
 			<div class="item_tags">
-				<a href="../MainPage/index.php" class="item_tag">Велосипед</a>
-				<a href="../MainPage/index.php" class="item_tag">Спортивный</a>
-				<a href="../MainPage/index.php" class="item_tag">Горный</a>
-				<a href="../MainPage/index.php" class="item_tag">Для детей</a>
+				<a href="/" class="item_tag">Велосипед</a>
+				<a href="/" class="item_tag">Спортивный</a>
+				<a href="/" class="item_tag">Горный</a>
+				<a href="/" class="item_tag">Для детей</a>
 			</div>
 			<a href="/OrderPage/order"><button class="order_btn" type="submit">Заказать</button></a>
 			<p class="description_title">Описание товара</p>

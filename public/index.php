@@ -1,9 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../routes.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/../boot.php';
 
-
-$App=new Core\Application();
+$App = new Core\Application();
 $App->run();

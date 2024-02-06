@@ -1,3 +1,4 @@
 .idea
 var/cache
 vendor
+config/config.local.php

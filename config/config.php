@@ -1,7 +1,5 @@
 <?php
 
-const TITLE = 'Каталкин и Ко';
-
 return [
     'APP_LANG' => 'ru',
     'DB_HOST' => '',

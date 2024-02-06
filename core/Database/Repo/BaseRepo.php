@@ -1,6 +1,7 @@
 <?php
 
 namespace Core\Database\Repo;
+use App\Config\Config;
 abstract class BaseRepo
 {
 	public static function getDbConnection()
@@ -9,12 +10,15 @@ abstract class BaseRepo
 
 		if($connection === null)
 		{
-			$dbHost = DB_HOST;
-			$dbUser = DB_USER;
-			$dbPassword = DB_PASSWORD;
-			$dbName = DB_NAME;
+            $config = new Config();
 
-			$connection = mysqli_init();
+            $dbHost = $config->option('DB_HOST');
+            $dbUser = $config->option('DB_USER');
+            $dbPassword = $config->option('DB_PASSWORD');
+            $dbName = $config->option('DB_NAME');
+
+
+            $connection = mysqli_init();
 
 			$connected = mysqli_real_connect($connection, $dbHost, $dbUser, $dbPassword, $dbName);
 			if(!$connected)

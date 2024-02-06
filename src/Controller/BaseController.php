@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-
 abstract class BaseController
 {
     public function render(string $templateName, array $params): void
@@ -33,7 +32,6 @@ abstract class BaseController
 		extract($params);
 		ob_start();
 		include_once $template;
-		var_dump(ob_get_clean());
 		return ob_get_clean();
 	}
 }

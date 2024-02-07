@@ -2,27 +2,37 @@
 
 namespace App\Model;
 
-class CategoryList
+class CategoryList implements \Iterator
 {
 	/**
-	 * @var $categories category[]
+	 * @var $data Category[]
 	 */
-	private array $categories;
-
-	/**
-	 * @param $categories category[]
-	 */
-	#public function __construct(array $categories)
-	#{
-	#	$this->categories = $categories;
-	#}
-
-	/**
-	 * @return category[]
-	 */
-	public function getCategories(): array
+	private array $data = array();
+	private int $position = 0;
+	public function __construct($data = [])
 	{
-		return $this->categories;
+		$this->data = $data;
+		$this->position = 0;
+	}
+	public function current(): Category
+	{
+		return $this->data[$this->position];
+	}
+	public function key(): int
+	{
+		return $this->position;
+	}
+	public function next(): void
+	{
+		$this->position++;
+	}
+	public function rewind(): void
+	{
+		$this->position = 0;
+	}
+	public function valid(): bool
+	{
+		return isset($this->data[$this->position]);
 	}
 
 	/**
@@ -31,7 +41,7 @@ class CategoryList
 	 */
 	public function setCategories(array $categories): void
 	{
-		$this->categories = $categories;
+		$this->data = $categories;
 	}
 
 	/**
@@ -40,7 +50,7 @@ class CategoryList
 	 */
 	public function addCategory(Category $category):void
 	{
-		$this->categories[] = $category;
+		$this->data[] = $category;
 	}
 
 	/**
@@ -49,11 +59,11 @@ class CategoryList
 	 */
 	public function removeCategoryByName(string $name):void
 	{
-		foreach ($this->categories as $category)
+		foreach ($this->data as $category)
 		{
 			if($category->getName() === $name)
 			{
-				unset($this->categories[$name]);
+				unset($this->data[$name]);
 				break;
 			}
 		}
@@ -65,11 +75,11 @@ class CategoryList
 	 */
 	public function removeCategoryByID(string $ID):void
 	{
-		foreach ($this->categories as $category)
+		foreach ($this->data as $category)
 		{
 			if($category->getID() === $ID)
 			{
-				unset($this->categories[$ID]);
+				unset($this->data[$ID]);
 				break;
 			}
 		}

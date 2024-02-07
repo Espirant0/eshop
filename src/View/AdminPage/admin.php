@@ -32,7 +32,6 @@ use Core\Database\Repo\AdminPanelRepo;
 					</tr>
 					</thead>
 					<tbody>
-					<?php $itemList = AdminPanelRepo::getItemList();?>
 					<?php foreach ($itemList as $item):?>
 					<tr>
 						<td><?=$item->getId()?></td>

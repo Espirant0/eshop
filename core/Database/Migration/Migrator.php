@@ -3,77 +3,72 @@
 namespace Core\Database\Migration;
 
 use App\Config\Config;
-use Core\Database\Repo\BaseRepo;
+use App\Service\DBHandler;
 
 class Migrator
 {
 	public static function migrate(): void
 	{
-		$connection = BaseRepo::getDbConnection();
-		$mSQL="SHOW TABLES LIKE 'migration'";
-		$res = mysqli_query($connection, $mSQL);
-		if ($res->num_rows === 0)
+		$DBOperator = new DBHandler;
+		#$DBOperator->query("SHOW TABLES LIKE 'migration'");
+		if ($DBOperator->query("SHOW TABLES LIKE 'migration'")->num_rows === 0)
 		{
 			Migrator::deleteData();
 			$mSQL = file_get_contents(ROOT . '/src/Migration/2024.03.02_20.50_migration_initiation.sql');
-			mysqli_query($connection, $mSQL);
-			mysqli_query($connection, "INSERT INTO migration (name) VALUES ('2024.03.02_20.50_migration_initiation.sql')");
+			$DBOperator->query($mSQL);
+			$DBOperator->query("INSERT INTO migration (name) VALUES ('2024.03.02_20.50_migration_initiation.sql')");
 		}
-		$doneMigrationsQuery = mysqli_query($connection, 'SELECT * FROM migration');
-		if (!$doneMigrationsQuery)
-		{
-			throw new Exception(mysqli_error($connection));
-		}
+		$doneMigrationsQuery = $DBOperator->getResult('SELECT * FROM migration');
 		$doneMigrations = [];
-		while ($row = mysqli_fetch_assoc($doneMigrationsQuery))
+		foreach ($doneMigrationsQuery as $migration)
 		{
-			$doneMigrations[] = $row['name'];
+			$doneMigrations[] = $migration['name'];
 		}
-		$migrations=Migrator::getMigrationFiles();
+		$migrations = Migrator::getMigrationFiles();
 		foreach ($migrations as $migration)
 		{
 			if(!in_array($migration, $doneMigrations))
 			{
 				$commands = file_get_contents(ROOT . '/src/Migration/' . $migration);
-				$commandList=explode(';',$commands);
+				$commandList = explode(';',$commands);
 				foreach ($commandList as $commandSQL)
 				{
-					if ($commandSQL=='') continue;
-					mysqli_query($connection, $commandSQL);
+					if ($commandSQL == '') continue;
+					$DBOperator->query($commandSQL);
 				}
-				mysqli_query($connection, "INSERT INTO migration (name) VALUES ('$migration')");
+				$DBOperator->query("INSERT INTO migration (name) VALUES ('$migration')");
 			}
 		}
+		unset($DBOperator);
 	}
 
-
-	public static function getMigrationFiles():array
+	public static function getMigrationFiles(): array
 	{
-		$migrationFiles=[];
-		$migrations=scandir(ROOT . '/src/Migration');
+		$migrationFiles = [];
+		$migrations = scandir(ROOT . '/src/Migration');
 		foreach ($migrations as $migration)
 		{
 			if(preg_match('/.(sql)/', $migration))
 			{
-				$migrationFiles[]=$migration;
+				$migrationFiles[] = $migration;
 			}
 		}
 		return $migrationFiles;
 	}
-	public static function deleteData():void
+	public static function deleteData(): void
 	{
+		$DBOperator = new DBHandler;
 		$config = new Config();
 		$DB_NAME = $config->option('DB_NAME');
-		$connection = BaseRepo::getDbConnection();
-		$res = mysqli_query($connection, 'SHOW TABLES');
-		mysqli_query($connection, 'SET foreign_key_checks = 0');
+		$res = $DBOperator->query('SHOW TABLES');
+		$DBOperator->query('SET foreign_key_checks = 0');
 		$tables = 'Tables_in_' . $DB_NAME;
 		while($row=mysqli_fetch_assoc($res))
 		{
 			$tableName = $row[$tables];
 			$mSQL="DROP TABLE $tableName";
-			mysqli_query($connection, $mSQL);
+			$DBOperator->query($mSQL);
 		}
-		mysqli_query($connection, 'SET foreign_key_checks = 1');
+		$DBOperator->query('SET foreign_key_checks = 1');
 	}
 }

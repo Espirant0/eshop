@@ -273,6 +273,12 @@ a {
     margin-top: 200px;
     margin-right: 200px;
 }
+
+.admin_content{
+    margin-top: 150px;
+    margin-right: 200px;
+    margin-left: 50px;
+}
 .confirmed_img{
     max-height: 200px;
     color: #0aff00;
@@ -283,7 +289,7 @@ a {
     margin-bottom: 10px;
     text-align: center;
 }
-.confirmed_return, .page_404_return{
+.confirmed_return, .page_404_return, .home_btn{
     margin-top: 20px;
     font-size: 24px;
     border: 1px solid black;
@@ -299,4 +305,105 @@ a {
 .page_number{
     padding: 5px;
     font-size: 20px;
+}
+.form_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.auth_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 300px;
+}
+
+.auth_errors{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 30px;
+}
+.auth_form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.auth_input{
+    height: 40px;
+    width: 400px;
+    font-size: 28px;
+    padding: 20px 0;
+}
+.auth_btn{
+    padding: 20px;
+    font-size: 20px;
+}
+.error_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 300px;
+}
+.error_header{
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.error_text{
+    font-size: 30px;
+}
+.sign_in_btn, .admin_btn{
+    padding: 10px 5px;
+    outline: 1px black solid;
+    text-align: center;
+    align-content: center;
+}
+.tab_nav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 20px;
+}
+.tab-btn{
+    height: 50px;
+    padding: 20px;
+    align-content: center;
+}
+.tab-content{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    width: 100%;
+}
+.tab-btn-active {
+    pointer-events: none;
+    color: red;
+}
+
+.tab-pane:not(.tab-pane-show) {
+    display: none;
+}
+.tab-content table th
+{
+    font-size: 24px;
+}
+.tab-content table{
+    text-align: center;
+}
+.table_inner{
+    border-collapse: collapse;
+    border-spacing: 20px 20px;
+    outline: 1px solid black;
+    mso-cellspacing: 0;
+}
+td, th{
+    border-bottom: 1px solid black;
+    padding: 10px;
 }

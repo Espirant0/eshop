@@ -2,6 +2,7 @@
 
 namespace Core\Database\Migration;
 
+use App\Config\Config;
 use Core\Database\Repo\BaseRepo;
 
 class Migrator
@@ -13,6 +14,7 @@ class Migrator
 		$res = mysqli_query($connection, $mSQL);
 		if ($res->num_rows === 0)
 		{
+			Migrator::deleteData();
 			$mSQL = file_get_contents(ROOT . '/src/Migration/2024.03.02_20.50_migration_initiation.sql');
 			mysqli_query($connection, $mSQL);
 			mysqli_query($connection, "INSERT INTO migration (name) VALUES ('2024.03.02_20.50_migration_initiation.sql')");
@@ -51,7 +53,7 @@ class Migrator
 		$migrations=scandir(ROOT . '/src/Migration');
 		foreach ($migrations as $migration)
 		{
-			if(preg_match('/.sql/', $migration))
+			if(preg_match('/.(sql)/', $migration))
 			{
 				$migrationFiles[]=$migration;
 			}
@@ -60,12 +62,15 @@ class Migrator
 	}
 	public static function deleteData():void
 	{
+		$config = new Config();
+		$DB_NAME = $config->option('DB_NAME');
 		$connection = BaseRepo::getDbConnection();
 		$res = mysqli_query($connection, 'SHOW TABLES');
 		mysqli_query($connection, 'SET foreign_key_checks = 0');
+		$tables = 'Tables_in_' . $DB_NAME;
 		while($row=mysqli_fetch_assoc($res))
 		{
-			$tableName = $row['Tables_in_eshop'];
+			$tableName = $row[$tables];
 			$mSQL="DROP TABLE $tableName";
 			mysqli_query($connection, $mSQL);
 		}

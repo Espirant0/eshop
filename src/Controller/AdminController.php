@@ -11,9 +11,8 @@ class AdminController extends BaseController
 	public function showAdminPage(): void
 	{
 		$this->render('layout.php',[
-			'content' => $this->strRender('AdminPage/admin.php', []),
+			'content' => $this->strRender('AdminPage/admin.php', ['itemList' => AdminPanelRepo::getItemList(),]),
 			'category_list' => CategoryListRepo::getCategoryList(),
-			'itemList' => AdminPanelRepo::getItemList(),
 		]);
 	}
 

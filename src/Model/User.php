@@ -8,13 +8,15 @@ class User
 	private string $name;
 	private string $address;
 	private string $role;
+	private string $password;
 
-	public function __construct(string $telephone, string $name, string $address, string $role)
+	public function __construct(string $telephone, string $name, string $address, string $role, string $password)
 	{
 		$this->telephone = $telephone;
 		$this->name = $name;
 		$this->address = $address;
 		$this->role = $role;
+		$this->password = $password;
 	}
 
 	public function getTelephone():string
@@ -55,6 +57,14 @@ class User
 	public function setRole(string $role):void
 	{
 		$this->role = $role;
+	}
+	public function getPassword(): string
+	{
+		return $this->password;
+	}
+	public function setPassword(string $password): void
+	{
+		$this->password = $password;
 	}
 }
 

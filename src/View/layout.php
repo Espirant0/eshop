@@ -21,7 +21,7 @@ use App\Model\CategoryList;
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
 	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title><?=TITLE?></title>
+	<title>Каталкин и ко</title>
 </head>
 <body>
 <div class="grid">
@@ -44,6 +44,8 @@ use App\Model\CategoryList;
 				</label>
 			</div>
 			<button class="search_btn">Искать</button>
+			<a href="/auth" class="sign_in_btn">Войти</a>
+			<a href="/admin_panel" class="admin_btn">Админка</a>
 		</div>
 	</div>
 	<div class="main_section">

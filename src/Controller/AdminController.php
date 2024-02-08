@@ -12,7 +12,7 @@ class AdminController extends BaseController
 	{
 		$this->render('layout.php',[
 			'content' => $this->strRender('AdminPage/admin.php', ['itemList' => AdminPanelRepo::getItemList(),]),
-			'category_list' => CategoryListRepo::getCategoryList(),
+			'category_list' => CategoryListRepo::getObjectList(),
 		]);
 	}
 

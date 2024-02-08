@@ -1,6 +1,5 @@
 <?php
 /**
- * @var string $title
  * @var string $content
  * @var Category $category
  * @var CategoryList $category_list
@@ -21,7 +20,7 @@ use App\Model\CategoryList;
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
 	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title>Каталкин и ко</title>
+	<title><?=TITLE?></title>
 </head>
 <body>
 <div class="grid">

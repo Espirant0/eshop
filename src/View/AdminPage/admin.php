@@ -1,11 +1,14 @@
 <?php
 /**
  * @var array $itemList ;
+ * @var array $categoryList ;
  * @var Bicycle $item ;
+ * @var Category $category ;
 */
 
 use App\Model\Bicycle;
-use Core\Database\Repo\AdminPanelRepo;
+use App\Model\Category;
+
 ?>
 <div class="admin_content">
 	<a href="/sign_out" class="sign_in_btn">Выйти</a>
@@ -29,6 +32,10 @@ use Core\Database\Repo\AdminPanelRepo;
 						<th>Описание</th>
 						<th>Статус</th>
 						<th>Производитель</th>
+						<th>Действие
+							<br>
+							<a href="/add_form" class="add_btn" ">Добавить</a>
+						</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -43,6 +50,10 @@ use Core\Database\Repo\AdminPanelRepo;
 						<td><?=$item->getDescription()?></td>
 						<td><?=$item->getStatus()?></td>
 						<td><?=$item->getVendor()?></td>
+						<td>
+							<a href="/edit?id=<?=$item->getId()?>">Изменить</a>
+							<a href="/delete?id=<?=$item->getId()?>" onclick="confirm('Вы уверены, что хотите удалить эту запись?')">Удалить</a>
+						</td>
 					</tr>
 					<?php endforeach;?>
 					</tbody>
@@ -54,9 +65,17 @@ use Core\Database\Repo\AdminPanelRepo;
 					<tr>
 						<th>ID</th>
 						<th>Название категории</th>
+						<th>Название категории (eng)</th>
 					</tr>
 					</thead>
 					<tbody>
+					<?php foreach ($categoryList as $category):?>
+						<tr>
+							<td><?=$category->getId()?></td>
+							<td><?=$category->getName()?></td>
+							<td><?=$category->getEngName()?></td>
+						</tr>
+					<?php endforeach;?>
 					</tbody>
 				</table>
 			</div>
@@ -96,5 +115,4 @@ use Core\Database\Repo\AdminPanelRepo;
 				</table></div>
 		</div>
 	</div>
-
 </div>

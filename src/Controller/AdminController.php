@@ -11,7 +11,10 @@ class AdminController extends BaseController
 	public function showAdminPage(): void
 	{
 		$this->render('layout.php',[
-			'content' => $this->strRender('AdminPage/admin.php', ['itemList' => AdminPanelRepo::getItemList(),]),
+			'content' => $this->strRender('AdminPage/admin.php', [
+				'itemList' => AdminPanelRepo::getItemList(),
+				'categoryList' => CategoryListRepo::getCategoryList(),
+				]),
 			'category_list' => CategoryListRepo::getObjectList(),
 		]);
 	}
@@ -25,5 +28,12 @@ class AdminController extends BaseController
 		else{
 			$this->showAdminPage();
 		}
+	}
+
+	public function deleteItem(): void
+	{
+		$itemId = (int)$_GET['id'];
+		AdminPanelRepo::deleteItem($itemId);
+		$this->showAdminPage();
 	}
 }

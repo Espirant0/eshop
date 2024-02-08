@@ -21,3 +21,13 @@ Router::get('/sign_out', [new App\Controller\AuthController(), 'signOut']);
 Router::get('/error', [new App\Controller\ErrorController(), 'showErrorPage'] );
 
 Router::get('/admin_panel', [new App\Controller\AdminController(), 'checkAuth'] );
+
+Router::get('/edit', [new App\Controller\EditFormController(), 'showEditFormPage']);
+
+Router::post('/update', [new App\Controller\EditFormController(), 'updateValue']);
+
+Router::get('/delete', [new App\Controller\AdminController(), 'deleteItem']);
+
+Router::get('/add_form', [new App\Controller\EditFormController(), 'showAddFormPage']);
+
+Router::post('/add', [new App\Controller\EditFormController(), 'addItem']);

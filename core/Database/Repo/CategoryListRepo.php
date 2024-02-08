@@ -5,7 +5,6 @@ namespace Core\Database\Repo;
 use App\Model\Category;
 use App\Model\CategoryList;
 use App\Service\DBHandler;
-use App\Service\GetDbconnection;
 
 
 class CategoryListRepo extends BaseRepo
@@ -19,30 +18,29 @@ class CategoryListRepo extends BaseRepo
 		{
 			$ID=(int)$row['id'];
 			$name=$row['name'];
-			$category=new Category($ID, $name);
+			$engName = $row['engName'];
+			$category=new Category($ID, $name, $engName);
 			$category_list->addCategory($category);
 		}
 		return $category_list;
 	}
+
 	public static function getObjectList(): \App\Model\CategoryList
 	{
 		$config = new \App\Config\Config();
 		$dbNAME = $config->option('DB_NAME');
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query('SHOW TABLES');
-		$object_list=new CategoryList();
+		$object_list = new CategoryList();
 		$tablePostfix = 'Tables_in_' . $dbNAME;
-		$categoryBlackList=['image','items_category','migration','role','status'];
+		$categoryBlackList = ['image', 'items_category', 'migration', 'role', 'status'];
 		$ID = 1;
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			if(!in_array($row[$tablePostfix], $categoryBlackList))
-			{
-				$category=new Category($ID, $row[$tablePostfix]);
+		while ($row = mysqli_fetch_assoc($result)) {
+			if (!in_array($row[$tablePostfix], $categoryBlackList)) {
+				$category = new Category($ID, $row[$tablePostfix], '');
 				$object_list->addCategory($category);
 				$ID++;
 			}
-
 		}
 		return $object_list;
 	}

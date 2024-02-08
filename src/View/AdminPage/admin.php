@@ -34,7 +34,7 @@ use App\Model\Category;
 						<th>Производитель</th>
 						<th>Действие
 							<br>
-							<a href="/add_form" class="add_btn" ">Добавить</a>
+							<a href="/add_form" class="add_btn">Добавить</a>
 						</th>
 					</tr>
 					</thead>

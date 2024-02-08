@@ -3,21 +3,22 @@
 namespace Core\Database\Repo;
 
 use App\Model\User;
+use App\Service\DBHandler;
 
 
 class UserRepo extends BaseRepo
 {
 	public static function getUserByLogin(string $login)
 	{
-		$connection = BaseRepo::getDbConnection();
-		$login = mysqli_real_escape_string($connection, $login);
-		$result = mysqli_query($connection, "
+		$DBOperator = new DBHandler();
+		$login = $DBOperator->real_escape_string($login);
+		$result = $DBOperator->query("
 		SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
 		         INNER JOIN role r on u.role_id = r.id
 		         WHERE u.id = '{$login}';
 		");
 		if (!$result) {
-			throw new Exception(mysqli_error($connection));
+			throw new Exception($DBOperator->connect_error);
 		}
 		while ($row = mysqli_fetch_assoc($result))
 		{

@@ -24,6 +24,28 @@ class CategoryListRepo extends BaseRepo
 		}
 		return $category_list;
 	}
+	public static function getObjectList(): \App\Model\CategoryList
+	{
+		$config = new \App\Config\Config();
+		$dbNAME = $config->option('DB_NAME');
+		$DBOperator = new DBHandler();
+		$result = $DBOperator->query('SHOW TABLES');
+		$object_list=new CategoryList();
+		$tablePostfix = 'Tables_in_' . $dbNAME;
+		$categoryBlackList=['image','items_category','migration','role','status'];
+		$ID = 1;
+		while ($row = mysqli_fetch_assoc($result))
+		{
+			if(!in_array($row[$tablePostfix], $categoryBlackList))
+			{
+				$category=new Category($ID, $row[$tablePostfix]);
+				$object_list->addCategory($category);
+				$ID++;
+			}
+
+		}
+		return $object_list;
+	}
 }
 
 

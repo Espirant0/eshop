@@ -74,7 +74,7 @@ class AdminPanelRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS=0;");
-		$DBOperator->query("DELETE FROM item WHERE item.id = '$itemId'");
+		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
 	}
 
 	public static function checkItemColumns(string $field, string $value):bool
@@ -88,6 +88,19 @@ class AdminPanelRepo extends BaseRepo
 			$fields[] = [$row['Field'] => current(explode('(',$row['Type']))];
 		}
 		return in_array([$field => $value], $fields, true);
+	}
+
+	public static function getItemColumns():array
+	{
+		$DBOperator = new DBHandler();
+		$fields = [];
+		$result = $DBOperator->query('SHOW COLUMNS FROM ITEM');
+		while ($row = mysqli_fetch_assoc($result))
+		{
+			$fields[] = (string)$row['Field'];
+		}
+		array_shift($fields);
+		return $fields;
 	}
 }
 

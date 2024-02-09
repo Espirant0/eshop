@@ -6,13 +6,13 @@ class Category
 {
 	private string $ID;
 	private string $name;
-    private string $engName;
+	private string $engName;
 
 	public function __construct(string $ID, string $name, string $engName)
 	{
 		$this->ID = $ID;
 		$this->name = $name;
-        $this->engName = $engName;
+		$this->engName = $engName;
 	}
 	public function getID():string
 	{
@@ -30,6 +30,16 @@ class Category
 	{
 		$this->name = $name;
 	}
+
+	public function getEngName(): ?string
+	{
+		return $this->engName;
+	}
+	public function setEngName(?string $engName): void
+	{
+		$this->engName = $engName;
+	}
+}
 
     public function getEngName(): string
     {

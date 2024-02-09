@@ -52,7 +52,7 @@ use App\Model\Category;
 						<td><?=$item->getVendor()?></td>
 						<td>
 							<a href="/admin_panel/edit?id=<?=$item->getId()?>">Изменить</a>
-							<a href="/admin_panel/delete?id=<?=$item->getId()?>" onclick="confirm('Вы уверены, что хотите удалить эту запись?')">Удалить</a>
+							<a href="/admin_panel/delete?id=<?=$item->getId()?>" onclick="return window.confirm('Удалить этот объект?');">Удалить</a>
 						</td>
 					</tr>
 					<?php endforeach;?>

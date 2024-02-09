@@ -23,7 +23,7 @@ class OrderRepo extends BaseRepo
 
 		if (!$result)
 		{
-			throw new Exception(mysqli_error($DBOperator));
+			throw new \Exception($DBOperator->connect_error);
 		}
 
 		while ($row = mysqli_fetch_assoc($result))

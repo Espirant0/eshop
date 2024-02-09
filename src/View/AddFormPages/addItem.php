@@ -24,25 +24,25 @@
 				<input type="text" name="title" class="login_input auth_input" placeholder="Введите название" required>
 			</label>
 			<label>
-				<input type="text" name="color_id" class="password_input auth_input" placeholder="Введите id цвета" required>
+				<input type="number" name="color_id" class="password_input auth_input" placeholder="Введите id цвета" required>
 			</label>
 			<label>
-				<input type="text" name="create_year" class="login_input auth_input" placeholder="Введите год выпуска" required>
+				<input type="number" name="create_year" class="login_input auth_input" placeholder="Введите год выпуска" required>
 			</label>
 			<label>
-				<input type="text" name="material_id" class="password_input auth_input" placeholder="Введите id материала" required>
+				<input type="number" name="material_id" class="password_input auth_input" placeholder="Введите id материала" required>
 			</label>
 			<label>
-				<input type="text" name="price" class="login_input auth_input" placeholder="Введите цену" required>
+				<input type="number" name="price" class="login_input auth_input" placeholder="Введите цену" required>
 			</label>
 			<label>
 				<input type="text" name="description" class="password_input auth_input" placeholder="Введите описание" required>
 			</label>
 			<label>
-				<input type="text" name="status" class="password_input auth_input" placeholder="Введите id статуса" required>
+				<input type="number" name="status" class="password_input auth_input" placeholder="Введите id статуса" required>
 			</label>
 			<label>
-				<input type="text" name="manufacturer_id" class="password_input auth_input" placeholder="Введите id производителя" required>
+				<input type="number" name="manufacturer_id" class="password_input auth_input" placeholder="Введите id производителя" required>
 			</label>
 			<button class="auth_btn">Добавить</button>
 		</form>

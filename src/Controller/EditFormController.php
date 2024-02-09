@@ -14,6 +14,7 @@ class EditFormController extends BaseController
 			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
+				'fieldList' => AdminPanelRepo::getItemColumns(),
 			]);
 		}
 		else{

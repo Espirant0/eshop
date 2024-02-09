@@ -1,6 +1,7 @@
 <?php
 /**
  * @var int $itemId;
+ * @var array $fieldList;
  */
 ?>
 <!doctype html>
@@ -26,7 +27,11 @@
 	<div class="form_container">
 		<form action="/admin_panel/update?id=<?=$itemId;?>" method="post" class="auth_form">
 			<label>
-				<input type="text" name="field" class="login_input auth_input" placeholder="Введите поле" required>
+				<select name="field" class="login_input auth_input" required>
+					<?php foreach ($fieldList as $field):?>
+						<option><?=$field?></option>
+					<?php endforeach;?>
+				</select>
 			</label>
 			<label>
 				<input type="text" name="value" class="password_input auth_input" placeholder="Введите новое значение" required>

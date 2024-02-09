@@ -8,25 +8,20 @@ use Core\Database\Repo\UserRepo;
 
 class AdminController extends BaseController
 {
-	public function showAdminPage(): void
+	public function showAdminPage(?array $errors = null): void
 	{
-		$this->render('layout.php',[
-			'content' => $this->strRender('AdminPage/admin.php', [
-				'itemList' => AdminPanelRepo::getItemList(),
-				'categoryList' => CategoryListRepo::getCategoryList(),
+		if($this->checkAuth()) {
+			$this->render('layout.php', [
+				'content' => $this->strRender('AdminPage/admin.php', [
+					'itemList' => AdminPanelRepo::getItemList(),
+					'categoryList' => CategoryListRepo::getCategoryList(),
 				]),
-			'category_list' => CategoryListRepo::getObjectList(),
-		]);
-	}
-
-	public function checkAuth():void
-	{
-		session_start();
-		if(!isset($_SESSION['USER'])){
-			$this->render('AuthPage/auth.php',[]);
+				'category_list' => CategoryListRepo::getObjectList(),
+			]);
 		}
-		else{
-			$this->showAdminPage();
+		else
+		{
+			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
 		}
 	}
 

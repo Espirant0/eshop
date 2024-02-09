@@ -10,17 +10,26 @@ class EditFormController extends BaseController
 {
 	public function showEditFormPage(?array $errors = null): void
 	{
-		$this->render('EditFormPage/edit.php', [
-			'errors' => $errors,
-			'itemId' => $_GET['id'],
-		]);
+		if($this->checkAuth()) {
+			$this->render('EditFormPage/edit.php', [
+				'errors' => $errors,
+				'itemId' => $_GET['id'],
+			]);
+		}
+		else{
+			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
+		}
 	}
-
 	public function showAddFormPage(?array $errors = null): void
 	{
-		$this->render('AddFormPages/addItem.php', [
-			'errors' => $errors,
-		]);
+		if($this->checkAuth()) {
+			$this->render('AddFormPages/addItem.php', [
+				'errors' => $errors,
+			]);
+		}
+		else{
+			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
+		}
 	}
 	public function addItem():void
 	{

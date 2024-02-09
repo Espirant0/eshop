@@ -19,7 +19,7 @@
 		<?php endif;?>
 	</div>
 	<div class="form_container">
-		<form action="/add" method="post" class="auth_form">
+		<form action="/admin_panel/add" method="post" class="auth_form">
 			<label>
 				<input type="text" name="title" class="login_input auth_input" placeholder="Введите название" required>
 			</label>

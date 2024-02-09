@@ -34,7 +34,7 @@ class AuthController extends BaseController
 					session_start();
 					$_SESSION['USER'] = $user;
 					$admin = new \App\Controller\AdminController();
-					$admin->checkAuth();
+					$admin->showAdminPage();
 				}
 			}
 		}

@@ -34,7 +34,7 @@ use App\Model\Category;
 						<th>Производитель</th>
 						<th>Действие
 							<br>
-							<a href="/add_form" class="add_btn">Добавить</a>
+							<a href="/admin_panel/add_form" class="add_btn">Добавить</a>
 						</th>
 					</tr>
 					</thead>
@@ -51,8 +51,8 @@ use App\Model\Category;
 						<td><?=$item->getStatus()?></td>
 						<td><?=$item->getVendor()?></td>
 						<td>
-							<a href="/edit?id=<?=$item->getId()?>">Изменить</a>
-							<a href="/delete?id=<?=$item->getId()?>" onclick="confirm('Вы уверены, что хотите удалить эту запись?')">Удалить</a>
+							<a href="/admin_panel/edit?id=<?=$item->getId()?>">Изменить</a>
+							<a href="/admin_panel/delete?id=<?=$item->getId()?>" onclick="confirm('Вы уверены, что хотите удалить эту запись?')">Удалить</a>
 						</td>
 					</tr>
 					<?php endforeach;?>

@@ -41,3 +41,13 @@ class Category
 	}
 }
 
+    public function getEngName(): string
+    {
+        return $this->engName;
+    }
+
+    public function setEngName(string $engName): void
+    {
+        $this->engName = $engName;
+    }
+}

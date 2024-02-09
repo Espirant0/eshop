@@ -14,19 +14,23 @@ class Category
 		$this->name = $name;
 		$this->engName = $engName;
 	}
-	public function getID():string
+
+	public function getID(): string
 	{
 		return $this->ID;
 	}
-	public function setID(string $ID):void
+
+	public function setID(string $ID): void
 	{
 		$this->ID = $ID;
 	}
-	public function getName():string
+
+	public function getName(): string
 	{
 		return $this->name;
 	}
-	public function setName(string $name):void
+
+	public function setName(string $name): void
 	{
 		$this->name = $name;
 	}
@@ -35,19 +39,9 @@ class Category
 	{
 		return $this->engName;
 	}
+
 	public function setEngName(?string $engName): void
 	{
 		$this->engName = $engName;
 	}
-}
-
-    public function getEngName(): string
-    {
-        return $this->engName;
-    }
-
-    public function setEngName(string $engName): void
-    {
-        $this->engName = $engName;
-    }
 }

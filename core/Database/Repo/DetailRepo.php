@@ -3,6 +3,7 @@
 namespace Core\Database\Repo;
 use App\Model\Bicycle;
 use App\Service\DBHandler;
+use App\Service\CategoryListRepo;
 
 class DetailRepo extends BaseRepo
 {
@@ -10,32 +11,43 @@ class DetailRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
-			"SELECT i.id, i.title, i.price, i.description, ta.name as target
+			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target
 		FROM item i
+		INNER JOIN manufacturer m on m.id = i.manufacturer_id
+		INNER JOIN color c on c.id = i.color_id
+		INNER JOIN material ma on ma.id = i.material_id
 		INNER JOIN target_audience ta on ta.id = i.target_id
 		WHERE i.id = '{$id}';
 		");
 
-		$item = [];
+		$itemList = [];
 
 		if (!$result)
 		{
 			throw new \Exception($DBOperator->connect_error);
 		}
 
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			$item[] = new Bicycle
-			(
-				$row['id'],
-				$row['title'],
-				$row['price'],
-				$row['target'],
-			);
+		$row = mysqli_fetch_assoc($result);
+		$itemId = $row['id'];
+		$itemName = $row['title'];
+		$itemColor = $row['color'];
+		$itemYear = $row['create_year'];
+		$itemMaterial = $row['material'];
+		$itemPrice = $row['price'];
+		$itemDescription = $row['description'];
+		$itemStatus = $row['status'];
+		$itemManufacturer = $row['vendor'];
+		$itemList[] = new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer);
 
-		}
-		return $item;
+		return $itemList;
 	}
+
+	//public static function getCategorylistBy(array $filter = []): array
+	//{
+
+	//}
+
+
 
 }
 

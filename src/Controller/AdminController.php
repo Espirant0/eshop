@@ -10,7 +10,8 @@ class AdminController extends BaseController
 {
 	public function showAdminPage(?array $errors = null): void
 	{
-		if($this->checkAuth()) {
+		if ($this->checkAuth())
+        {
 			$this->render('layout.php', [
 				'content' => $this->strRender('AdminPage/admin.php', [
 					'itemList' => AdminPanelRepo::getItemList(),

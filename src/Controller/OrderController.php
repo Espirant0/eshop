@@ -9,7 +9,7 @@ class OrderController extends BaseController
     // пока передаю пустой массив, потому что не знаю, что будем передавать (если будем)
     public function showOrderPage(): void
     {
-		$this->render('layout.php',[
+		$this->render('layout.php', [
 			'content' => $this->strRender('OrderPage/order.php', []),
 			'category_list' => CategoryListRepo::getCategoryList()
 		]);
@@ -18,7 +18,7 @@ class OrderController extends BaseController
 
     public function showConfirmedOrderPage(): void
     {
-		$this->render('layout.php',[
+		$this->render('layout.php', [
 			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
 			'category_list' => CategoryListRepo::getCategoryList()
 		]);

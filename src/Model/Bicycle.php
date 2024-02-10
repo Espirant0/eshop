@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Service\ImageHandler;
+
 class Bicycle
 {
 	private string $id;
@@ -15,6 +17,10 @@ class Bicycle
 	private string $material = '';
 	private string $vendor = '';
 	private array $categories = [];
+	/**
+	 * @var Image[] $images
+	 */
+	private array $images;
 
 	/**
 	 * @param string $name
@@ -22,6 +28,7 @@ class Bicycle
 	 * @param string $material
 	 * @param string $vendor
 	 * @param category[] $categories
+	 * @var Image[] $images
 	 */
 	public function __construct(string $id,
 								string $name,
@@ -31,7 +38,8 @@ class Bicycle
 								string $price,
 								string $description,
 								string $status,
-								string $vendor)
+								string $vendor,
+								array $categories)
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -42,6 +50,16 @@ class Bicycle
 		$this->description = $description;
 		$this->status = $status;
 		$this->vendor = $vendor;
+		$this->categories=$categories;
+		$images = [];
+		/**
+		 * @var Image[] $images
+		 */
+		foreach (ImageHandler::getAllImageNamesForItemByTitleAndId($this->id,$this->name) as $name)
+		{
+			$images[] = new Image($name, ImageHandler::imageMainCheck($name));
+		}
+		$this->images = $images;
 	}
 
 	public function getId(): string
@@ -131,5 +149,28 @@ class Bicycle
 	public function setCategories(array $categories):void
 	{
 		$this->categories = $categories;
+	}
+
+	/**
+	 * @return Image[]
+	 */
+	public function getImages()
+	{
+		return $this->images;
+	}
+	/**
+	 * @var Image[] $imgArray
+	 */
+	public function getMainImageName():string
+	{
+		$imgArray = $this->images;
+		foreach ($imgArray as $image)
+		{
+			if($image->isMain())
+			{
+				return $image->getName();
+			}
+		}
+		return 'Has no image';
 	}
 }

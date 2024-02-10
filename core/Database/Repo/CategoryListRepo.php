@@ -14,7 +14,7 @@ class CategoryListRepo extends BaseRepo
         return (new FileCache())->remember('category_list', 3600, function()
         {
             $DBOperator = new DBHandler();
-            $result = $DBOperator->query('SELECT id, name, engname FROM category');
+            $result = $DBOperator->query('SELECT id, name, engName FROM category');
 
             return self::createCategoryList($result);
         });

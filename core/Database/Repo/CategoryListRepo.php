@@ -2,6 +2,7 @@
 
 namespace Core\Database\Repo;
 
+use App\Cache\FileCache;
 use App\Model\Category;
 use App\Model\CategoryList;
 use App\Service\DBHandler;
@@ -10,16 +11,19 @@ class CategoryListRepo extends BaseRepo
 {
 	public static function getCategoryList(): \App\Model\CategoryList
 	{
-		$DBOperator = new DBHandler();
-		$result = $DBOperator->query('SELECT id, name, engname FROM category');
+        return (new FileCache())->remember('category_list', 3600, function()
+        {
+            $DBOperator = new DBHandler();
+            $result = $DBOperator->query('SELECT id, name, engname FROM category');
 
-        return self::createCategoryList($result);
+            return self::createCategoryList($result);
+        });
 	}
 
     public static function getCategoryListConsideringExistingItem(): \App\Model\CategoryList
     {
         $DBOperator = new DBHandler();
-        $result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engname
+        $result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName
                                             FROM category c
                                             LEFT JOIN items_category ic ON c.id = ic.category_id;');
 
@@ -34,7 +38,7 @@ class CategoryListRepo extends BaseRepo
         {
             $ID = (int)$row['id'];
             $name = $row['name'];
-            $engName = $row['engname'];
+            $engName = $row['engName'];
             $category = new Category($ID, $name, $engName);
             $categoryList->addCategory($category);
         }

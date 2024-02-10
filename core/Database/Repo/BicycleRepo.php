@@ -11,7 +11,7 @@ class BicycleRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
-			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target
+            "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target
 		            FROM item i
 		                INNER JOIN manufacturer m on m.id = i.manufacturer_id
 		                INNER JOIN color c on c.id = i.color_id

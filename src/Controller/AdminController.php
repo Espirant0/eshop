@@ -10,12 +10,14 @@ class AdminController extends BaseController
 {
 	public function showAdminPage(?array $errors = null): void
 	{
+        $categoryListRepo = new CategoryListRepo();
+
 		if ($this->checkAuth())
         {
 			$this->render('layout.php', [
 				'content' => $this->strRender('AdminPage/admin.php', [
 					'itemList' => AdminPanelRepo::getItemList(),
-					'categoryList' => CategoryListRepo::getCategoryList(),
+					'categoryList' => $categoryListRepo::getCategoryList(),
 				]),
 				'category_list' => CategoryListRepo::getObjectList(),
 			]);

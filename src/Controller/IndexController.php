@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-use Core\Database\Repo\AdminPanelRepo;
 use Core\Database\Repo\CategoryListRepo;
 class IndexController extends BaseController
 {

@@ -2,6 +2,7 @@
 
 namespace Core\Database\Repo;
 
+use App\Model\Category;
 use App\Service\DBHandler;
 use App\Model\Bicycle;
 
@@ -14,13 +15,15 @@ class BicycleRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
-			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target
-		FROM item i
-		INNER JOIN manufacturer m on m.id = i.manufacturer_id
-		INNER JOIN color c on c.id = i.color_id
-		INNER JOIN material ma on ma.id = i.material_id
-		INNER JOIN target_audience ta on ta.id = i.target_id
-		ORDER BY i.id;"
+			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
+		 FROM item i
+         INNER JOIN manufacturer m on m.id = i.manufacturer_id
+         INNER JOIN color c on c.id = i.color_id
+         INNER JOIN material ma on ma.id = i.material_id
+         INNER JOIN target_audience ta on ta.id = i.target_id
+		 INNER JOIN items_category ic on i.id = ic.item_id
+		 INNER JOIN category c2 on ic.category_id = c2.id
+		 ORDER BY i.id;"
 		);
 
 		$Bicycles = [];
@@ -32,6 +35,11 @@ class BicycleRepo extends BaseRepo
 
 		while ($row = mysqli_fetch_assoc($result))
 		{
+			$category[] = new Category(
+				$row['category_id'],
+				$row['category_name'],
+				$row['category_engname']
+			);
 			$Bicycles[] = new Bicycle
 			(
 				$row['id'],
@@ -43,7 +51,9 @@ class BicycleRepo extends BaseRepo
 				$row['description'],
 				$row['status'],
 				$row['vendor'],
+				$category
 			);
+			unset($category);
 
 		}
 

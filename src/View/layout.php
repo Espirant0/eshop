@@ -29,7 +29,7 @@ use App\Model\CategoryList;
 			<ul class="tags">
 				<a href="/"><li><p>Главная</p></li></a>
 				<?php foreach($category_list as $category):?>
-				<a href="<?="/category_name"?>"><li><span><?=$category->getName();?></span></li></a>
+				<a href="<?="/?category={$category->getEngName()}"?>"><li><span><?=$category->getName();?></span></li></a>
 					<?php endforeach;?>
 			</ul>
 		</div>

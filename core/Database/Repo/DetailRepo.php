@@ -6,15 +6,15 @@ use App\Service\DBHandler;
 
 class DetailRepo extends BaseRepo
 {
-	public static function getBicyclelistById(int $id): array
+	public static function getBicycleListById(int $id): array
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
 			"SELECT i.id, i.title, i.price, i.description, ta.name as target
-		FROM item i
-		INNER JOIN target_audience ta on ta.id = i.target_id
-		WHERE i.id = '{$id}';
-		");
+		            FROM item i
+		                INNER JOIN target_audience ta on ta.id = i.target_id
+		            WHERE i.id = '{$id}';"
+        );
 
 		$item = [];
 
@@ -32,10 +32,8 @@ class DetailRepo extends BaseRepo
 				$row['price'],
 				$row['target'],
 			);
-
 		}
 		return $item;
 	}
 
 }
-

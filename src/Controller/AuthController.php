@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\HttpService;
 use Core\Database\Repo\UserRepo;
-use App\Controller\AdminController;
+
 
 class AuthController extends BaseController
 {
@@ -33,8 +34,7 @@ class AuthController extends BaseController
 				if (empty($errors)) {
 					session_start();
 					$_SESSION['USER'] = $user;
-					$admin = new \App\Controller\AdminController();
-					$admin->showAdminPage();
+					HttpService::redirect('admin_panel');
 				}
 			}
 		}

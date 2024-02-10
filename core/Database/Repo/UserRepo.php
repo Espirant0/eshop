@@ -34,4 +34,23 @@ class UserRepo extends BaseRepo
 		}
 		return new User($login, $userName, $userAddress, $userRole, $userPassword);
 	}
+
+	public static function getUserList():array
+	{
+		$DBOperator = new DBHandler();
+		$userList = [];
+		$result = $DBOperator->query("
+		SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
+		         INNER JOIN role r on u.role_id = r.id
+		ORDER BY u.id
+		");
+		if (!$result) {
+			throw new Exception($DBOperator->connect_error);
+		}
+		while ($row = mysqli_fetch_assoc($result))
+		{
+			$userList[] = new User($row['id'], $row['name'], $row['address'],$row['role_name'], $row['password']);
+		}
+		return $userList;
+	}
 }

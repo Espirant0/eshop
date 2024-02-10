@@ -34,14 +34,4 @@ abstract class BaseController
 		include_once $template;
 		return ob_get_clean();
 	}
-
-	public function checkAuth():bool
-	{
-		session_start();
-		if(!isset($_SESSION['USER']))
-		{
-			return false;
-		}
-		return true;
-	}
 }

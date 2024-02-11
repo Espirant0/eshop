@@ -15,7 +15,7 @@ class IndexController extends BaseController
 					'category_name' => null,
 					'bicycleList' => BicycleRepo::getBicyclelist()
 				]),
-				'category_list' => CategoryListRepo::getCategoryList(),
+				'categoryList' => CategoryListRepo::getCategoryList(),
 			]);
 		}
 		else
@@ -25,7 +25,7 @@ class IndexController extends BaseController
 					'category_name' => $_GET['category'],
 					'bicycleList' => BicycleRepo::getBicyclelist()
 				]),
-				'category_list' => CategoryListRepo::getCategoryList(),
+				'categoryList' => CategoryListRepo::getCategoryList(),
 			]);
 		}
 

@@ -2,6 +2,7 @@
 
 namespace Core\Database\Repo;
 
+use App\Cache\FileCache;
 use App\Model\Bicycle;
 use App\Service\DBHandler;
 
@@ -97,6 +98,7 @@ class AdminPanelRepo extends BaseRepo
 		$table = mysqli_real_escape_string($DBOperator,$table);
 		$field = mysqli_real_escape_string($DBOperator,$field);
 		$newValue = mysqli_real_escape_string($DBOperator,$newValue);
+		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$DBOperator->query("UPDATE $table SET $field = '$newValue' WHERE $table.id = '$itemId'");
 	}
 
@@ -105,6 +107,7 @@ class AdminPanelRepo extends BaseRepo
 		$DBOperator = new DBHandler();
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
+		FileCache::deleteCacheByKey('category');
 	}
 
 	public static function checkItemColumns(string $table, string $field, mixed $value):bool

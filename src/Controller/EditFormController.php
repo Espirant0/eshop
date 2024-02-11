@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Cache\FileCache;
 use App\Service\AuthService;
 use App\Service\HttpService;
 use Core\Database\Repo\AdminPanelRepo;
@@ -40,15 +41,16 @@ class EditFormController extends BaseController
 
 	public function addItem(): void
 	{
-		$title = $_POST['title'];
-		$colorId = $_POST['color_id'];
-		$createYear = $_POST['create_year'];
-		$materialId = $_POST['material_id'];
-		$description = $_POST['description'];
-		$price = $_POST['price'];
-		$status = $_POST['status'];
-		$manufacturerId = $_POST['manufacturer_id'];
-		AdminPanelRepo::addItem($title, $createYear, $price, $description, $status, $manufacturerId, $materialId,$colorId);
+		AdminPanelRepo::addItem(
+			$_POST['title'],
+			$_POST['create_year'],
+			$_POST['price'],
+			$_POST['description'],
+			$_POST['status'],
+			$_POST['manufacturer_id'],
+			$_POST['material_id'],
+			$_POST['color_id']
+		);
 		HttpService::redirect('admin_panel');
 	}
 
@@ -61,6 +63,7 @@ class EditFormController extends BaseController
 		$newValue = $_POST['value'];
 		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue)){
 			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
+			FileCache::deleteCacheByKey($table);
 			HttpService::redirect('admin_panel');
 		}
 		else

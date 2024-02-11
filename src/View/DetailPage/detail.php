@@ -1,17 +1,11 @@
 <?php
 /**
- *
  * @var Bicycle $item;
  * @var Bicycle $CategoryList;
- *
- *
  */
 
 use App\Model\Bicycle;
-use App\Model\CategoryList;
-use App\Model\Category;
 ?>
-
 
 <div class="main_content_inner">
 	<div class="content">
@@ -50,7 +44,7 @@ use App\Model\Category;
 				<a href="/" class="item_tag"><?=$category?></a>
 				<?php endforeach;?>
 			</div>
-			<a href="/OrderPage/order"><button class="order_btn" type="submit">Заказать</button></a>
+			<a href="/OrderPage/order/<?=$item->getId()?>"><button class="order_btn" type="submit">Заказать</button></a>
 			<p class="description_title">Описание товара</p>
 			<p class="description"><?=$item->getDescription()?></p>
 		</div>

@@ -12,7 +12,7 @@ class CategoryListRepo extends BaseRepo
 {
 	public static function getCategoryList(): CategoryList
 	{
-        return (new FileCache())->remember('category_list', 3600, function()
+        return (new FileCache())->remember('category', 3600, function()
         {
             $DBOperator = new DBHandler();
             $result = $DBOperator->query('SELECT id, name, engName FROM category');
@@ -23,12 +23,17 @@ class CategoryListRepo extends BaseRepo
 
     public static function getCategoryListConsideringExistingItem(): CategoryList
     {
-        $DBOperator = new DBHandler();
-        $result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName
+		return (new FileCache())->remember('category', 3600, function()
+		{
+			$DBOperator = new DBHandler();
+			$result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName
                                             FROM category c
-                                            LEFT JOIN items_category ic ON c.id = ic.category_id;');
+                                            LEFT JOIN items_category ic ON c.id = ic.category_id
+                                            JOIN item i ON i.id = ic.item_id
+												WHERE i.status = 1;');
 
-        return self::createCategoryList($result);
+        	return self::createCategoryList($result);
+		});
     }
 
     public static function createCategoryList($result): CategoryList

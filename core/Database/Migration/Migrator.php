@@ -10,32 +10,39 @@ class Migrator
 	public static function migrate(): void
 	{
 		$DBOperator = new DBHandler;
-		#$DBOperator->query("SHOW TABLES LIKE 'migration'");
+
 		if ($DBOperator->query("SHOW TABLES LIKE 'migration'")->num_rows === 0)
 		{
-			Migrator::deleteData();
+			self::deleteData();
 			$mSQL = file_get_contents(ROOT . '/src/Migration/2024.03.02_20.50_migration_initiation.sql');
+
 			$DBOperator->query($mSQL);
 			$DBOperator->query("INSERT INTO migration (name) VALUES ('2024.03.02_20.50_migration_initiation.sql')");
 		}
+
 		$doneMigrationsQuery = $DBOperator->getResult('SELECT * FROM migration');
 		$doneMigrations = [];
+
 		foreach ($doneMigrationsQuery as $migration)
 		{
 			$doneMigrations[] = $migration['name'];
 		}
-		$migrations = Migrator::getMigrationFiles();
+
+		$migrations = self::getMigrationFiles();
+
 		foreach ($migrations as $migration)
 		{
-			if(!in_array($migration, $doneMigrations))
+			if (!in_array($migration, $doneMigrations))
 			{
 				$commands = file_get_contents(ROOT . '/src/Migration/' . $migration);
 				$commandList = explode(';',$commands);
+
 				foreach ($commandList as $commandSQL)
 				{
 					if ($commandSQL == '') continue;
 					$DBOperator->query($commandSQL);
 				}
+
 				$DBOperator->query("INSERT INTO migration (name) VALUES ('$migration')");
 			}
 		}
@@ -46,29 +53,33 @@ class Migrator
 	{
 		$migrationFiles = [];
 		$migrations = scandir(ROOT . '/src/Migration');
+
 		foreach ($migrations as $migration)
 		{
-			if(preg_match('/.(sql)/', $migration))
+			if (preg_match('/.(sql)/', $migration))
 			{
 				$migrationFiles[] = $migration;
 			}
 		}
+
 		return $migrationFiles;
 	}
+
 	public static function deleteData(): void
 	{
 		$DBOperator = new DBHandler;
 		$config = new Config();
-		$DB_NAME = $config->option('DB_NAME');
 		$res = $DBOperator->query('SHOW TABLES');
 		$DBOperator->query('SET foreign_key_checks = 0');
-		$tables = 'Tables_in_' . $DB_NAME;
-		while($row=mysqli_fetch_assoc($res))
+		$tables = 'Tables_in_' . $config->option('DB_NAME');
+
+		while ($row = mysqli_fetch_assoc($res))
 		{
 			$tableName = $row[$tables];
-			$mSQL="DROP TABLE $tableName";
-			$DBOperator->query($mSQL);
+			$mysql="DROP TABLE $tableName";
+			$DBOperator->query($mysql);
 		}
+
 		$DBOperator->query('SET foreign_key_checks = 1');
 	}
 }

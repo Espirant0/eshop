@@ -10,48 +10,58 @@ class EditFormController extends BaseController
 {
 	public function showEditFormPage(?array $errors = null): void
 	{
-		if($this->checkAuth()) {
+		if ($this->checkAuth())
+        {
 			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
 				'fieldList' => AdminPanelRepo::getItemColumns(),
 			]);
 		}
-		else{
+		else
+        {
 			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
 		}
 	}
 	public function showAddFormPage(?array $errors = null): void
 	{
-		if($this->checkAuth()) {
+		if($this->checkAuth())
+        {
 			$this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 			]);
 		}
-		else{
+		else
+        {
 			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
 		}
 	}
-	public function addItem():void
+
+	public function addItem(): void
 	{
-		$title = $_POST['title'];
-		$colorId = $_POST['color_id'];
-		$createYear = $_POST['create_year'];
-		$materialId = $_POST['material_id'];
-		$description = $_POST['description'];
-		$price = $_POST['price'];
-		$status = $_POST['status'];
-		$manufacturerId = $_POST['manufacturer_id'];
-		AdminPanelRepo::addItem($title, $createYear, $price, $description, $status, $manufacturerId, $materialId,$colorId);
+		AdminPanelRepo::addItem(
+            $_POST['title'],
+            $_POST['create_year'],
+            $_POST['price'],
+            $_POST['description'],
+            $_POST['status'],
+            $_POST['manufacturer_id'],
+            $_POST['material_id'],
+            $_POST['color_id']
+        );
+
 		header('Location: /admin_panel');
 	}
+
 	public function updateValue(): void
 	{
 		$errors = [];
 		$itemId = (int)$_GET['id'];
 		$itemField = (string)$_POST['field'];
 		$newValue = $_POST['value'];
-		if(AdminPanelRepo::checkItemColumns($itemField, $newValue)){
+
+		if (AdminPanelRepo::checkItemColumns($itemField, $newValue))
+        {
 			AdminPanelRepo::updateItem($itemId, $itemField, $newValue);
 			header('Location: /admin_panel');
 		}

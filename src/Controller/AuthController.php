@@ -20,17 +20,25 @@ class AuthController extends BaseController
 
 			$error = 'Неверный логин или пароль';
 			$user = UserRepo::getUserByLogin($login);
-			if (!$user) {
+
+			if (!$user)
+            {
 				$errors[] = $error;
 				$this->showAuthPage($errors);
-			} else {
+			}
+            else
+            {
 				//$isPasswordCorrect = password_verify($password, $user->getPassword());
 				$isPasswordCorrect = !strnatcmp($password, $user->getPassword());
-				if (!$isPasswordCorrect) {
+
+				if (!$isPasswordCorrect)
+                {
 					$errors[] = $error;
 					$this->showAuthPage($errors);
 				}
-				if (empty($errors)) {
+
+				if (empty($errors))
+                {
 					session_start();
 					$_SESSION['USER'] = $user;
 					$admin = new \App\Controller\AdminController();
@@ -46,6 +54,7 @@ class AuthController extends BaseController
 		unset($_SESSION['USER']);
 		session_unset();
 		session_destroy();
+
 		$this->showAuthPage();
 	}
 }

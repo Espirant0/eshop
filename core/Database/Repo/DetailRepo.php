@@ -7,7 +7,7 @@ use App\Service\CategoryListRepo;
 
 class DetailRepo extends BaseRepo
 {
-	public static function getBicyclelistById(int $id): array
+	public static function getBicycleListById(int $id): array
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(

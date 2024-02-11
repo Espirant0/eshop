@@ -7,6 +7,7 @@
 
 use App\Model\Category;
 use App\Model\CategoryList;
+use App\Service\AuthService;
 
 ?>
 
@@ -42,7 +43,8 @@ use App\Model\CategoryList;
 				</label>
 			</div>
 			<button class="search_btn">Искать</button>
-			<a href="/auth" class="sign_in_btn">Войти</a>
+			<a href="/auth" class="sign_in_btn <?=AuthService::checkAuth()? 'disable': 'active'?>">Войти</a>
+			<a href="/sign_out" class="sign_in_btn <?=AuthService::checkAuth()? 'active': 'disable'?>">Выйти</a>
 			<a href="/admin_panel" class="admin_btn">Админка</a>
 		</div>
 	</div>

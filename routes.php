@@ -26,7 +26,7 @@ Router::get('/admin_panel/edit', [new App\Controller\EditFormController(), 'show
 
 Router::post('/admin_panel/update', [new App\Controller\EditFormController(), 'updateValue']);
 
-Router::get('/admin_panel/delete', [new App\Controller\AdminController(), 'deleteItem']);
+Router::get('/admin_panel/delete', [new App\Controller\AdminController(), 'deleteBicycle']);
 
 Router::get('/admin_panel/add_form', [new App\Controller\EditFormController(), 'showAddFormPage']);
 

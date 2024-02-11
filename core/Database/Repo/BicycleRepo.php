@@ -4,7 +4,6 @@ namespace Core\Database\Repo;
 
 use App\Service\DBHandler;
 use App\Model\Bicycle;
-
 class BicycleRepo extends BaseRepo
 {
 	public static function getBicycleList(): array

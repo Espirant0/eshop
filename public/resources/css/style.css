@@ -48,7 +48,9 @@ a {
     text-decoration: none;
     text-align: center;
 }
-
+.tags li{
+    border-bottom: 1px solid #666666;
+}
 .top_line{
     background-color: beige;
     top:0;
@@ -277,7 +279,7 @@ a {
 .admin_content{
     margin-top: 150px;
     margin-right: 200px;
-    margin-left: 50px;
+    margin-left: 200px;
 }
 .confirmed_img{
     max-height: 200px;
@@ -316,7 +318,7 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 300px;
+    margin-top: 200px;
 }
 
 .auth_errors{
@@ -409,4 +411,10 @@ td, th{
 
 .add_btn{
     font-size: 16px;
+}
+.disable{
+    display: none;
+}
+.active{
+    display: block;
 }

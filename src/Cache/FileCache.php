@@ -7,10 +7,6 @@ class FileCache extends BaseCache
     public function set(string $key, $value, int $ttl = 60): void
     {
         $hash = sha1($key);
-		if(!is_dir(ROOT . '/var/cache'))
-		{
-			mkdir(ROOT . '/var/cache',0777,true);
-		}
         $path = ROOT . '/var/cache/' . $hash . '.php';
 
         $data = [
@@ -43,5 +39,14 @@ class FileCache extends BaseCache
         return $data['data'];
     }
 
-    //TODO: deleteCache
+    public static function deleteCacheByKey($key)
+    {
+        $hash = sha1($key);
+        $path = ROOT . '/var/cache/' . $hash . '.php';
+
+        if (file_exists($path))
+        {
+            unlink($path);
+        }
+    }
 }

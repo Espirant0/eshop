@@ -11,11 +11,10 @@ class DetailController extends BaseController
 {
     public function showDetailPage($itemId): void
     {
-
         $categoryListRepo = new CategoryListRepo();
 
 		$this->render('layout.php', [
-			'content' => $this->strRender('DetailPage/detail.php', ['item' => DetailRepo::getBicycleListById($itemId[0])]),
+			'content' => $this->render('DetailPage/detail.php', ['item' => DetailRepo::getBicycleListById($itemId[0])]),
             'categoryList' => $categoryListRepo::getCategoryList()
 		]);
     }

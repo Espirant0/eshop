@@ -18,12 +18,16 @@ class IndexController extends BaseController
             $categoryName = $categoryName[0];
         }
 
+        $bicycleList = BicycleRepo::getBicyclelist($categoryName);
+
         $this->render('layout.php',[
-            'content' => $this->strRender('MainPage/index.php', [
+            'content' => $this->render('MainPage/index.php', [
                 'category_name' => $categoryName,
-                'bicycleList' => BicycleRepo::getBicyclelist($categoryName)
+                'bicycleList' => $bicycleList
             ]),
             'categoryList' => CategoryListRepo::getCategoryList(),
         ]);
+
+
     }
 }

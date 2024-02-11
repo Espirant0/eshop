@@ -12,7 +12,7 @@ class OrderController extends BaseController
         $categoryListRepo = new CategoryListRepo();
 
 		$this->render('layout.php', [
-			'content' => $this->strRender('OrderPage/order.php', []),
+			'content' => $this->render('OrderPage/order.php', []),
             'categoryList' => $categoryListRepo::getCategoryList()
 		]);
         #$this->render('OrderPage/order.php', []);
@@ -23,7 +23,7 @@ class OrderController extends BaseController
         $categoryListRepo = new CategoryListRepo();
 
 		$this->render('layout.php', [
-			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
+			'content' => $this->render('ConfirmPage/confirmed.php', []),
             'categoryList' => $categoryListRepo::getCategoryList()
 		]);
         #$this->render('ConfirmPage/confirmed.php', []);

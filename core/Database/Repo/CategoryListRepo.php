@@ -3,6 +3,7 @@
 namespace Core\Database\Repo;
 
 use App\Cache\FileCache;
+use App\Config\Config;
 use App\Model\Category;
 use App\Model\CategoryList;
 use App\Service\DBHandler;
@@ -38,7 +39,7 @@ class CategoryListRepo extends BaseRepo
         {
             $categoryId = (int)$row['id'];
             $categoryName = $row['name'];
-            $categoryEngName = $row['engname'];
+            $categoryEngName = $row['engName'];
             $category = new Category($categoryId, $categoryName, $categoryEngName);
             $categoryList->addCategory($category);
         }

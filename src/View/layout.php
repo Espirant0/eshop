@@ -2,7 +2,7 @@
 /**
  * @var string $content
  * @var Category $category
- * @var CategoryList $category_list
+ * @var CategoryList $categoryList
  */
 
 use App\Model\Category;
@@ -29,7 +29,7 @@ use App\Service\AuthService;
 		<div class="menu_container">
 			<ul class="tags">
 				<a href="/"><li><p>Главная</p></li></a>
-				<?php foreach($category_list as $category):?>
+				<?php foreach($categoryList as $category):?>
 				<a href="<?="/category_name"?>"><li><span><?=$category->getName();?></span></li></a>
 					<?php endforeach;?>
 			</ul>

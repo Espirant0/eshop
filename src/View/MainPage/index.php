@@ -7,7 +7,6 @@
 ?>
 <div class="cards">
 	<?php foreach ($bicycleList as $bicycle):?>
-	<?php if($bicycle->getCategories()[0]->getEngName()==$category_name || $category_name==null):?>
 	<a href="/Detail/<?=$bicycle->getId()?>">
 		<div class="item_card">
 			<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="item_img">
@@ -16,7 +15,7 @@
 			<p class="item_price"><?= $bicycle->getPrice().' Р'?></p>
 		</div>
 	</a>
-	<?php endif; endforeach;?>
+	<?php endforeach;?>
 </div>
 <div class="pages">
 	<a href="" class="first page_number">1</a>

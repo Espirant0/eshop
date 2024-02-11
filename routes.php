@@ -4,7 +4,7 @@ use Core\Routing\Router;
 
 Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
-Router::get('/?category=\b(Electric|BMX|Mountain|Teenager|Road|Fatbike|Child)\b', [new App\Controller\IndexController(), "showIndexPage"]);
+Router::get('/category/:categoryName', [new App\Controller\IndexController(), "showIndexPage"]);
 
 Router::get('/Detail/[0-9]*', [new App\Controller\DetailController(), 'showDetailPage']);
 

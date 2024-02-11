@@ -11,7 +11,7 @@ class BicycleRepo extends BaseRepo
 	{
         $queryDop = '';
         if ($categoryName !== '') {
-            $queryDop = "WHERE c2.engName = '$categoryName'";
+            $queryDop = "AND c2.engName = '$categoryName'";
         }
 
         $DBOperator = new DBHandler();
@@ -24,7 +24,7 @@ class BicycleRepo extends BaseRepo
         INNER JOIN target_audience ta on ta.id = i.target_id
         INNER JOIN items_category ic on i.id = ic.item_id
         INNER JOIN category c2 on ic.category_id = c2.id
-        $queryDop
+        WHERE i.status = 1 $queryDop
         ORDER BY i.id;"
         );
 

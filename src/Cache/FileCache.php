@@ -39,7 +39,7 @@ class FileCache extends BaseCache
         return $data['data'];
     }
 
-    public static function deleteCacheByKey($key)
+    public static function deleteCacheByKey($key):void
     {
         $hash = sha1($key);
         $path = ROOT . '/var/cache/' . $hash . '.php';

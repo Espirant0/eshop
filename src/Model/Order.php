@@ -4,49 +4,43 @@ namespace App\Model;
 
 class Order
 {
-	private string $ID;
-	private Bicycle $order;
+	private int $orderId;
+	private string $itemName;
 	private string $status;
 	private string $deliveryAddress;
-	private User $user;
+	private string $number;
+	private string $price;
 	private string $createDate;
 
 	public function __construct(
-        string $ID,
-        Bicycle $order,
+		int $orderId,
+		string $itemName,
         string $status,
         string $deliveryAddress,
-        User $user,
+		string $number,
+		string $price,
         string $createDate
     )
 	{
-		$this->ID = $ID;
-		$this->order = $order;
+		$this->orderId = $orderId;
+		$this->itemName = $itemName;
 		$this->status = $status;
 		$this->deliveryAddress = $deliveryAddress;
-		$this->user = $user;
+		$this->price = $price;
+		$this->number = $number;
 		$this->createDate = $createDate;
 	}
 
-	public function getID():string
+	public function getOrderId():int
 	{
-		return $this->ID;
+		return $this->orderId;
 	}
 
-	public function setID(string $ID):void
+	public function setOrderId(int $orderId):void
 	{
-		$this->ID = $ID;
+		$this->orderId = $orderId;
 	}
 
-	public function getOrder():Bicycle
-	{
-		return $this->order;
-	}
-
-	public function setOrder(Bicycle $order):void
-	{
-		$this->order = $order;
-	}
 
 	public function getStatus():string
 	{
@@ -58,24 +52,14 @@ class Order
 		$this->status = $status;
 	}
 
-	public function getAddress():string
+	public function getNumber():string
 	{
-		return $this->deliveryAddress;
+		return $this->number;
 	}
 
-	public function setAddress(string $deliveryAddress):void
+	public function setNumber(string $number):void
 	{
-		$this->deliveryAddress = $deliveryAddress;
-	}
-
-	public function getUser():User
-	{
-		return $this->user;
-	}
-
-	public function setUser(User $user):void
-	{
-		$this->user = $user;
+		$this->number = $number;
 	}
 
 	public function getCreateDate():string
@@ -88,8 +72,30 @@ class Order
 		$this->createDate = $createDate;
 	}
 
-	public function getAllOrderData():array
+
+	public function getItemName():string
 	{
-		return [$this->ID, $this->order, $this->status, $this->deliveryAddress, $this->user, $this->createDate];
+		return $this->itemName;
+	}
+	public function setItemName(int $itemName): void
+	{
+		$this->itemName = $itemName;
+	}
+
+	public function getDeliveryAddress(): string
+	{
+		return $this->deliveryAddress;
+	}
+	public function setDeliveryAddress(string $deliveryAddress): void
+	{
+		$this->deliveryAddress = $deliveryAddress;
+	}
+	public function getPrice(): string
+	{
+		return $this->price;
+	}
+	public function setPrice(string $price): void
+	{
+		$this->price = $price;
 	}
 }

@@ -14,7 +14,7 @@ class DetailController extends BaseController
 
 		$this->render('layout.php', [
 			'content' => $this->strRender('DetailPage/detail.php', ['detail_id' => 0]),
-            'category_list' => $categoryListRepo::getCategoryList()
+            'categoryList' => $categoryListRepo::getCategoryList()
 		]);
     }
 }

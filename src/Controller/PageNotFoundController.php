@@ -9,7 +9,7 @@ class PageNotFoundController extends BaseController
 	{
 		$this->render('layout.php', [
 			'content' => $this->strRender('NotFoundPage/404.php',[]),
-			'category_list' => CategoryListRepo::getCategoryList()
+			'categoryList' => CategoryListRepo::getCategoryList()
 		]);
 	}
 }

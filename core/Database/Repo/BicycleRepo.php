@@ -7,20 +7,26 @@ use App\Service\DBHandler;
 use App\Model\Bicycle;
 class BicycleRepo extends BaseRepo
 {
-	public static function getBicycleList(): array
+	public static function getBicycleList($categoryName): array
 	{
-		$DBOperator = new DBHandler();
-		$result = $DBOperator->query(
-			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
-		 FROM item i
-         INNER JOIN manufacturer m on m.id = i.manufacturer_id
-         INNER JOIN color c on c.id = i.color_id
-         INNER JOIN material ma on ma.id = i.material_id
-         INNER JOIN target_audience ta on ta.id = i.target_id
-		 INNER JOIN items_category ic on i.id = ic.item_id
-		 INNER JOIN category c2 on ic.category_id = c2.id
-		 ORDER BY i.id;"
-		);
+        $queryDop = '';
+        if ($categoryName !== '') {
+            $queryDop = "WHERE c2.engName = '$categoryName'";
+        }
+
+        $DBOperator = new DBHandler();
+        $result = $DBOperator->query(
+            "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
+        FROM item i
+        INNER JOIN manufacturer m on m.id = i.manufacturer_id
+        INNER JOIN color c on c.id = i.color_id
+        INNER JOIN material ma on ma.id = i.material_id
+        INNER JOIN target_audience ta on ta.id = i.target_id
+        INNER JOIN items_category ic on i.id = ic.item_id
+        INNER JOIN category c2 on ic.category_id = c2.id
+        $queryDop
+        ORDER BY i.id;"
+        );
 
 		$Bicycles = [];
 

@@ -6,7 +6,7 @@ Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
 Router::get('/category/:categoryName', [new App\Controller\IndexController(), "showIndexPage"]);
 
-Router::get('/Detail/[0-9]*', [new App\Controller\DetailController(), 'showDetailPage']);
+Router::get('/Detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
 
 Router::get('/OrderPage/order', [new App\Controller\OrderController(), 'showOrderPage']);
 

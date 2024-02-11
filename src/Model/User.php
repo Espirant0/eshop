@@ -19,12 +19,12 @@ class User
 		$this->password = $password;
 	}
 
-	public function getTelephone():string
+	public function getTelephone(): string
 	{
 		return $this->telephone;
 	}
 
-	public function setTelephone(string $telephone):void
+	public function setTelephone(string $telephone): void
 	{
 		$this->telephone = $telephone;
 	}
@@ -39,32 +39,33 @@ class User
 		$this->name = $name;
 	}
 
-	public function getAddress():string
+	public function getAddress(): string
 	{
 		return $this->address;
 	}
 
-	public function setAddress(string $address):void
+	public function setAddress(string $address): void
 	{
 		$this->address = $address;
 	}
 
-	public function getRole():string
+	public function getRole(): string
 	{
 		return $this->role;
 	}
 
-	public function setRole(string $role):void
+	public function setRole(string $role): void
 	{
 		$this->role = $role;
 	}
+
 	public function getPassword(): string
 	{
 		return $this->password;
 	}
+
 	public function setPassword(string $password): void
 	{
 		$this->password = $password;
 	}
 }
-

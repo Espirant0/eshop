@@ -14,6 +14,7 @@ abstract class BaseController
 			include_once __DIR__ . '/../View/NotFoundPage/404.php';
             return;
         }
+
 		extract($params);
 		include_once $template;
     }
@@ -25,23 +26,16 @@ abstract class BaseController
 		{
 			http_response_code(404);
 			#echo 'page not found';
+
 			ob_start();
 			include_once __DIR__ . '/../View/NotFoundPage/404.php';
 			return ob_get_clean();
 		}
+
 		extract($params);
+
 		ob_start();
 		include_once $template;
 		return ob_get_clean();
-	}
-
-	public function checkAuth():bool
-	{
-		session_start();
-		if(!isset($_SESSION['USER']))
-		{
-			return false;
-		}
-		return true;
 	}
 }

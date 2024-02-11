@@ -5,13 +5,9 @@ namespace Core\Database\Repo;
 use App\Model\Category;
 use App\Service\DBHandler;
 use App\Model\Bicycle;
-
-
-
-
 class BicycleRepo extends BaseRepo
 {
-	public static function getBicyclelist(): array
+	public static function getBicycleList(): array
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(

@@ -2,36 +2,43 @@
 
 namespace App\Controller;
 
-use App\Service\DBHandler;
+use App\Service\AuthService;
+use App\Service\HttpService;
 use Core\Database\Repo\AdminPanelRepo;
-use Core\Database\Repo\CategoryListRepo;
 
 class EditFormController extends BaseController
 {
 	public function showEditFormPage(?array $errors = null): void
 	{
-		if($this->checkAuth()) {
+		if(AuthService::checkAuth()) {
 			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
+				'table' => $_GET['table'],
+				'fieldList' => AdminPanelRepo::getItemColumns($_GET['table']),
 			]);
 		}
 		else{
-			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
+			$this->render('AuthPage/auth.php', [
+				'errors' => $errors,
+			]);
 		}
 	}
 	public function showAddFormPage(?array $errors = null): void
 	{
-		if($this->checkAuth()) {
+		if(AuthService::checkAuth()) {
 			$this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 			]);
 		}
 		else{
-			$this->render('AuthPage/auth.php', ['errors' => $errors,]);
+			$this->render('AuthPage/auth.php', [
+				'errors' => $errors,
+			]);
 		}
 	}
-	public function addItem():void
+
+	public function addItem(): void
 	{
 		$title = $_POST['title'];
 		$colorId = $_POST['color_id'];
@@ -42,21 +49,23 @@ class EditFormController extends BaseController
 		$status = $_POST['status'];
 		$manufacturerId = $_POST['manufacturer_id'];
 		AdminPanelRepo::addItem($title, $createYear, $price, $description, $status, $manufacturerId, $materialId,$colorId);
-		header('Location: /admin_panel');
+		HttpService::redirect('admin_panel');
 	}
+
 	public function updateValue(): void
 	{
 		$errors = [];
 		$itemId = (int)$_GET['id'];
+		$table = (string)$_GET['table'];
 		$itemField = (string)$_POST['field'];
 		$newValue = $_POST['value'];
-		if(AdminPanelRepo::checkItemColumns($itemField, $newValue)){
-			AdminPanelRepo::updateItem($itemId, $itemField, $newValue);
-			header('Location: /admin_panel');
+		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue)){
+			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
+			HttpService::redirect('admin_panel');
 		}
 		else
 		{
-			$errors[] = 'Неверное поле!';
+			$errors[] = 'Неверное значение!';
 			$this->showEditFormPage($errors);
 		}
 	}

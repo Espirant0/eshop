@@ -9,27 +9,33 @@ class CategoryList implements \Iterator
 	 */
 	private array $data = array();
 	private int $position = 0;
+
 	public function __construct($data = [])
 	{
 		$this->data = $data;
 		$this->position = 0;
 	}
+
 	public function current(): Category
 	{
 		return $this->data[$this->position];
 	}
+
 	public function key(): int
 	{
 		return $this->position;
 	}
+
 	public function next(): void
 	{
 		$this->position++;
 	}
+
 	public function rewind(): void
 	{
 		$this->position = 0;
 	}
+
 	public function valid(): bool
 	{
 		return isset($this->data[$this->position]);
@@ -48,7 +54,7 @@ class CategoryList implements \Iterator
 	 * @param Category $category
 	 * @return void
 	 */
-	public function addCategory(Category $category):void
+	public function addCategory(Category $category): void
 	{
 		$this->data[] = $category;
 	}
@@ -57,11 +63,11 @@ class CategoryList implements \Iterator
 	 * @param string $name
 	 * @return void
 	 */
-	public function removeCategoryByName(string $name):void
+	public function removeCategoryByName(string $name): void
 	{
 		foreach ($this->data as $category)
 		{
-			if($category->getName() === $name)
+			if ($category->getName() === $name)
 			{
 				unset($this->data[$name]);
 				break;
@@ -73,11 +79,11 @@ class CategoryList implements \Iterator
 	 * @param string $ID
 	 * @return void
 	 */
-	public function removeCategoryByID(string $ID):void
+	public function removeCategoryByID(string $ID): void
 	{
 		foreach ($this->data as $category)
 		{
-			if($category->getID() === $ID)
+			if ($category->getID() === $ID)
 			{
 				unset($this->data[$ID]);
 				break;

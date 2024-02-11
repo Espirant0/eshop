@@ -7,7 +7,7 @@ use App\Service\CategoryListRepo;
 
 class DetailRepo extends BaseRepo
 {
-	public static function getBicycleListById(int $id): array
+	public static function getBicycleListById(int $id): Bicycle
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
@@ -20,7 +20,6 @@ class DetailRepo extends BaseRepo
 		WHERE i.id = '{$id}';
 		");
 
-		$itemList = [];
 
 		if (!$result)
 		{
@@ -37,9 +36,8 @@ class DetailRepo extends BaseRepo
 		$itemDescription = $row['description'];
 		$itemStatus = $row['status'];
 		$itemManufacturer = $row['vendor'];
-		$itemList[] = new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer);
 
-		return $itemList;
+		return new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,[]);
 	}
 
 	//public static function getCategorylistBy(array $filter = []): array

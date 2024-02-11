@@ -16,7 +16,7 @@ class BicycleRepo extends BaseRepo
 
         $DBOperator = new DBHandler();
         $result = $DBOperator->query(
-            "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
+            "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
         FROM item i
         INNER JOIN manufacturer m on m.id = i.manufacturer_id
         INNER JOIN color c on c.id = i.color_id
@@ -53,6 +53,7 @@ class BicycleRepo extends BaseRepo
 				$row['description'],
 				$row['status'],
 				$row['vendor'],
+				$row['speed'],
 				$category
 			);
 			unset($category);

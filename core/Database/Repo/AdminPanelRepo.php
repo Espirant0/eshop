@@ -37,7 +37,8 @@ class AdminPanelRepo extends BaseRepo
                 $row['price'],
                 $row['description'],
                 $row['status'],
-                $row['vendor']
+                $row['vendor'],
+				[]
             );
 		}
 		return $itemList;

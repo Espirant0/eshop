@@ -1,76 +1,22 @@
+<?php
+/**
+ * @var \App\Model\Bicycle[] $bicycleList
+ * @var  $category_name
+ */
+
+?>
 <div class="cards">
-	<a href="/Detail/ID">
+	<?php foreach ($bicycleList as $bicycle):?>
+	<?php if($bicycle->getCategories()[0]->getEngName()==$category_name || $category_name==null):?>
+	<a href="/Detail/<?=$bicycle->getId()?>">
 		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
+			<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="item_img">
+			<p class="item_title"><?=$bicycle->getName()?></p>
 			<div class="line"></div>
-			<p class="item_price">500$</p>
+			<p class="item_price"><?= $bicycle->getPrice().' Р'?></p>
 		</div>
 	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
-	<a href="/Detail/ID">
-		<div class="item_card">
-			<img src="/resources/img/item.jpg" alt="" class="item_img">
-			<p class="item_title">Format 1415 (2021)</p>
-			<div class="line"></div>
-			<p class="item_price">500$</p>
-		</div>
-	</a>
+	<?php endif; endforeach;?>
 </div>
 <div class="pages">
 	<a href="" class="first page_number">1</a>

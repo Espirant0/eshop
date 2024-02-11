@@ -23,7 +23,7 @@ class IndexController extends BaseController
                 'category_name' => $categoryName,
                 'bicycleList' => BicycleRepo::getBicyclelist($categoryName)
             ]),
-            'categoryList' => CategoryListRepo::getCategoryList(),
+            'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
         ]);
     }
 }

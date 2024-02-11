@@ -27,7 +27,7 @@ class FileCache extends BaseCache
             return null;
         }
 
-        $data = unserialize(file_get_contents($path), ['allowed_classes' => false]);
+        $data = unserialize(file_get_contents($path), ['allowed_classes' => true]);
 
         $ttl = $data['ttl'];
 
@@ -38,4 +38,6 @@ class FileCache extends BaseCache
 
         return $data['data'];
     }
+
+    //TODO: deleteCache
 }

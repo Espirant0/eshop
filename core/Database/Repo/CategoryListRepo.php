@@ -2,7 +2,7 @@
 
 namespace Core\Database\Repo;
 
-use App\Config\Config;
+use App\Cache\FileCache;
 use App\Model\Category;
 use App\Model\CategoryList;
 use App\Service\DBHandler;
@@ -11,10 +11,13 @@ class CategoryListRepo extends BaseRepo
 {
 	public static function getCategoryList(): CategoryList
 	{
-		$DBOperator = new DBHandler();
-		$result = $DBOperator->query('SELECT id, name, engname FROM category');
+        return (new FileCache())->remember('category_list', 3600, function()
+        {
+            $DBOperator = new DBHandler();
+            $result = $DBOperator->query('SELECT id, name, engName FROM category');
 
-        return self::createCategoryList($result);
+            return self::createCategoryList($result);
+        });
 	}
 
     public static function getCategoryListConsideringExistingItem(): CategoryList

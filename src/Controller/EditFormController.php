@@ -37,7 +37,8 @@ class EditFormController extends BaseController
 			]);
 		}
 	}
-	public function addItem():void
+
+	public function addItem(): void
 	{
 		$title = $_POST['title'];
 		$colorId = $_POST['color_id'];
@@ -50,6 +51,7 @@ class EditFormController extends BaseController
 		AdminPanelRepo::addItem($title, $createYear, $price, $description, $status, $manufacturerId, $materialId,$colorId);
 		HttpService::redirect('admin_panel');
 	}
+
 	public function updateValue(): void
 	{
 		$errors = [];

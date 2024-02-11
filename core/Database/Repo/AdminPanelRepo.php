@@ -11,6 +11,7 @@ class AdminPanelRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$itemList = [];
+
 		$itemQuery = $DBOperator->query("
 		SELECT i.id, i.title, c.name as color, i.create_year, mat.name as material, i.price, i.description, i.status, man.name as vendor 
 		FROM item i
@@ -20,22 +21,24 @@ class AdminPanelRepo extends BaseRepo
 		
 		ORDER BY i.id;
 		");
-		if (!$itemQuery) {
+
+		if (!$itemQuery)
+        {
 			throw new \Exception($DBOperator->connect_error);
 		}
 		while ($row = mysqli_fetch_assoc($itemQuery))
 		{
-			$itemId = $row['id'];
-			$itemName = $row['title'];
-			$itemColor = $row['color'];
-			$itemYear = $row['create_year'];
-			$itemMaterial = $row['material'];
-			$itemPrice = $row['price'];
-			$itemDescription = $row['description'];
-			$itemStatus = $row['status'];
-			$itemManufacturer = $row['vendor'];
-
-			$itemList[] = new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer);
+			$itemList[] = new Bicycle(
+                $row['id'],
+                $row['title'],
+                $row['color'],
+                $row['create_year'],
+                $row['material'],
+                $row['price'],
+                $row['description'],
+                $row['status'],
+                $row['vendor']
+            );
 		}
 		return $itemList;
 	}
@@ -85,7 +88,7 @@ class AdminPanelRepo extends BaseRepo
 		$manufacturerId = (int)mysqli_real_escape_string($DBOperator, $manufacturerId);
 		$status = (int)mysqli_real_escape_string($DBOperator, $status);
 		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id,material_id, color_id)
-			VALUES ('$title', $createYear, $price, '$description', $status, $manufacturerId, $materialId,$colorId)");
+			                VALUES ('$title', $createYear, $price, '$description', $status, $manufacturerId, $materialId,$colorId)");
 	}
 	public static function updateItem(string $table, int $itemId, string $field, string $newValue):void
 	{
@@ -114,6 +117,7 @@ class AdminPanelRepo extends BaseRepo
 		{
 			$fields[] = [$row['Field'] => current(explode('(',$row['Type']))];
 		}
+
 		return in_array([$field => $value], $fields, true);
 	}
 
@@ -127,9 +131,8 @@ class AdminPanelRepo extends BaseRepo
 		{
 			$fields[] = (string)$row['Field'];
 		}
+
 		array_shift($fields);
 		return $fields;
 	}
 }
-
-

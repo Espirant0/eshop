@@ -24,7 +24,7 @@ use App\Model\Bicycle;
 			<p>Ваш адрес</p>
 			<p><input type="text" name="address" id="" class="order_input" required></p>
 			<button class="order_btn">Оформить заказ</button>
+		</form>
 	</div>
-	</form>
 </div>
 

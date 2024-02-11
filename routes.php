@@ -2,15 +2,21 @@
 
 use Core\Routing\Router;
 
+//Публичная часть
+
 Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
 Router::get('/category/:categoryName', [new App\Controller\IndexController(), "showIndexPage"]);
 
 Router::get('/Detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
 
-Router::get('/OrderPage/order', [new App\Controller\OrderController(), 'showOrderPage']);
+Router::get('/OrderPage/order/:itemId', [new App\Controller\OrderController(), 'showOrderPage']);
 
-Router::get('/order/confirm', [new App\Controller\OrderController(), 'showConfirmedOrderPage'] );
+Router::post('/order/confirm/:itemId', [new App\Controller\OrderController(), 'saveOrder'] );
+
+Router::get('/error', [new App\Controller\ErrorController(), 'showErrorPage'] );
+
+//Авторизация
 
 Router::get('/auth', [new App\Controller\AuthController(), 'showAuthPage'] );
 
@@ -18,7 +24,7 @@ Router::post('/login', [new App\Controller\AuthController(), 'userLogin']);
 
 Router::get('/sign_out', [new App\Controller\AuthController(), 'signOut']);
 
-Router::get('/error', [new App\Controller\ErrorController(), 'showErrorPage'] );
+//Административная часть
 
 Router::get('/admin_panel', [new App\Controller\AdminController(), 'showAdminPage'] );
 

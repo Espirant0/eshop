@@ -2,6 +2,9 @@
 
 namespace Core\Database\Repo;
 
+use App\Cache\FileCache;
+use App\Model\Bicycle;
+use App\Model\CategoryList;
 use App\Model\Order;
 use App\Service\DBHandler;
 
@@ -11,11 +14,10 @@ class OrderRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
-            "SELECT o.id, o.item_id,o.status_id, o.data_create, o.price, o.user_id, o.address 
-                    FROM orders o 
-		                INNER JOIN status s on s.ID = o.status_id
-		                INNER JOIN user u on u.ID = o.user_id
-		                INNER JOIN item i on i.ID = o.item_id
+            "SELECT o.id, i.title as item, s.name as status, o.data_create, o.user_id, o.price, o.address
+					FROM orders o
+						 INNER JOIN status s on s.id = o.status_id
+						 INNER JOIN item i on i.id = o.item_id
 	        ");
 
 		$orders = [];
@@ -30,13 +32,31 @@ class OrderRepo extends BaseRepo
 			$orders[] = new Order
 			(
 			    $row['id'],
-			    $row['item_id'],
-			    $row['status_id'],
+			    $row['item'],
+			    $row['status'],
+				$row['address'],
+				$row['user_id'],
+				$row['price'],
 			    $row['data_create'],
-			    $row['user_id'],
-			    $row['address'],
 			);
 		}
 		return $orders;
+	}
+
+	public static function saveOrder($itemId, int $price, string $number, string$address):void
+	{
+		$DBOperator = new DBHandler();
+		$date = date('Y-m-d');
+		$number = $DBOperator->real_escape_string($number);
+		$address = $DBOperator->real_escape_string($address);
+		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
+		$result = $DBOperator->query(
+			"INSERT INTO orders (item_id, status_id, data_create, price, user_id, address) 
+					VALUES ('$itemId[0]', 1, '$date', '$price', '$number', '$address')
+		;");
+		if (!$result)
+		{
+			throw new \Exception($DBOperator->connect_error);
+		}
 	}
 }

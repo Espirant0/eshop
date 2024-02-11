@@ -13,10 +13,10 @@ class Bicycle
 	private string $price;
 	private string $description;
 	private string $status;
-	private int $speed = 1;
+	private int $speed;
 	private string $material = '';
 	private string $vendor = '';
-	private array $categories = [];
+	private array $categories;
 	/**
 	 * @var Image[] $images
 	 */
@@ -39,6 +39,7 @@ class Bicycle
 								string $description,
 								string $status,
 								string $vendor,
+								int $speed,
 								array $categories)
 	{
 		$this->id = $id;
@@ -50,6 +51,7 @@ class Bicycle
 		$this->description = $description;
 		$this->status = $status;
 		$this->vendor = $vendor;
+		$this->speed = $speed;
 		$this->categories=$categories;
 		$images = [];
 		/**

@@ -34,15 +34,13 @@ use App\Model\Category;
 					<li class="ul_left_col">Стоимость</li>
 					<li class="ul_left_col">Производитель</li>
 					<li class="ul_left_col">Год производства</li>
-					<li class="ul_left_col">Материал</li>
-					<li class="ul_left_col">Цвет</li>
+					<li class="ul_left_col">Скорость</li>
 				</ul>
 				<ul>
 					<li class="ul_right_col"><?=$item->getPrice()?></li>
 					<li class="ul_right_col"><?=$item->getVendor()?></li>
 					<li class="ul_right_col"><?=$item->getYear()?></li>
-					<li class="ul_right_col"><?=$item->getMaterial()?></li>
-					<li class="ul_right_col"><?=$item->getColor()?></li>
+					<li class="ul_right_col"><?=$item->getSpeed()?></li>
 				</ul>
 			</div>
 			<div class="item_tags">

@@ -10,7 +10,9 @@ class AuthController extends BaseController
 {
 	public function showAuthPage(?array $errors = null): void
 	{
-		$this->render('AuthPage/auth.php', ['errors' => $errors,]);
+		$this->render('AuthPage/auth.php', [
+			'errors' => $errors,
+			]);
 	}
 
 	public function userLogin(): void
@@ -22,24 +24,19 @@ class AuthController extends BaseController
 			$error = 'Неверный логин или пароль';
 			$user = UserRepo::getUserByLogin($login);
 
-			if (!$user)
-            {
+			if (!$user) {
 				$errors[] = $error;
 				$this->showAuthPage($errors);
-			}
-            else
-            {
+			} else {
 				//$isPasswordCorrect = password_verify($password, $user->getPassword());
 				$isPasswordCorrect = !strnatcmp($password, $user->getPassword());
 
-				if (!$isPasswordCorrect)
-                {
+				if (!$isPasswordCorrect) {
 					$errors[] = $error;
 					$this->showAuthPage($errors);
 				}
 
-				if (empty($errors))
-                {
+				if (empty($errors)) {
 					session_start();
 					$_SESSION['USER'] = $user;
 					HttpService::redirect('admin_panel');
@@ -54,7 +51,6 @@ class AuthController extends BaseController
 		unset($_SESSION['USER']);
 		session_unset();
 		session_destroy();
-
 		$this->showAuthPage();
 	}
 }

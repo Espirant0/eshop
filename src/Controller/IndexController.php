@@ -25,7 +25,7 @@ class IndexController extends BaseController
                 'category_name' => $categoryName,
                 'bicycleList' => $bicycleList
             ]),
-            'categoryList' => CategoryListRepo::getCategoryList(),
+            'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
         ]);
 
 

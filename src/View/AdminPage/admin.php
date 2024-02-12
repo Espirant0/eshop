@@ -6,16 +6,19 @@
  * @var array $colorList ;
  * @var array $targetList;
  * @var array $userList;
+ * @var array $orderList;
  * @var array $manufacturerList;
  * @var array $materialList;
  * @var Bicycle $bicycle ;
  * @var Category $category ;
  * @var Category $button ;
  * @var User $user ;
+ * @var Order $order;
  */
 
 use App\Model\Bicycle;
 use App\Model\Category;
+use App\Model\Order;
 use App\Model\User;
 
 ?>
@@ -183,6 +186,41 @@ use App\Model\User;
 							<td><?= $material['engName']?></td>
 							<td>
 								<a href="/admin_panel/edit?id=<?=$material['id']?>&table=material">Изменить</a>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane" data-id="5">
+				<table class="table_inner">
+					<thead>
+					<tr>
+						<th>ID</th>
+						<th>Название товара</th>
+						<th>Статус</th>
+						<th>Дата заказа</th>
+						<th>Цена</th>
+						<th>Телефон покупателя</th>
+						<th>Адрес доставки</th>
+						<th>Действие
+							<br>
+							<!--<a href="/admin_panel/add_form" class="add_btn">Добавить</a>-->
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+					<?php foreach ($orderList as $order): ?>
+						<tr>
+							<td><?= $order->getOrderId()?></td>
+							<td><?= $order->getItemName()?></td>
+							<td><?= $order->getStatus()?></td>
+							<td><?= $order->getCreateDate()?></td>
+							<td><?= $order->getPrice()?></td>
+							<td><?= $order->getNumber()?></td>
+							<td><?= $order->getDeliveryAddress()?></td>
+							<td>
+								<a href="/admin_panel/edit?id=<?=$order->getOrderId()?>&table=orders">Изменить</a>
 							</td>
 						</tr>
 					<?php endforeach; ?>

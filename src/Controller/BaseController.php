@@ -10,7 +10,6 @@ abstract class BaseController
         if (!file_exists($template))
         {
             http_response_code(404);
-            #echo 'page not found';
 			include_once __DIR__ . '/../View/NotFoundPage/404.php';
             return;
         }

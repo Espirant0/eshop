@@ -1,17 +1,11 @@
 <?php
 /**
- *
  * @var Bicycle $item;
  * @var Bicycle $CategoryList;
- *
- *
  */
 
 use App\Model\Bicycle;
-use App\Model\CategoryList;
-use App\Model\Category;
 ?>
-
 
 <div class="main_content_inner">
 	<div class="content">
@@ -34,15 +28,13 @@ use App\Model\Category;
 					<li class="ul_left_col">Стоимость</li>
 					<li class="ul_left_col">Производитель</li>
 					<li class="ul_left_col">Год производства</li>
-					<li class="ul_left_col">Материал</li>
-					<li class="ul_left_col">Цвет</li>
+					<li class="ul_left_col">Скорость</li>
 				</ul>
 				<ul>
 					<li class="ul_right_col"><?=$item->getPrice()?></li>
 					<li class="ul_right_col"><?=$item->getVendor()?></li>
 					<li class="ul_right_col"><?=$item->getYear()?></li>
-					<li class="ul_right_col"><?=$item->getMaterial()?></li>
-					<li class="ul_right_col"><?=$item->getColor()?></li>
+					<li class="ul_right_col"><?=$item->getSpeed()?></li>
 				</ul>
 			</div>
 			<div class="item_tags">
@@ -50,7 +42,7 @@ use App\Model\Category;
 				<a href="/" class="item_tag"><?=$category?></a>
 				<?php endforeach;?>
 			</div>
-			<a href="/OrderPage/order"><button class="order_btn" type="submit">Заказать</button></a>
+			<a href="/OrderPage/order/<?=$item->getId()?>"><button class="order_btn" type="submit">Заказать</button></a>
 			<p class="description_title">Описание товара</p>
 			<p class="description"><?=$item->getDescription()?></p>
 		</div>

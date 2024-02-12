@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Cache\FileCache;
 use App\Service\AuthService;
 use App\Service\HttpService;
+use App\Service\ImageHandler;
 use Core\Database\Repo\AdminPanelRepo;
 
 class EditFormController extends BaseController
@@ -65,17 +66,7 @@ class EditFormController extends BaseController
 		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue)){
 			if($itemField == 'title')
 			{
-				$files = scandir(ROOT. '/public/resources/product/img/');
-				$files = array_diff($files, array('.', '..'));
-				foreach ($files as $file)
-				{
-					if((int)explode('.',$file)[0]==$itemId)
-					{
-						$oldName = $file;
-						break;
-					}
-				}
-				rename(ROOT."/public/resources/product/img/$oldName",ROOT."/public/resources/product/img/$itemId.$newValue");
+				ImageHandler::renameImageForExistingItem($itemId, $newValue);
 			}
 			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
 			FileCache::deleteCacheByKey($table);

@@ -5,6 +5,7 @@ namespace Core\Database\Repo;
 use App\Cache\FileCache;
 use App\Model\Bicycle;
 use App\Service\DBHandler;
+use App\Service\ImageHandler;
 
 class AdminPanelRepo extends BaseRepo
 {
@@ -99,10 +100,7 @@ class AdminPanelRepo extends BaseRepo
 		$lastAddedId = $DBOperator->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
 
 		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($lastAddedId,$category)");
-
-		mkdir(ROOT . "/public/resources/product/img/{$lastAddedId}.{$title}", 0777,true);
-
-		copy(ROOT.'/public/resources/img/item.jpg',ROOT."/public/resources/product/img/{$lastAddedId}.{$title}/{$title}_1.jpg");
+		ImageHandler::createNewItemImage($lastAddedId, $title);
 		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('{$lastAddedId}',1,1)");
 	}
 	public static function updateItem(string $table, int $itemId, string $field, string $newValue):void

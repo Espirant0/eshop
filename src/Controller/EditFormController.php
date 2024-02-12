@@ -70,7 +70,6 @@ class EditFormController extends BaseController
 			}
 			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
 			FileCache::deleteCacheByKey($table);
-			$bicycleList = AdminPanelRepo::getBicycleList();
 			HttpService::redirect('admin_panel');
 		}
 		else

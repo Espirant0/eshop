@@ -8,11 +8,13 @@ Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
 Router::get('/category/:categoryName', [new App\Controller\IndexController(), "showIndexPage"]);
 
-Router::get('/Detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
+Router::get('/detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
 
-Router::get('/OrderPage/order/:itemId', [new App\Controller\OrderController(), 'showOrderPage']);
+Router::get('/order/:itemId', [new App\Controller\OrderController(), 'showOrderPage']);
 
 Router::post('/order/confirm/:itemId', [new App\Controller\OrderController(), 'saveOrder'] );
+
+Router::get('/confirmed', [new App\Controller\OrderController(), 'showConfirmedOrderPage']);
 
 Router::get('/error', [new App\Controller\ErrorController(), 'showErrorPage'] );
 

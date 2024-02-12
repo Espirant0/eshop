@@ -7,7 +7,7 @@
 ?>
 <div class="cards">
 	<?php foreach ($bicycleList as $bicycle):?>
-	<a href="/Detail/<?=$bicycle->getId()?>">
+	<a href="/detail/<?=$bicycle->getId()?>">
 		<div class="item_card">
 			<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="item_img">
 			<p class="item_title"><?=$bicycle->getName()?></p>

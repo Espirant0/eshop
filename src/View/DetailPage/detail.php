@@ -42,7 +42,7 @@ use App\Model\Bicycle;
 				<a href="/<?="?find={$category->getID()}:{$category->getEngName()}"?>" class="item_tag"><?=$category->getName()?></a>
 				<?php endforeach;?>
 			</div>
-			<a href="/OrderPage/order/<?=$item->getId()?>"><button class="order_btn" type="submit">Заказать</button></a>
+			<a href="/order/<?=$item->getId()?>"><button class="order_btn" type="submit">Заказать</button></a>
 			<p class="description_title">Описание товара</p>
 			<p class="description"><?=$item->getDescription()?></p>
 		</div>

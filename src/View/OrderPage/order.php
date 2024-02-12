@@ -7,7 +7,7 @@ use App\Model\Bicycle;
 
 ?>
 <div class="order_content">
-	<a href="/Detail/<?=$item->getId()?>">
+	<a href="/detail/<?=$item->getId()?>">
 		<div class="item_card_order">
 			<img src="<?="/resources/product/img/{$item->getId()}.{$item->getName()}/{$item->getMainImageName()}"?>" alt="" class="item_img_order">
 			<p class="item_title"><?=$item->getName()?></p>

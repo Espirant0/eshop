@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\HttpService;
 use Core\Database\Repo\CategoryListRepo;
 use Core\Database\Repo\DetailRepo;
 use Core\Database\Repo\OrderRepo;
@@ -32,6 +33,6 @@ class OrderController extends BaseController
 	public function saveOrder($itemId){
 		$price = DetailRepo::getBicycleListById($itemId[0])->getPrice();
 		OrderRepo::saveOrder($itemId,$price, $_POST['number'], $_POST['address']);
-		$this->showConfirmedOrderPage();
+		HttpService::redirect('confirmed');
 	}
 }

@@ -115,7 +115,6 @@ class AdminPanelRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
-		FileCache::deleteCacheByKey('category');
 	}
 
 	public static function checkItemColumns(string $table, string $field, mixed $value):bool

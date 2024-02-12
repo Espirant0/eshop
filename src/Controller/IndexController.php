@@ -21,7 +21,7 @@ class IndexController extends BaseController
         $bicycleList = BicycleRepo::getBicyclelist($categoryName);
 
         $this->render('layout.php',[
-            'content' => $this->render('MainPage/index.php', [
+            'content' => $this->strRender('MainPage/index.php', [
                 'category_name' => $categoryName,
                 'bicycleList' => $bicycleList
             ]),

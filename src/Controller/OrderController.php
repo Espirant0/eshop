@@ -13,13 +13,9 @@ class OrderController extends BaseController
         $categoryListRepo = new CategoryListRepo();
 
 		$this->render('layout.php', [
-<<<<<<< 0860605eb77d9a1f92f0faa650bc0811d5004397
-			'content' => $this->render('OrderPage/order.php', []),
-=======
 			'content' => $this->strRender('OrderPage/order.php', [
 				'item' => DetailRepo::getBicycleListById($itemId[0]),
 			]),
->>>>>>> bd049f1180f6e8147c7b52f44ba57dbe060d5fbe
             'categoryList' => $categoryListRepo::getCategoryList()
 		]);
     }
@@ -28,7 +24,7 @@ class OrderController extends BaseController
     {
         $categoryListRepo = new CategoryListRepo();
 		$this->render('layout.php', [
-			'content' => $this->render('ConfirmPage/confirmed.php', []),
+			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
             'categoryList' => $categoryListRepo::getCategoryList()
 		]);
     }

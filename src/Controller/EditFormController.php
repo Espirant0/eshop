@@ -63,8 +63,23 @@ class EditFormController extends BaseController
 		$itemField = (string)$_POST['field'];
 		$newValue = $_POST['value'];
 		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue)){
+			if($itemField == 'title')
+			{
+				$files = scandir(ROOT. '/public/resources/product/img/');
+				$files = array_diff($files, array('.', '..'));
+				foreach ($files as $file)
+				{
+					if((int)explode('.',$file)[0]==$itemId)
+					{
+						$oldName = $file;
+						break;
+					}
+				}
+				rename(ROOT."/public/resources/product/img/$oldName",ROOT."/public/resources/product/img/$itemId.$newValue");
+			}
 			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
 			FileCache::deleteCacheByKey($table);
+			$bicycleList = AdminPanelRepo::getBicycleList();
 			HttpService::redirect('admin_panel');
 		}
 		else

@@ -14,7 +14,7 @@ class AdminPanelRepo extends BaseRepo
 		$itemList = [];
 
 		$itemQuery = $DBOperator->query("
-		SELECT i.id, i.title, c.name as color, i.create_year, mat.name as material, i.price, i.description, i.status, man.name as vendor 
+		SELECT i.id, i.title, c.name as color, i.create_year, mat.name as material, i.price, i.description, i.status, man.name as vendor, i.speed 
 		FROM item i
 		        INNER JOIN manufacturer man on man.id = i.manufacturer_id
 				INNER JOIN color c on i.color_id = c.id
@@ -39,6 +39,7 @@ class AdminPanelRepo extends BaseRepo
                 $row['description'],
                 $row['status'],
                 $row['vendor'],
+				$row['speed'],
 				[]
             );
 		}
@@ -100,12 +101,12 @@ class AdminPanelRepo extends BaseRepo
 		$newValue = mysqli_real_escape_string($DBOperator,$newValue);
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$DBOperator->query("UPDATE $table SET $field = '$newValue' WHERE $table.id = '$itemId'");
+		FileCache::deleteCacheByKey('category');
 	}
 
 	public static function deleteBicycle(int $itemId):void
 	{
 		$DBOperator = new DBHandler();
-		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
 		FileCache::deleteCacheByKey('category');
 	}

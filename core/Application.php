@@ -10,7 +10,6 @@ class Application
     public function run(): void
     {
 		$migration = new Migrator();
-		#Migrator::deleteData();
 		$migration->migrate();
 
         $route = Routing\Router::find($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

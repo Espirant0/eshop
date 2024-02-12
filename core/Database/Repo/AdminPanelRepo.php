@@ -72,6 +72,7 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function addItem(
 		string $title,
+		string $category,
 		string $createYear,
 		string $price,
 		string $description,
@@ -83,6 +84,7 @@ class AdminPanelRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$title = mysqli_real_escape_string($DBOperator, $title);
+		$category = mysqli_real_escape_string($DBOperator,$category);
 		$colorId = (int)mysqli_real_escape_string($DBOperator, $colorId);
 		$createYear = (int)mysqli_real_escape_string($DBOperator, $createYear);
 		$materialId = (int)mysqli_real_escape_string($DBOperator, $materialId);
@@ -92,6 +94,11 @@ class AdminPanelRepo extends BaseRepo
 		$status = (int)mysqli_real_escape_string($DBOperator, $status);
 		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id,material_id, color_id)
 			                VALUES ('$title', $createYear, $price, '$description', $status, $manufacturerId, $materialId,$colorId)");
+		$lastAddedId = $DBOperator->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($lastAddedId,$category)");
+		mkdir(ROOT . "/public/resources/product/img/{$lastAddedId}.{$title}", 0777,true);
+		copy(ROOT.'/public/resources/img/item.jpg',ROOT."/public/resources/product/img/{$lastAddedId}.{$title}/{$title}_1.jpg");
+		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('{$lastAddedId}',1,1)");
 	}
 	public static function updateItem(string $table, int $itemId, string $field, string $newValue):void
 	{

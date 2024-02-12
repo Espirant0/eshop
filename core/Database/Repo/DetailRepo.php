@@ -2,6 +2,7 @@
 
 namespace Core\Database\Repo;
 use App\Model\Bicycle;
+use App\Model\Category;
 use App\Service\DBHandler;
 use App\Service\CategoryListRepo;
 
@@ -11,7 +12,7 @@ class DetailRepo extends BaseRepo
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
-			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
+			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color,c.engName as color_engname, ma.name as material, ma.engName as material_engname, m.name as vendor, ta.name as target, ta.engName as target_engname, c2.engName as category_engname, ic.category_id, c2.name as category_name
 		FROM item i
 		INNER JOIN manufacturer m on m.id = i.manufacturer_id
 		INNER JOIN color c on c.id = i.color_id
@@ -38,9 +39,13 @@ class DetailRepo extends BaseRepo
 		$itemStatus = $row['status'];
 		$itemSpeed = $row['speed'];
 		$itemManufacturer = $row['vendor'];
-		$category = [$row['category_name'],$row['vendor'],$row['color'],$row['material']];
+		$categoryList = [new Category('category',$row['category_name'],$row['category_engname']),
+			new Category('vendor',$row['vendor'],$row['vendor']),
+			new Category('color',$row['color'],$row['color_engname']),
+			new Category('material',$row['material'],$row['material_engname']),
+			new Category('target',$row['target'], $row['target_engname'])];
 
-		return new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,$itemSpeed,$category);
+		return new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,$itemSpeed,$categoryList);
 	}
 }
 

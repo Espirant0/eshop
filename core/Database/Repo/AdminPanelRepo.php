@@ -92,11 +92,16 @@ class AdminPanelRepo extends BaseRepo
 		$price = (int)mysqli_real_escape_string($DBOperator, $price);
 		$manufacturerId = (int)mysqli_real_escape_string($DBOperator, $manufacturerId);
 		$status = (int)mysqli_real_escape_string($DBOperator, $status);
+
 		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id,material_id, color_id)
 			                VALUES ('$title', $createYear, $price, '$description', $status, $manufacturerId, $materialId,$colorId)");
+
 		$lastAddedId = $DBOperator->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+
 		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($lastAddedId,$category)");
+
 		mkdir(ROOT . "/public/resources/product/img/{$lastAddedId}.{$title}", 0777,true);
+
 		copy(ROOT.'/public/resources/img/item.jpg',ROOT."/public/resources/product/img/{$lastAddedId}.{$title}/{$title}_1.jpg");
 		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('{$lastAddedId}',1,1)");
 	}

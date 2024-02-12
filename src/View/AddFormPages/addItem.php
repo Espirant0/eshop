@@ -24,6 +24,9 @@
 				<input type="text" name="title" class="login_input auth_input" placeholder="Введите название" required>
 			</label>
 			<label>
+				<input type="number" name="category" class="login_input auth_input" placeholder="Введите id категории" required>
+			</label>
+			<label>
 				<input type="number" name="color_id" class="password_input auth_input" placeholder="Введите id цвета" required>
 			</label>
 			<label>

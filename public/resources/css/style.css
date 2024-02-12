@@ -366,6 +366,15 @@ a {
     text-align: center;
     align-content: center;
 }
+.search_btn{
+    padding: 10px 5px;
+    outline: 1px black solid;
+    text-align: center;
+    align-content: center;
+    margin-left: 10px;
+    background: transparent;
+    border-width: 1px ;
+}
 .tab_nav{
     display: flex;
     justify-content: center;
@@ -417,4 +426,10 @@ td, th{
 }
 .active{
     display: block;
+}
+.search_error{
+    grid-area: main_section;
+    margin-top: 400px;
+    margin-left: 400px;
+    font-size: 25px;
 }

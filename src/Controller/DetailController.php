@@ -9,7 +9,6 @@ class DetailController extends BaseController
 {
     public function showDetailPage($itemId): void
     {
-
         $categoryListRepo = new CategoryListRepo();
 
 		$this->render('layout.php', [

@@ -3,19 +3,19 @@
 namespace App\Controller;
 abstract class BaseController
 {
-    public function render(string $templateName, array $params): void
-    {
-        $template = __DIR__ . '/../View/' . $templateName;
+	public function render(string $templateName, array $params): void
+	{
+		$template = __DIR__ . '/../View/' . $templateName;
 
-        if (!file_exists($template))
-        {
-            http_response_code(404);
+		if (!file_exists($template))
+		{
+			http_response_code(404);
 			include_once __DIR__ . '/../View/NotFoundPage/404.php';
-            return;
-        }
+			return;
+		}
 		extract($params);
 		include_once $template;
-    }
+	}
 	public function strRender(string $templateName, array $params): ?string
 	{
 		$template = __DIR__ . '/../View/' . $templateName;

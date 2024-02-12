@@ -78,3 +78,4 @@ while ($row = mysqli_fetch_assoc($result))
 {
 	var_dump($row['Tables_in_eshop']);
 }
+\App\Service\clearTestData::clear();

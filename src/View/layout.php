@@ -38,11 +38,11 @@ use App\Service\AuthService;
 	<div class="top_line">
 		<div class="search_line">
 			<div class="input__line">
-				<label>
-					<input type="text" placeholder="Поиск по каталогу" class="input_main">
-				</label>
+				<form action="/search.php?find">
+					<input type="search" placeholder="Поиск по каталогу..." class="input_main" name="find" id="find">
+					<input type="submit" formaction="/?find" class="search_btn" value="Искать">
+				</form>
 			</div>
-			<button class="search_btn">Искать</button>
 			<a href="/auth" class="sign_in_btn <?=AuthService::checkAuth()? 'disable': 'active'?>">Войти</a>
 			<a href="/sign_out" class="sign_in_btn <?=AuthService::checkAuth()? 'active': 'disable'?>">Выйти</a>
 			<a href="/admin_panel" class="admin_btn">Админка</a>

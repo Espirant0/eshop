@@ -7,16 +7,15 @@ use App\Service\DBHandler;
 use App\Model\Bicycle;
 class BicycleRepo extends BaseRepo
 {
-	public static function getBicycleList($categoryName): array
+	public static function getBicycleList(string $categoryName = '', string $property = ''): array
 	{
         $queryDop = '';
         if ($categoryName !== '') {
             $queryDop = "AND c2.engName = '$categoryName'";
         }
-
         $DBOperator = new DBHandler();
         $result = $DBOperator->query(
-            "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color, ma.name as material, m.name as vendor, ta.name as target, c2.engName as category_engname, ic.category_id, c2.name as category_name
+            "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.engName as color, ma.engName as material, m.name as vendor, ta.engName as target, c2.engName as category, ic.category_id, c2.name as category_name
         FROM item i
         INNER JOIN manufacturer m on m.id = i.manufacturer_id
         INNER JOIN color c on c.id = i.color_id
@@ -34,14 +33,26 @@ class BicycleRepo extends BaseRepo
 		{
 			throw new \Exception($DBOperator->connect_error);
 		}
-
+		if(str_contains($property,':'))
+		{
+			$filter = explode(':', $property);
+			$property = '';
+		}
 		while ($row = mysqli_fetch_assoc($result))
 		{
 			$category[] = new Category(
 				$row['category_id'],
 				$row['category_name'],
-				$row['category_engname']
+				$row['category']
 			);
+			if(!str_contains(strtolower($row['title']), strtolower($property)))
+			{
+				continue;
+			}
+			if(isset($filter) && $row[$filter[0]] != $filter[1])
+			{
+				continue;
+			}
 			$Bicycles[] = new Bicycle
 			(
 				$row['id'],

@@ -28,7 +28,7 @@ use App\Model\Bicycle;
 					<li class="ul_left_col">Стоимость</li>
 					<li class="ul_left_col">Производитель</li>
 					<li class="ul_left_col">Год производства</li>
-					<li class="ul_left_col">Скорость</li>
+					<li class="ul_left_col">Скоростей</li>
 				</ul>
 				<ul>
 					<li class="ul_right_col"><?=$item->getPrice()?></li>
@@ -39,7 +39,7 @@ use App\Model\Bicycle;
 			</div>
 			<div class="item_tags">
 				<?php foreach($item->getCategories() as $category):?>
-				<a href="/" class="item_tag"><?=$category?></a>
+				<a href="/<?="?find={$category->getID()}:{$category->getEngName()}"?>" class="item_tag"><?=$category->getName()?></a>
 				<?php endforeach;?>
 			</div>
 			<a href="/OrderPage/order/<?=$item->getId()?>"><button class="order_btn" type="submit">Заказать</button></a>

@@ -9,25 +9,34 @@ class IndexController extends BaseController
 {
     public function showIndexPage($categoryName): void
     {
+		if (!isset($_GET['find']))
+		{
+			$property = '';
+		}
+		else $property = $_GET['find'];
         if (empty($categoryName))
         {
-            $categoryName = '';
+            $categoryName[] = '';
         }
+		$bicycleList = BicycleRepo::getBicyclelist($categoryName[0], $property);
+		if($bicycleList == [])
+		{
+			$this->render('layout.php',[
+				'content' => $this->strRender('MainPage/nullSearch.php', [
+					'search' => $property,
+				]),
+				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+			]);
+		}
         else
-        {
-            $categoryName = $categoryName[0];
-        }
-
-        $bicycleList = BicycleRepo::getBicyclelist($categoryName);
-
-        $this->render('layout.php',[
-            'content' => $this->strRender('MainPage/index.php', [
-                'category_name' => $categoryName,
-                'bicycleList' => $bicycleList
-            ]),
-            'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
-        ]);
-
-
+		{
+			$this->render('layout.php', [
+				'content' => $this->strRender('MainPage/index.php', [
+					'category_name' => $categoryName[0],
+					'bicycleList' => $bicycleList,
+				]),
+				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+			]);
+		}
     }
 }

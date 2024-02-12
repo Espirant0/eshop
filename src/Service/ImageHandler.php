@@ -48,4 +48,24 @@ class ImageHandler
 		}
 		return false;
 	}
+
+	public static function createNewItemImage(int|string $id, string $title):void
+	{
+		mkdir(ROOT . "/public/resources/product/img/{$id}.{$title}", 0777,true);
+		copy(ROOT.'/public/resources/img/item.jpg',ROOT."/public/resources/product/img/{$id}.{$title}/{$title}_1.jpg");
+	}
+	public static function renameImageForExistingItem(int|string $id, string $newTitle):void
+	{
+		$files = scandir(ROOT. '/public/resources/product/img/');
+		$files = array_diff($files, array('.', '..'));
+		foreach ($files as $file)
+		{
+			if((int)explode('.',$file)[0]==(int)$id)
+			{
+				$oldTitle = $file;
+				break;
+			}
+		}
+		rename(ROOT."/public/resources/product/img/$oldTitle",ROOT."/public/resources/product/img/$id.$newTitle");
+	}
 }

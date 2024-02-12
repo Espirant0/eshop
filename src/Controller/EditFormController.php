@@ -43,6 +43,7 @@ class EditFormController extends BaseController
 	{
 		AdminPanelRepo::addItem(
 			$_POST['title'],
+			$_POST['category'],
 			$_POST['create_year'],
 			$_POST['price'],
 			$_POST['description'],

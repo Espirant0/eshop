@@ -79,3 +79,4 @@ while ($row = mysqli_fetch_assoc($result))
 	var_dump($row['Tables_in_eshop']);
 }
 \App\Service\СlearTestData::clear();
+\App\Cache\FileCache::deleteAllCache();

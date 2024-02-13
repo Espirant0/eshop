@@ -49,4 +49,13 @@ class FileCache extends BaseCache
             unlink($path);
         }
     }
+
+	public static function deleteAllCache():void
+	{
+		if (file_exists('./var/cache')) {
+			foreach (glob('./var/cache/*') as $cache) {
+				unlink($cache);
+			}
+		}
+	}
 }

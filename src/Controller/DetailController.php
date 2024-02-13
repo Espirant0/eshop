@@ -15,7 +15,7 @@ class DetailController extends BaseController
 			'content' => $this->strRender('DetailPage/detail.php', [
 				'bicycle' => DetailRepo::getBicycleById($itemId[0])
 			]),
-            'categoryList' => $categoryListRepo::getCategoryList()
+            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem()
 		]);
     }
 }

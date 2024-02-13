@@ -18,7 +18,7 @@ class OrderController extends BaseController
 			'content' => $this->strRender('OrderPage/order.php', [
 				'bicycle' => (new FileCache())->get('bicycle'),
 			]),
-            'categoryList' => $categoryListRepo::getCategoryList()
+            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem()
 		]);
     }
 
@@ -27,7 +27,7 @@ class OrderController extends BaseController
         $categoryListRepo = new CategoryListRepo();
 		$this->render('layout.php', [
 			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
-            'categoryList' => $categoryListRepo::getCategoryList()
+            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem()
 		]);
     }
 

@@ -6,8 +6,10 @@ return [
     'DB_USER' => '',
     'DB_PASSWORD' => '',
     'DB_NAME' => '',
-    'CATEGORY_BLACK_LIST' => ['item','image','items_category','migration','role','status'],
+    'CATEGORY_BLACK_LIST' => ['image','items_category','migration','status'],
     'DICTIONARY' => [
+		'role' => 'Роли',
+		'item' => 'Товары',
         'category' => 'Категория',
         'color' => 'Цвет',
         'manufacturer' => 'Производитель',

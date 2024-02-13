@@ -2,8 +2,10 @@
 /**
  * @var int $itemId;
  * @var string $table;
- * @var array $fieldList;
  */
+
+use App\Cache\FileCache;
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -27,16 +29,11 @@
 	</div>
 	<div class="form_container">
 		<form action="/admin_panel/update?id=<?=$itemId;?>&table=<?=$table?>" method="post" class="auth_form">
-			<label>
-				<select name="field" class="login_input auth_input" required>
-					<?php foreach ($fieldList as $field):?>
-						<option><?=$field?></option>
-					<?php endforeach;?>
-				</select>
-			</label>
-			<label>
-				<input type="text" name="value" class="password_input auth_input" placeholder="Введите новое значение" required>
-			</label>
+			<?php foreach ((new FileCache())->get($table) as $field):?>
+				<label>
+					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
+				</label>
+			<?php endforeach;?>
 			<button class="auth_btn">Обновить</button>
 		</form>
 	</div>

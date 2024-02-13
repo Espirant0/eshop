@@ -12,12 +12,14 @@ class EditFormController extends BaseController
 {
 	public function showEditFormPage(?array $errors = null): void
 	{
+		$fields = AdminPanelRepo::getItemColumns($_GET['table']);
+		$cache = new FileCache();
+		$cache->set($_GET['table'], $fields, 3600);
 		if(AuthService::checkAuth()) {
 			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
 				'table' => $_GET['table'],
-				'fieldList' => AdminPanelRepo::getItemColumns($_GET['table']),
 			]);
 		}
 		else{
@@ -59,23 +61,29 @@ class EditFormController extends BaseController
 	public function updateValue(): void
 	{
 		$errors = [];
-		$itemId = (int)$_GET['id'];
-		$table = (string)$_GET['table'];
-		$itemField = (string)$_POST['field'];
-		$newValue = $_POST['value'];
-		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue)){
-			if($itemField == 'title')
-			{
-				ImageHandler::renameImageForExistingItem($itemId, $newValue);
+		$itemId = $_GET['id'];
+		$table = $_GET['table'];
+		$fields = (new FileCache())->get($table);
+		$newValues = [];
+		foreach ($fields as $field)
+		{
+			if($_POST[$field]!=='') {
+				$newValues[$field] = $_POST[$field];
 			}
-			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
+		}
+		if($table === 'item') {
+			ImageHandler::renameImageForExistingItem($itemId, $_POST['title']);
+		}
+		if(!empty($newValues)) {
+			AdminPanelRepo::updateItem($table, $itemId, $newValues);
 			FileCache::deleteCacheByKey($table);
 			HttpService::redirect('admin_panel');
 		}
 		else
 		{
-			$errors[] = 'Неверное значение!';
+			$errors[] = 'Вы не ввели значение!';
 			$this->showEditFormPage($errors);
 		}
+
 	}
 }

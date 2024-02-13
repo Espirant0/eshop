@@ -52,7 +52,7 @@ class OrderRepo extends BaseRepo
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$result = $DBOperator->query(
 			"INSERT INTO orders (item_id, status_id, data_create, price, user_id, address) 
-					VALUES ('$itemId[0]', 1, '$date', '$price', '$number', '$address')
+					VALUES ($itemId, 1, '$date', '$price', '$number', '$address')
 		;");
 		if (!$result)
 		{

@@ -111,13 +111,14 @@ class AdminPanelRepo extends BaseRepo
 		$newValue = mysqli_real_escape_string($DBOperator,$newValue);
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$DBOperator->query("UPDATE $table SET $field = '$newValue' WHERE $table.id = '$itemId'");
-		FileCache::deleteCacheByKey('category');
+		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
 	public static function deleteBicycle(int $itemId):void
 	{
 		$DBOperator = new DBHandler();
 		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
+		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
 	public static function checkItemColumns(string $table, string $field, mixed $value):bool

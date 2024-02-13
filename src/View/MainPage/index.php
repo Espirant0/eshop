@@ -1,8 +1,9 @@
 <?php
 /**
- * @var \App\Model\Bicycle[] $bicycleList
- * @var  $category_name
+ * @var Bicycle[] $bicycleList
  */
+
+use App\Model\Bicycle;
 
 ?>
 <div class="cards">

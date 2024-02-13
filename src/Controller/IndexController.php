@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Cache\FileCache;
 use Core\Database\Repo\AdminPanelRepo;
 use Core\Database\Repo\BicycleRepo;
 use Core\Database\Repo\CategoryListRepo;
@@ -9,6 +10,7 @@ class IndexController extends BaseController
 {
     public function showIndexPage($categoryName): void
     {
+		FileCache::deleteCacheByKey('bicycle');
 		if (!isset($_GET['find']))
 		{
 			$property = '';

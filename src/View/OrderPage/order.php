@@ -1,24 +1,22 @@
 <?php
 /**
- * @var Bicycle $item;
+ * @var Bicycle $bicycle;
  */
 
 use App\Model\Bicycle;
 
 ?>
 <div class="order_content">
-	<a href="/detail/<?=$item->getId()?>">
+	<a href="/detail/<?=$bicycle->getId()?>">
 		<div class="item_card_order">
-			<img src="<?="/resources/product/img/{$item->getId()}.{$item->getName()}/{$item->getMainImageName()}"?>" alt="" class="item_img_order">
-			<p class="item_title"><?=$item->getName()?></p>
+			<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="item_img_order">
+			<p class="item_title"><?=$bicycle->getName()?></p>
 			<div class="line"></div>
-			<p class="item_price"><?=$item->getPrice()?></p>
+			<p class="item_price"><?=$bicycle->getPrice()?></p>
 		</div>
 	</a>
 	<div class="form_inner">
-		<form action="/order/confirm/<?=$item->getId()?>" class="order_form" method="post">
-			<!--<p>Ваше ФИО</p>
-			<p><input type="text" name="name" id="" class="order_input" required></p>-->
+		<form action="/order/confirm" class="order_form" method="post">
 			<p>Ваш номер телефона</p>
 			<p><input type="number" name="number" id="" class="order_input" maxlength="11" required></p>
 			<p>Ваш адрес</p>

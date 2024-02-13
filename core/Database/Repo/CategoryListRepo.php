@@ -23,7 +23,7 @@ class CategoryListRepo extends BaseRepo
 
     public static function getCategoryListConsideringExistingItem(): CategoryList
     {
-		return (new FileCache())->remember('category', 3600, function()
+		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function()
 		{
 			$DBOperator = new DBHandler();
 			$result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName

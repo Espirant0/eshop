@@ -13,7 +13,7 @@ class DetailController extends BaseController
 
 		$this->render('layout.php', [
 			'content' => $this->strRender('DetailPage/detail.php', [
-				'item' => DetailRepo::getBicycleListById($itemId[0])
+				'bicycle' => DetailRepo::getBicycleById($itemId[0])
 			]),
             'categoryList' => $categoryListRepo::getCategoryList()
 		]);

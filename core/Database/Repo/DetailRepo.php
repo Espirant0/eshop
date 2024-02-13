@@ -5,7 +5,6 @@ use App\Cache\FileCache;
 use App\Model\Bicycle;
 use App\Model\Category;
 use App\Service\DBHandler;
-use App\Service\CategoryListRepo;
 
 class DetailRepo extends BaseRepo
 {

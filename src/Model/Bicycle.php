@@ -6,7 +6,7 @@ use App\Service\ImageHandler;
 
 class Bicycle
 {
-	private string $id;
+	private int $id;
 	private string $name = '';
 	private string $color;
 	private string $year;
@@ -30,7 +30,7 @@ class Bicycle
 	 * @param category[] $categories
 	 * @var Image[] $images
 	 */
-	public function __construct(string $id,
+	public function __construct(int $id,
 								string $name,
 								string $color,
 								string $year,
@@ -64,12 +64,12 @@ class Bicycle
 		$this->images = $images;
 	}
 
-	public function getId(): string
+	public function getId(): int
 	{
 		return $this->id;
 	}
 
-	public function setId(string $id): void
+	public function setId(int $id): void
 	{
 		$this->id = $id;
 	}

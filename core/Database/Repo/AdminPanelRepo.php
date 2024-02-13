@@ -9,68 +9,6 @@ use App\Service\ImageHandler;
 
 class AdminPanelRepo extends BaseRepo
 {
-	public static function getBicycleList(): array
-	{
-		$DBOperator = new DBHandler();
-		$itemList = [];
-
-		$itemQuery = $DBOperator->query("
-		SELECT i.id, i.title, c.name as color, i.create_year, mat.name as material, i.price, i.description, i.status, man.name as vendor, i.speed 
-		FROM item i
-		        INNER JOIN manufacturer man on man.id = i.manufacturer_id
-				INNER JOIN color c on i.color_id = c.id
-				INNER JOIN material mat on i.material_id = mat.id
-		
-		ORDER BY i.id;
-		");
-
-		if (!$itemQuery)
-        {
-			throw new \Exception($DBOperator->connect_error);
-		}
-		while ($row = mysqli_fetch_assoc($itemQuery))
-		{
-			$itemList[] = new Bicycle(
-                $row['id'],
-                $row['title'],
-                $row['color'],
-                $row['create_year'],
-                $row['material'],
-                $row['price'],
-                $row['description'],
-                $row['status'],
-                $row['vendor'],
-				$row['speed'],
-				[]
-            );
-		}
-		return $itemList;
-	}
-
-	public static function getItemList(string $item): array
-	{
-		$DBOperator = new DBHandler();
-		$item = mysqli_real_escape_string($DBOperator, $item);
-		$itemList = [];
-		$result = $DBOperator->query("
-		SELECT * 
-		FROM {$item} i
-		ORDER BY i.id;
-		");
-		if (!$result) {
-			throw new \Exception($DBOperator->connect_error);
-		}
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			$itemId = $row['id'];
-			$itemName = $row['name'];
-			$itemEngName = ($row['engName'])?? '';
-
-			$itemList[] = ['id' => $itemId, 'name' => $itemName, 'engName' => $itemEngName];
-		}
-		return $itemList;
-	}
-
 	public static function addItem(
 		string $title,
 		string $category,
@@ -103,14 +41,23 @@ class AdminPanelRepo extends BaseRepo
 		ImageHandler::createNewItemImage($lastAddedId, $title);
 		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('{$lastAddedId}',1,1)");
 	}
-	public static function updateItem(string $table, int $itemId, string $field, string $newValue):void
+	public static function updateItem(string $table, int $itemId, array $newValues):void
 	{
 		$DBOperator = new DBHandler();
 		$table = mysqli_real_escape_string($DBOperator,$table);
-		$field = mysqli_real_escape_string($DBOperator,$field);
-		$newValue = mysqli_real_escape_string($DBOperator,$newValue);
+		$expression = '';
+		foreach ($newValues as $key => $value) {
+			$newValues[$key] = mysqli_real_escape_string($DBOperator, $value);
+			$expression.= ' '.$key.' = '."'$newValues[$key]'".', ';
+		}
+		$expression = rtrim($expression, ', ');
+		var_dump($expression);
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
-		$DBOperator->query("UPDATE $table SET $field = '$newValue' WHERE $table.id = '$itemId'");
+		$DBOperator->query("
+							UPDATE $table 
+							SET $expression 
+							WHERE id = $itemId
+							");
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
@@ -139,15 +86,29 @@ class AdminPanelRepo extends BaseRepo
 	public static function getItemColumns(string $table):array
 	{
 		$DBOperator = new DBHandler();
-		$table = strtoupper(mysqli_real_escape_string($DBOperator,$table));
+		$table = mysqli_real_escape_string($DBOperator,$table);
 		$fields = [];
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
 		while ($row = mysqli_fetch_assoc($result))
 		{
-			$fields[] = (string)$row['Field'];
+			$fields[] = $row['Field'];
 		}
-
-		array_shift($fields);
 		return $fields;
+	}
+	public static function getItemList(string $item): array
+	{
+		$DBOperator = new DBHandler();
+		$item = mysqli_real_escape_string($DBOperator, $item);
+		$itemFields = self::getItemColumns($item);
+		$queryFields = implode(' ,', $itemFields);
+		$result = $DBOperator->query("
+				SELECT {$queryFields} 
+				FROM {$item} 
+				ORDER BY id;
+		");
+		if (!$result) {
+			throw new \Exception($DBOperator->connect_error);
+		}
+		return mysqli_fetch_all($result);
 	}
 }

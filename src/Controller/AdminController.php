@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Cache\FileCache;
 use App\Service\AuthService;
+use App\Service\HttpService;
+use App\Service\ClearTestData;
 use Core\Database\Repo\AdminPanelRepo;
 use Core\Database\Repo\CategoryListRepo;
-use Core\Database\Repo\OrderRepo;
-use Core\Database\Repo\UserRepo;
 
 class AdminController extends BaseController
 {
@@ -15,15 +15,8 @@ class AdminController extends BaseController
 	{
 		if (AuthService::checkAuth()) {
 			$this->render('AdminPage/admin.php', [
-				'bicycleList' => AdminPanelRepo::getBicycleList(),
-				'categoryList' => CategoryListRepo::getCategoryList(),
-				'buttonList' => CategoryListRepo::getObjectList(),
-				'colorList' => AdminPanelRepo::getItemList('color'),
-				'manufacturerList' => AdminPanelRepo::getItemList('manufacturer'),
-				'materialList' => AdminPanelRepo::getItemList('material'),
-				'targetList' => AdminPanelRepo::getItemList('target_audience'),
-				'userList' => UserRepo::getUserList(),
-				'orderList' => OrderRepo::getOrderList(),
+				'objectList' => (new CategoryListRepo())->getObjectList(),
+				'errors' => $errors,
 			]);
 		} else {
 			$this->render('AuthPage/auth.php', [
@@ -38,5 +31,19 @@ class AdminController extends BaseController
 		AdminPanelRepo::deleteBicycle($itemId);
 		FileCache::deleteCacheByKey('category');
 		$this->showAdminPage();
+	}
+
+	public function resetData():void
+	{
+		if(AuthService::checkAuth()){
+			ClearTestData::clear();
+			FileCache::deleteAllCache(); #Костыль, не очищается нижний кэш при полном удалении
+			FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
+			HttpService::redirect('admin_panel');
+		}
+		else
+		{
+			HttpService::redirect('auth');
+		}
 	}
 }

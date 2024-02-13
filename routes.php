@@ -39,3 +39,5 @@ Router::get('/admin_panel/delete', [new App\Controller\AdminController(), 'delet
 Router::get('/admin_panel/add_form', [new App\Controller\EditFormController(), 'showAddFormPage']);
 
 Router::post('/admin_panel/add', [new App\Controller\EditFormController(), 'addItem']);
+
+Router::get('/admin_panel/dev_reset', [new App\Controller\AdminController(), 'resetData']);

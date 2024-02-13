@@ -65,12 +65,11 @@ class BicycleRepo extends BaseRepo
 				$row['status'],
 				$row['vendor'],
 				$row['speed'],
-				$category
+				$category,
+				$row['target']
 			);
 			unset($category);
-
 		}
-
 		return $Bicycles;
 	}
 

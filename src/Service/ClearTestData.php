@@ -3,7 +3,7 @@
 namespace App\Service;
 use Core\Database\Migration\Migrator;
 
-class СlearTestData
+class ClearTestData
 {
 	public static function clear():void
 	{

@@ -1,6 +1,7 @@
 <?php
 
 namespace Core\Database\Repo;
+use App\Cache\FileCache;
 use App\Model\Bicycle;
 use App\Model\Category;
 use App\Service\DBHandler;
@@ -8,7 +9,7 @@ use App\Service\CategoryListRepo;
 
 class DetailRepo extends BaseRepo
 {
-	public static function getBicycleListById(int $id): Bicycle
+	public static function getBicycleById(int $id): Bicycle
 	{
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query(
@@ -20,7 +21,7 @@ class DetailRepo extends BaseRepo
 		INNER JOIN target_audience ta on ta.id = i.target_id
 		INNER JOIN items_category ic on i.id = ic.item_id
 		INNER JOIN category c2 on ic.category_id = c2.id
-		WHERE i.id = '{$id}';
+		WHERE i.id = '{$id}' AND i.status = 1;
 		");
 
 		if (!$result)
@@ -45,7 +46,10 @@ class DetailRepo extends BaseRepo
 			new Category('material',$row['material'],$row['material_engname']),
 			new Category('target',$row['target'], $row['target_engname'])];
 
-		return new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,$itemSpeed,$categoryList);
+		$bicycle = new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,$itemSpeed,$categoryList);
+		$itemCache = new FileCache();
+		$itemCache->set('bicycle', $bicycle, 3600);
+		return $bicycle;
 	}
 }
 

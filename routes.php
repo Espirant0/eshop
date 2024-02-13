@@ -10,9 +10,9 @@ Router::get('/category/:categoryName', [new App\Controller\IndexController(), "s
 
 Router::get('/detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
 
-Router::get('/order/:itemId', [new App\Controller\OrderController(), 'showOrderPage']);
+Router::get('/order', [new App\Controller\OrderController(), 'showOrderPage']);
 
-Router::post('/order/confirm/:itemId', [new App\Controller\OrderController(), 'saveOrder'] );
+Router::post('/order/confirm', [new App\Controller\OrderController(), 'saveOrder'] );
 
 Router::get('/confirmed', [new App\Controller\OrderController(), 'showConfirmedOrderPage']);
 

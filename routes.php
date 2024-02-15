@@ -5,7 +5,7 @@ use Core\Routing\Router;
 //Публичная часть
 Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
-Router::get('/category/:categoryName', [new App\Controller\IndexController(), "showIndexPage"]);
+Router::get('/category/:categoryName/', [new App\Controller\IndexController(), "showIndexPage"]);
 
 Router::get('/detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
 
@@ -30,6 +30,8 @@ Router::get('/sign_out', [new App\Controller\AuthController(), 'signOut']);
 Router::get('/admin_panel', [new App\Controller\AdminController(), 'showAdminPage'] );
 
 Router::get('/admin_panel/', [new App\Controller\AdminController(), 'showAdminPage'] );
+
+Router::get('/admin_panel/:tableName/', [new App\Controller\AdminController(), 'showAdminPage'] );
 
 Router::get('/admin_panel/edit', [new App\Controller\EditFormController(), 'showEditFormPage']);
 

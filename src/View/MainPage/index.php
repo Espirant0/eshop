@@ -1,6 +1,7 @@
 <?php
 /**
  * @var Bicycle[] $bicycleList
+ * @var $pagesCount;
  */
 
 use App\Model\Bicycle;
@@ -19,8 +20,7 @@ use App\Model\Bicycle;
 	<?php endforeach;?>
 </div>
 <div class="pages">
-	<a href="" class="first page_number">1</a>
-	<a href="" class="second page_number">2</a>
-	<p class="page_number">...</p>
-	<a href="" class="last page_number">6</a>
+	<a href="/?page=1" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">В начало</a>
+	<a href="/?page=<?= (!isset($_GET['page']))?'1':($_GET['page']-1)?>" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">Назад</a>
+	<a href="/?page=<?= (!isset($_GET['page']))?'2':($_GET['page']+1)?>" class="page_number">Вперёд</a>
 </div>

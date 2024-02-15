@@ -3,6 +3,7 @@
 namespace Core\Database\Repo;
 
 use App\Cache\FileCache;
+use App\Config\Config;
 use App\Model\Bicycle;
 use App\Service\DBHandler;
 use App\Service\ImageHandler;

@@ -2,6 +2,7 @@
 /**
  * @var CategoryList $objectList ;
  * @var Category $object ;
+ * @var int $pagesCount;
  */
 
 use App\Model\Category;
@@ -75,6 +76,12 @@ use Core\Database\Repo\AdminPanelRepo;
 			<?php endforeach; ?>
 		</div>
 	</div>
+
+</div>
+<div class="pages">
+	<?php for ($pageNum = 1; $pageNum <= $pagesCount; $pageNum++): ?>
+		<a href="/admin_panel/<?= $pageNum === 1 ? '' : '?page='.$pageNum ?>" class="page_number"><?= $pageNum ?></a>
+	<?php endfor; ?>
 </div>
 </body>
 <script src="/resources/js/lightbox2-2.11.4/dist/js/lightbox-plus-jquery.js"></script>

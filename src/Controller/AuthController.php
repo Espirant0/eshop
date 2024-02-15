@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Service\HttpService;
 use Core\Database\Repo\UserRepo;
 
-
 class AuthController extends BaseController
 {
 	public function showAuthPage(?array $errors = null): void
@@ -17,26 +16,32 @@ class AuthController extends BaseController
 
 	public function userLogin(): void
 	{
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
 			$login = $_POST['login'];
 			$password = $_POST['password'];
 
 			$error = 'Неверный логин или пароль';
 			$user = UserRepo::getUserByLogin($login);
 
-			if (!$user) {
+			if (!$user || $user->getRole() !== 'Администратор')
+            {
 				$errors[] = $error;
 				$this->showAuthPage($errors);
-			} else {
+			}
+            else
+            {
 				//$isPasswordCorrect = password_verify($password, $user->getPassword());
-				$isPasswordCorrect = !strnatcmp($password, $user->getPassword());
+				$isPasswordCorrect = password_verify($password, $user->getPassword());
 
-				if (!$isPasswordCorrect) {
+				if (!$isPasswordCorrect)
+                {
 					$errors[] = $error;
 					$this->showAuthPage($errors);
 				}
 
-				if (empty($errors)) {
+				if (empty($errors))
+                {
 					session_start();
 					$_SESSION['USER'] = $user;
 					HttpService::redirect('admin_panel');

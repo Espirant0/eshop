@@ -30,7 +30,7 @@ use Core\Database\Repo\AdminPanelRepo;
 		<div class="tab_nav">
 			<?php foreach ($objectList as $object): ?>
 				<a href="/admin_panel/<?=$object->getEngName()?>/"
-				   class="tab-btn <?=$object->getID() === '0'?'tab-btn-active':''?>"
+				   class="tab-btn"
 				>
 					<?=$object->getName()?>
 				</a>
@@ -78,7 +78,7 @@ use Core\Database\Repo\AdminPanelRepo;
 		<div class="pages">
 			<a href="/admin_panel/<?=$tableName[0]?>/?page=1" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">В начало</a>
 			<a href="/admin_panel/<?=$tableName[0]?>/?page=<?= (!isset($_GET['page']))?'1':($_GET['page']-1)?>" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">Назад</a>
-			<a href="/admin_panel/<?=$tableName[0]?>/?page=<?= (!isset($_GET['page']))?'2':($_GET['page']+1)?>" class="page_number">Вперёд</a>
+			<a href="/admin_panel/<?=$tableName[0]?>/?page=<?= (!isset($_GET['page']))?'2':($_GET['page']+1)?>" class="page_number <?=($tableName === '')? 'disable':'active'?>"">Вперёд</a>
 		</div>
 	</div>
 </div>

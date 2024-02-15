@@ -86,6 +86,10 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function getItemColumns(string $table):array
 	{
+		if($table === '')
+		{
+			return [];
+		}
 		$DBOperator = new DBHandler();
 		$table = mysqli_real_escape_string($DBOperator,$table);
 		$fields = [];
@@ -98,6 +102,10 @@ class AdminPanelRepo extends BaseRepo
 	}
 	public static function getItemList(int $currentPage, string $item): array
 	{
+		if($item === '')
+		{
+			return [];
+		}
 		$config = new Config();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$startId = ($currentPage - 1) * $itemsPerPage;

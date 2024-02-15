@@ -13,7 +13,6 @@ class BicycleRepo extends BaseRepo
 		$config = new Config();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$startId = ($currentPage - 1) * $itemsPerPage;
-		$endId = ($startId + $itemsPerPage + 1);
         $queryDop = '';
         if ($categoryName !== '') {
             $queryDop = "AND c2.engName = '$categoryName'";

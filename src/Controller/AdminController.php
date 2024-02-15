@@ -12,19 +12,22 @@ use Core\Database\Repo\CategoryListRepo;
 
 class AdminController extends BaseController
 {
-	public function showAdminPage(?array $errors = null): void
+	public function showAdminPage($tableName, ?array $errors = null): void
 	{
-		$config = new Config();
-		$pageLimit = (int)$config->option('PRODUCT_LIMIT');
-		$pagesCount = $this->getPagesCount($pageLimit, 'item');
 		$pageNumber = 1;
 		if(isset($_GET['page']))
 		{
 			$pageNumber = $_GET['page'];
 		}
+		if(empty($tableName))
+		{
+			$tableName = '';
+		}
 		if (AuthService::checkAuth()) {
 			$this->render('AdminPage/admin.php', [
 				'objectList' => (new CategoryListRepo())->getObjectList(),
+				'pageNumber' => $pageNumber,
+				'tableName' => $tableName,
 				'errors' => $errors,
 			]);
 		} else {

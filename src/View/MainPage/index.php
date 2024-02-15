@@ -1,7 +1,7 @@
 <?php
 /**
  * @var Bicycle[] $bicycleList
- * @var $pagesCount;
+ * @var string $categoryName;
  */
 
 use App\Model\Bicycle;
@@ -20,7 +20,7 @@ use App\Model\Bicycle;
 	<?php endforeach;?>
 </div>
 <div class="pages">
-	<a href="/?page=1" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">В начало</a>
-	<a href="/?page=<?= (!isset($_GET['page']))?'1':($_GET['page']-1)?>" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">Назад</a>
-	<a href="/?page=<?= (!isset($_GET['page']))?'2':($_GET['page']+1)?>" class="page_number">Вперёд</a>
+	<a href="/<?=($categoryName !== '')? 'category/'.$categoryName.'/' : ''?>?page=1" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">В начало</a>
+	<a href="/<?=($categoryName !== '')? 'category/'.$categoryName.'/' : ''?>?page=<?= (!isset($_GET['page']))?'1':($_GET['page']-1)?>" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">Назад</a>
+	<a href="/<?=($categoryName !== '')? 'category/'.$categoryName.'/' : ''?>?page=<?= (!isset($_GET['page']))?'2':($_GET['page']+1)?>" class="page_number">Вперёд</a>
 </div>

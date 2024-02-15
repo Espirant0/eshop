@@ -96,8 +96,11 @@ class AdminPanelRepo extends BaseRepo
 		}
 		return $fields;
 	}
-	public static function getItemList(string $item): array
+	public static function getItemList(int $currentPage, string $item): array
 	{
+		$config = new Config();
+		$itemsPerPage = $config->option('PRODUCT_LIMIT');
+		$startId = ($currentPage - 1) * $itemsPerPage;
 		$DBOperator = new DBHandler();
 		$item = mysqli_real_escape_string($DBOperator, $item);
 		$itemFields = self::getItemColumns($item);
@@ -105,7 +108,9 @@ class AdminPanelRepo extends BaseRepo
 		$result = $DBOperator->query("
 				SELECT {$queryFields} 
 				FROM {$item} 
-				ORDER BY id;
+				WHERE $item.id IN(SELECT id FROM item WHERE id > $startId)
+				ORDER BY id
+				LIMIT $itemsPerPage;
 		");
 		if (!$result) {
 			throw new \Exception($DBOperator->connect_error);

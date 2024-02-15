@@ -16,4 +16,5 @@ return [
         'target_audience' => 'Целевая аудитория',
         'user' => 'Пользователь',
     ],
+	'PRODUCT_LIMIT' => 9,
 ];

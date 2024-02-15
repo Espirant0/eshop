@@ -2,13 +2,18 @@
 
 namespace Core\Database\Repo;
 
+use App\Config\Config;
 use App\Model\Category;
 use App\Service\DBHandler;
 use App\Model\Bicycle;
 class BicycleRepo extends BaseRepo
 {
-	public static function getBicycleList(string $categoryName = '', string $property = ''): array
+	public static function getBicycleList(int $currentPage, string $categoryName = '', string $property = ''): array
 	{
+		$config = new Config();
+		$itemsPerPage = $config->option('PRODUCT_LIMIT');
+		$startId = ($currentPage - 1) * $itemsPerPage;
+		$endId = ($startId + $itemsPerPage + 1);
         $queryDop = '';
         if ($categoryName !== '') {
             $queryDop = "AND c2.engName = '$categoryName'";
@@ -23,8 +28,9 @@ class BicycleRepo extends BaseRepo
         INNER JOIN target_audience ta on ta.id = i.target_id
         INNER JOIN items_category ic on i.id = ic.item_id
         INNER JOIN category c2 on ic.category_id = c2.id
-        WHERE i.status = 1 $queryDop
-        ORDER BY i.id;"
+        WHERE i.status = 1 $queryDop AND i.id IN(SELECT id FROM item WHERE id > $startId)
+        ORDER BY i.id
+		LIMIT $itemsPerPage;"
         );
 
 		$Bicycles = [];
@@ -70,7 +76,6 @@ class BicycleRepo extends BaseRepo
 			unset($category);
 
 		}
-
 		return $Bicycles;
 	}
 

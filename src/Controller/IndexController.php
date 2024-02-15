@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Controller;
+
 use App\Cache\FileCache;
-use Core\Database\Repo\AdminPanelRepo;
+use App\Config\Config;
 use Core\Database\Repo\BicycleRepo;
 use Core\Database\Repo\CategoryListRepo;
 
@@ -10,6 +11,15 @@ class IndexController extends BaseController
 {
     public function showIndexPage($categoryName): void
     {
+		$config = new Config();
+		$pageLimit = (int)$config->option('PRODUCT_LIMIT');
+		$pagesCount = $this->getPagesCount($pageLimit, 'item');
+		$pageNumber = 1;
+		if(isset($_GET['page']))
+		{
+			$pageNumber = $_GET['page'];
+		}
+
 		FileCache::deleteCacheByKey('bicycle');
 		if (!isset($_GET['find']))
 		{
@@ -20,7 +30,7 @@ class IndexController extends BaseController
         {
             $categoryName[] = '';
         }
-		$bicycleList = BicycleRepo::getBicyclelist($categoryName[0], $property);
+		$bicycleList = BicycleRepo::getBicyclelist($pageNumber, $categoryName[0], $property);
 		if($bicycleList == [])
 		{
 			$this->render('layout.php',[
@@ -36,6 +46,7 @@ class IndexController extends BaseController
 				'content' => $this->strRender('MainPage/index.php', [
 					'category_name' => $categoryName[0],
 					'bicycleList' => $bicycleList,
+					'pagesCount' => $pagesCount
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
 			]);

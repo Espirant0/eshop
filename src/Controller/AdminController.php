@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Cache\FileCache;
+use App\Config\Config;
 use App\Service\AuthService;
 use Core\Database\Repo\AdminPanelRepo;
 use Core\Database\Repo\CategoryListRepo;
@@ -13,9 +14,17 @@ class AdminController extends BaseController
 {
 	public function showAdminPage(?array $errors = null): void
 	{
+		$config = new Config();
+		$pageLimit = (int)$config->option('PRODUCT_LIMIT');
+		$pagesCount = $this->getPagesCount($pageLimit, 'item');
+		$pageNumber = 1;
+		if(isset($_GET['page']))
+		{
+			$pageNumber = $_GET['page'];
+		}
 		if (AuthService::checkAuth()) {
 			$this->render('AdminPage/admin.php', [
-				'bicycleList' => AdminPanelRepo::getBicycleList(),
+				'bicycleList' => AdminPanelRepo::getBicycleList($pageNumber),
 				'categoryList' => CategoryListRepo::getCategoryList(),
 				'buttonList' => CategoryListRepo::getObjectList(),
 				'colorList' => AdminPanelRepo::getItemList('color'),
@@ -24,6 +33,7 @@ class AdminController extends BaseController
 				'targetList' => AdminPanelRepo::getItemList('target_audience'),
 				'userList' => UserRepo::getUserList(),
 				'orderList' => OrderRepo::getOrderList(),
+				'pagesCount' => $pagesCount,
 			]);
 		} else {
 			$this->render('AuthPage/auth.php', [

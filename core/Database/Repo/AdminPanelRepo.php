@@ -3,17 +3,20 @@
 namespace Core\Database\Repo;
 
 use App\Cache\FileCache;
+use App\Config\Config;
 use App\Model\Bicycle;
 use App\Service\DBHandler;
 use App\Service\ImageHandler;
 
 class AdminPanelRepo extends BaseRepo
 {
-	public static function getBicycleList(): array
+	public static function getBicycleList(int $currentPage): array
 	{
 		$DBOperator = new DBHandler();
 		$itemList = [];
-
+		$config = new Config();
+		$limit = $config->option('PRODUCT_LIMIT');
+		$offset = ($currentPage - 1) * $limit;
 		$itemQuery = $DBOperator->query("
 		SELECT i.id, i.title, c.name as color, i.create_year, mat.name as material, i.price, i.description, i.status, man.name as vendor, i.speed 
 		FROM item i
@@ -21,7 +24,8 @@ class AdminPanelRepo extends BaseRepo
 				INNER JOIN color c on i.color_id = c.id
 				INNER JOIN material mat on i.material_id = mat.id
 		
-		ORDER BY i.id;
+		ORDER BY i.id
+		LIMIT $limit OFFSET $offset
 		");
 
 		if (!$itemQuery)

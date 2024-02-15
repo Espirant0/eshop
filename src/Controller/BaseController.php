@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+use App\Service\DBHandler;
+
 abstract class BaseController
 {
 	public function render(string $templateName, array $params): void
@@ -31,5 +33,15 @@ abstract class BaseController
 		ob_start();
 		include_once $template;
 		return ob_get_clean();
+	}
+
+	public static function getPagesCount(int $itemsPerPage, string $table):int
+	{
+		$DBOperator = new DBHandler();
+		$table = mysqli_real_escape_string($DBOperator,$table);
+		$result = $DBOperator->query(
+			"SELECT COUNT(*) AS count FROM $table
+		");
+		return ceil($result->fetch_row()[0] / $itemsPerPage);
 	}
 }

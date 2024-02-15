@@ -30,7 +30,7 @@ use App\Service\AuthService;
 			<ul class="tags">
 				<a href="/"><li><p>Главная</p></li></a>
 				<?php foreach($categoryList as $category):?>
-				<a href="<?="/category/{$category->getEngName()}"?>"><li><span><?=$category->getName();?></span></li></a>
+				<a href="/category/<?=$category->getEngName()?>/"><li><span><?=$category->getName();?></span></li></a>
 					<?php endforeach;?>
 			</ul>
 		</div>

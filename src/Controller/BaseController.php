@@ -35,12 +35,22 @@ abstract class BaseController
 		return ob_get_clean();
 	}
 
-	public static function getPagesCount(int $itemsPerPage, string $table):int
+	public function getPagesCount(int $itemsPerPage, string $table, ?string $filter):int
 	{
 		$DBOperator = new DBHandler();
+		if($table === '')
+		{
+			return 0;
+		}
+		$queryDop= '';
+		if ($filter !== '') {
+			$queryDop = "i INNER JOIN items_category ic on i.id = ic.item_id
+        INNER JOIN category c2 on ic.category_id = c2.id WHERE c2.engName = '$filter'";
+		}
 		$table = mysqli_real_escape_string($DBOperator,$table);
 		$result = $DBOperator->query(
-			"SELECT COUNT(*) AS count FROM $table
+			"SELECT COUNT(*) AS count FROM $table $queryDop
+					
 		");
 		return ceil($result->fetch_row()[0] / $itemsPerPage);
 	}

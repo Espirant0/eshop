@@ -10,16 +10,16 @@ use Core\Database\Repo\AdminPanelRepo;
 
 class EditFormController extends BaseController
 {
-	public function showEditFormPage(?array $errors = null): void
+	public function showEditFormPage($tableName, ?array $errors = null): void
 	{
-		$fields = AdminPanelRepo::getItemColumns($_GET['table']);
+		$fields = AdminPanelRepo::getItemColumns($tableName[0]);
 		$cache = new FileCache();
-		$cache->set($_GET['table'], $fields, 3600);
+		$cache->set($tableName[0], $fields, 3600);
 		if(AuthService::checkAuth()) {
 			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
-				'table' => $_GET['table'],
+				'tableName' => $tableName[0],
 			]);
 		}
 		else{
@@ -28,11 +28,12 @@ class EditFormController extends BaseController
 			]);
 		}
 	}
-	public function showAddFormPage(?array $errors = null): void
+	public function showAddFormPage($tableName,?array $errors = null): void
 	{
 		if(AuthService::checkAuth()) {
 			$this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
+				'tableName' => $tableName[0],
 			]);
 		}
 		else{
@@ -58,11 +59,11 @@ class EditFormController extends BaseController
 		HttpService::redirect('admin_panel');
 	}
 
-	public function updateValue(): void
+	public function updateValue($tableName): void
 	{
 		$errors = [];
 		$itemId = $_GET['id'];
-		$table = $_GET['table'];
+		$table = $tableName[0];
 		$fields = (new FileCache())->get($table);
 		$newValues = [];
 		foreach ($fields as $field)

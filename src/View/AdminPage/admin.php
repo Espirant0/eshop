@@ -2,7 +2,8 @@
 /**
  * @var CategoryList $objectList ;
  * @var Category $object ;
- * @var int $pageNumber;
+ * @var int $page;
+ * @var int $pagesCount
  * @var string $tableName;
  */
 
@@ -30,8 +31,7 @@ use Core\Database\Repo\AdminPanelRepo;
 		<div class="tab_nav">
 			<?php foreach ($objectList as $object): ?>
 				<a href="/admin_panel/<?=$object->getEngName()?>/"
-				   class="tab-btn"
-				>
+				   class="tab-btn">
 					<?=$object->getName()?>
 				</a>
 			<?php endforeach; ?>
@@ -41,30 +41,30 @@ use Core\Database\Repo\AdminPanelRepo;
 				<table class="table_inner">
 					<thead>
 					<tr>
-						<?php foreach (AdminPanelRepo::getItemColumns($tableName[0]) as $field): ?>
+						<?php foreach (AdminPanelRepo::getItemColumns($tableName) as $field): ?>
 							<th><?=$field?></th>
 						<?php endforeach; ?>
 						<th>Действие
 							<br>
-							<a href="/admin_panel/add_form"
-							   class="add_btn <?=($tableName[0]!=='item')?'disable':'active'?>">
+							<a href="/admin_panel/<?=$tableName?>/add_form"
+							   class="add_btn <?=($tableName!=='item')?'disable':'active'?>">
 								Добавить
 							</a>
 						</th>
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach (AdminPanelRepo::getItemList($pageNumber, $tableName[0]) as $item):?>
+					<?php foreach (AdminPanelRepo::getItemList($page, $tableName) as $item):?>
 						<tr>
 							<?php foreach ($item as $itemValue): ?>
 								<td><?=$itemValue?></td>
 							<?php endforeach; ?>
 							<td>
-								<a href="/admin_panel/edit?id=<?=$item[0]?>&table=<?=$tableName[0]?>">
+								<a href="/admin_panel/<?=$tableName?>/edit?id=<?=$item[0]?>">
 									Изменить
 								</a>
-								<a href="/admin_panel/delete?id=<?=$item[0]?>"
-								   class="<?=($tableName[0]!=='item')?'disable':'active'?>"
+								<a href="/admin_panel/<?=$tableName?>/delete?id=<?=$item[0]?>"
+								   class="<?=($tableName!=='item')?'disable':'active'?>"
 								   onclick="return window.confirm('Удалить этот объект?');">
 									Удалить
 								</a>
@@ -76,9 +76,18 @@ use Core\Database\Repo\AdminPanelRepo;
 			</div>
 		</div>
 		<div class="pages">
-			<a href="/admin_panel/<?=$tableName[0]?>/?page=1" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">В начало</a>
-			<a href="/admin_panel/<?=$tableName[0]?>/?page=<?= (!isset($_GET['page']))?'1':($_GET['page']-1)?>" class="page_number <?=(!isset($_GET['page']) || ($_GET['page'])==='1')? 'disable':'active'?>">Назад</a>
-			<a href="/admin_panel/<?=$tableName[0]?>/?page=<?= (!isset($_GET['page']))?'2':($_GET['page']+1)?>" class="page_number <?=($tableName === '')? 'disable':'active'?>"">Вперёд</a>
+			<a href="/admin_panel/<?=$tableName?>/?page=1"
+			   class="page_number <?=(!isset($page) || ($page) =='1')? 'disable':'active'?>">
+				В начало
+			</a>
+			<a href="/admin_panel/<?=$tableName?>/?page=<?= (!isset($page))?'1':($page-1)?>"
+			   class="page_number <?=(!isset($page) || ($page) =='1')? 'disable':'active'?>">
+				Назад
+			</a>
+			<a href="/admin_panel/<?=$tableName?>/?page=<?= (!isset($page))?'2':($page+1)?>"
+			   class="page_number <?=(($tableName === '') || $page === $pagesCount)? 'disable':'active'?>">
+				Вперёд
+			</a>
 		</div>
 	</div>
 </div>

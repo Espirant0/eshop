@@ -14,14 +14,18 @@ class AdminController extends BaseController
 {
 	public function showAdminPage($tableName, ?array $errors = null): void
 	{
+		$config = new Config();
+		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$pageNumber = 1;
 		if(isset($_GET['page']))
 		{
-			$pageNumber = $_GET['page'];
+			$pageNumber = (int)$_GET['page'];
 		}
 		if(empty($tableName))
 		{
 			$tableName = '';
+		} else {
+			$tableName = $tableName[0];
 		}
 		if (AuthService::checkAuth()) {
 			$this->render('AdminPage/admin.php', [
@@ -29,6 +33,8 @@ class AdminController extends BaseController
 				'pageNumber' => $pageNumber,
 				'tableName' => $tableName,
 				'errors' => $errors,
+				'page' => $pageNumber,
+				'pagesCount' => $this->getPagesCount($itemsPerPage,$tableName, ''),
 			]);
 		} else {
 			$this->render('AuthPage/auth.php', [
@@ -37,12 +43,12 @@ class AdminController extends BaseController
 		}
 	}
 
-	public function deleteBicycle(): void
+	public function deleteBicycle($tableName): void
 	{
 		$itemId = (int)$_GET['id'];
 		AdminPanelRepo::deleteBicycle($itemId);
 		FileCache::deleteCacheByKey('category');
-		$this->showAdminPage();
+		$this->showAdminPage($tableName);
 	}
 
 	public function resetData():void

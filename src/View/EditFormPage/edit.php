@@ -1,7 +1,7 @@
 <?php
 /**
  * @var int $itemId;
- * @var string $table;
+ * @var string $tableName;
  */
 
 use App\Cache\FileCache;
@@ -28,8 +28,8 @@ use App\Cache\FileCache;
 		<?php endif;?>
 	</div>
 	<div class="form_container">
-		<form action="/admin_panel/update?id=<?=$itemId;?>&table=<?=$table?>" method="post" class="auth_form">
-			<?php foreach ((new FileCache())->get($table) as $field):?>
+		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
+			<?php foreach ((new FileCache())->get($tableName) as $field):?>
 				<label>
 					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
 				</label>

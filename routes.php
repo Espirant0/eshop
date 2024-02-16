@@ -33,14 +33,14 @@ Router::get('/admin_panel/', [new App\Controller\AdminController(), 'showAdminPa
 
 Router::get('/admin_panel/:tableName/', [new App\Controller\AdminController(), 'showAdminPage'] );
 
-Router::get('/admin_panel/edit', [new App\Controller\EditFormController(), 'showEditFormPage']);
+Router::get('/admin_panel/:tableName/edit', [new App\Controller\EditFormController(), 'showEditFormPage']);
 
-Router::post('/admin_panel/update', [new App\Controller\EditFormController(), 'updateValue']);
+Router::post('/admin_panel/:tableName/update', [new App\Controller\EditFormController(), 'updateValue']);
 
-Router::get('/admin_panel/delete', [new App\Controller\AdminController(), 'deleteBicycle']);
+Router::get('/admin_panel/:tableName/delete', [new App\Controller\AdminController(), 'deleteBicycle']);
 
-Router::get('/admin_panel/add_form', [new App\Controller\EditFormController(), 'showAddFormPage']);
+Router::get('/admin_panel/:tableName/add_form', [new App\Controller\EditFormController(), 'showAddFormPage']);
 
-Router::post('/admin_panel/add', [new App\Controller\EditFormController(), 'addItem']);
+Router::post('/admin_panel/:tableName/add', [new App\Controller\EditFormController(), 'addItem']);
 
 Router::get('/admin_panel/dev_reset', [new App\Controller\AdminController(), 'resetData']);

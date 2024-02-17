@@ -17,24 +17,30 @@ class IndexController extends BaseController
 		if(isset($_GET['page']))
 		{
 			$pageNumber = (int)$_GET['page'];
+			unset($_GET['page']);
 		}
-
+		$property=[];
 		FileCache::deleteCacheByKey('bicycle');
-		if (!isset($_GET['find']))
+		if (count($_GET)>0)
 		{
-			$property = '';
+			$property = $_GET;
 		}
-		else $property = $_GET['find'];
+		$httpQuery=$_GET;
         if (empty($categoryName))
         {
-            $categoryName[] = '';
+			if(isset($_GET['category'])) $categoryName[]=$_GET['category'];
+            else $categoryName[] = '';
         }
+		else
+		{
+			$httpQuery['category'] = $categoryName[0];
+		}
 		$bicycleList = BicycleRepo::getBicyclelist($pageNumber, $categoryName[0], $property);
 		if($bicycleList == [] || $pageNumber < 1)
 		{
 			$this->render('layout.php',[
 				'content' => $this->strRender('MainPage/nullSearch.php', [
-					'search' => $property,
+					'search' => $property['search'],
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
 			]);
@@ -46,7 +52,8 @@ class IndexController extends BaseController
 					'categoryName' => $categoryName[0],
 					'bicycleList' => $bicycleList,
 					'page' => $pageNumber,
-					'pagesCount' => $this->getPagesCount($itemsPerPage,'item', $categoryName[0]),
+					'httpQuery'=>http_build_query($httpQuery),
+					'pagesCount' => $this->getPagesCount($itemsPerPage,'item', $property),
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
 			]);

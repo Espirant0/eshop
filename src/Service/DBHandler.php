@@ -5,6 +5,7 @@ use App\Config\Config;
 
 class DBHandler extends \mysqli
 {
+	private static DBHandler $instance;
 	private string $dbHost;
 	private string $dbUser;
 	private string $dbPassword;
@@ -27,6 +28,14 @@ class DBHandler extends \mysqli
 		$this->set_charset('utf8');
 		unset($config);
 	}
+	public static function getInstance():DBHandler
+	{
+		if(!isset(self::$instance))
+		{
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
 
 	public function reconnect(): void
 	{
@@ -45,7 +54,7 @@ class DBHandler extends \mysqli
 	 */
 	public function getResult(string $sqlQuery): array
 	{
-		return $this->query($sqlQuery)->fetch_all(MYSQLI_ASSOC);
+		return $this->query($this->real_escape_string($sqlQuery))->fetch_all(MYSQLI_ASSOC);
 	}
 
 	/**
@@ -77,7 +86,7 @@ class DBHandler extends \mysqli
 		$connection->set_charset('utf8');
 		unset($config);
 
-		return $connection->query($sqlQuery)->fetch_all(MYSQLI_ASSOC);
+		return $connection->query($connection->real_escape_string($sqlQuery))->fetch_all(MYSQLI_ASSOC);
 	}
 
 

@@ -3,12 +3,15 @@
 namespace Core;
 
 use App\Controller\PageNotFoundController;
+use App\Service\ExceptionHandler;
 use Core\Database\Migration\Migrator;
 
 class Application
 {
     public function run(): void
     {
+		set_error_handler([ExceptionHandler::getInstance(),'errorToLogger']);
+		set_exception_handler([ExceptionHandler::getInstance(),'exceptionToLogger']);
 		$migration = new Migrator();
 		$migration->migrate();
 

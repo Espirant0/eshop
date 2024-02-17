@@ -39,7 +39,7 @@ use App\Model\Bicycle;
 			</div>
 			<div class="item_tags">
 				<?php foreach($bicycle->getCategories() as $category):?>
-				<a href="/<?="?find={$category->getID()}:{$category->getEngName()}"?>" class="item_tag"><?=$category->getName()?></a>
+				<a href="/<?="?{$category->getID()}={$category->getEngName()}"?>" class="item_tag"><?=$category->getName()?></a>
 				<?php endforeach;?>
 			</div>
 			<a href="/order"><button class="order_btn" type="submit">Заказать</button></a>

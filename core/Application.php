@@ -3,6 +3,7 @@
 namespace Core;
 
 use App\Controller\PageNotFoundController;
+use App\Service\HttpService;
 use Core\Database\Migration\Migrator;
 
 class Application
@@ -20,6 +21,11 @@ class Application
             $action(...$route->getVariables());
             return;
         }
+		if (str_contains($_SERVER['REQUEST_URI'],'admin_panel'))
+		{
+			HttpService::redirect('admin_panel');
+			return;
+		}
 
         http_response_code(404);
         $err=new PageNotFoundController();

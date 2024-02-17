@@ -35,12 +35,17 @@ class IndexController extends BaseController
 		{
 			$httpQuery['category'] = $categoryName[0];
 		}
+		if(!isset($property['search']))
+		{
+			$search=null;
+		}
+		else $search = $property['search'];
 		$bicycleList = BicycleRepo::getBicyclelist($pageNumber, $categoryName[0], $property);
 		if($bicycleList == [] || $pageNumber < 1)
 		{
 			$this->render('layout.php',[
 				'content' => $this->strRender('MainPage/nullSearch.php', [
-					'search' => $property['search'],
+					'search' => $search,
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
 			]);

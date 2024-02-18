@@ -7,6 +7,7 @@ use App\Service\AuthService;
 use App\Service\HttpService;
 use App\Service\ImageHandler;
 use Core\Database\Repo\AdminPanelRepo;
+use Core\Validator\Validator;
 
 class EditFormController extends BaseController
 {
@@ -42,18 +43,48 @@ class EditFormController extends BaseController
 
 	public function addItem(): void
 	{
-		AdminPanelRepo::addItem(
-			$_POST['title'],
-			$_POST['category'],
-			$_POST['create_year'],
-			$_POST['price'],
-			$_POST['description'],
-			$_POST['status'],
-			$_POST['manufacturer_id'],
-			$_POST['material_id'],
-			$_POST['color_id']
-		);
-		HttpService::redirect('admin_panel');
+		$data = ['title'=>$_POST['title'],
+				 'category'=>$_POST['category'],
+				 'create_year'=>$_POST['create_year'],
+				 'price'=>$_POST['price'],
+				 'description'=>$_POST['description'],
+				 'status'=>$_POST['status'],
+				 'manufacturer_id'=>$_POST['manufacturer_id'],
+				 'material_id'=>$_POST['material_id'],
+				 'color_id'=>$_POST['color_id']];
+
+		$rules = ['title' => ['required'], //если нужно необязательным просто required убрать,я тестил просто
+				  'category'=>['required','numeric'],
+				  'create_year'=>['required','numeric','min:4'],
+				  'price'=>['required','numeric'],
+				  'description'=>['required','min:3'],
+				  'status'=>['required','numeric'],
+				  'manufacturer_id'=>['required','numeric'],
+				  'material_id'=>['required','numeric'],
+				  'color_id'=>['required','numeric']];
+
+		$validator = new Validator();
+
+		if($validator->validate($data,$rules) == true)
+		{
+			AdminPanelRepo::addItem(
+				$_POST['title'],
+				$_POST['category'],
+				$_POST['create_year'],
+				$_POST['price'],
+				$_POST['description'],
+				$_POST['status'],
+				$_POST['manufacturer_id'],
+				$_POST['material_id'],
+				$_POST['color_id']
+			);
+			HttpService::redirect('admin_panel');
+		}
+		else
+		{
+			$errors = $validator->errors();
+			$this->showAddFormPage($errors);
+		}
 	}
 
 	public function updateValue(): void

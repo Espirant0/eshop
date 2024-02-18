@@ -50,31 +50,43 @@ class Validator
 			case 'required':
 				if (empty($value))
 				{
-					return "Field $key is required";
+					return "Поле $key должно быть обязательным";
 				}
 				break;
 			case 'min':
-				if (strlen($value) < $ruleValue)
+				if (mb_strlen($value) < $ruleValue)
 				{
-					return "Field $key must be at least $ruleValue characters long";
+					return "Поле $key должно иметь минимум $ruleValue символа";
 				}
 				break;
 			case 'max':
-				if (strlen($value) > $ruleValue)
+				if (mb_strlen($value) > $ruleValue)
 				{
-					return "Field $key must be at most $ruleValue characters long";
+					return "Поле $key должно иметь не более $ruleValue символа";
 				}
 				break;
 			case 'email':
 				if (! filter_var($value, FILTER_VALIDATE_EMAIL))
 				{
-					return "Field $key must be a valid email address";
+					return "В Поле $key должен быть корректный е-майл";
 				}
 				break;
 			case 'confirmed':
 				if ($value !== $this->data["{$key}_confirmation"])
 				{
 					return "Field $key must be confirmed";
+				}
+				break;
+			case 'alpha':
+				if (!ctype_alpha($value))
+				{
+					return "Field $key must contain only alphabetic characters";
+				}
+				break;
+			case 'numeric':
+				if (!ctype_digit($value))
+				{
+					return "Поле $key должно содержать только числа";
 				}
 				break;
 		}

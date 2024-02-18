@@ -12,29 +12,33 @@ class EditFormController extends BaseController
 {
 	public function showEditFormPage(?array $errors = null): void
 	{
-		if(AuthService::checkAuth()) {
-			$this->render('EditFormPage/edit.php', [
+		if (AuthService::checkAuth())
+        {
+			echo $this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
 				'table' => $_GET['table'],
 				'fieldList' => AdminPanelRepo::getItemColumns($_GET['table']),
 			]);
 		}
-		else{
-			$this->render('AuthPage/auth.php', [
+		else
+        {
+			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 			]);
 		}
 	}
 	public function showAddFormPage(?array $errors = null): void
 	{
-		if(AuthService::checkAuth()) {
-			$this->render('AddFormPages/addItem.php', [
+		if(AuthService::checkAuth())
+        {
+			echo $this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 			]);
 		}
-		else{
-			$this->render('AuthPage/auth.php', [
+		else
+        {
+			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 			]);
 		}
@@ -63,11 +67,13 @@ class EditFormController extends BaseController
 		$table = (string)$_GET['table'];
 		$itemField = (string)$_POST['field'];
 		$newValue = $_POST['value'];
-		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue)){
-			if($itemField == 'title')
+		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue))
+        {
+			if ($itemField == 'title')
 			{
 				ImageHandler::renameImageForExistingItem($itemId, $newValue);
 			}
+
 			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
 			FileCache::deleteCacheByKey($table);
 			HttpService::redirect('admin_panel');

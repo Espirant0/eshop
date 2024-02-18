@@ -11,8 +11,8 @@ class DetailController extends BaseController
     {
         $categoryListRepo = new CategoryListRepo();
 
-		$this->render('layout.php', [
-			'content' => $this->strRender('DetailPage/detail.php', [
+		echo $this->render('layout.php', [
+			'content' => $this->render('DetailPage/detail.php', [
 				'bicycle' => DetailRepo::getBicycleById($itemId[0])
 			]),
             'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem()

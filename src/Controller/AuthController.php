@@ -9,7 +9,7 @@ class AuthController extends BaseController
 {
 	public function showAuthPage(?array $errors = null): void
 	{
-		$this->render('AuthPage/auth.php', [
+		echo $this->render('AuthPage/auth.php', [
 			'errors' => $errors,
 			]);
 	}

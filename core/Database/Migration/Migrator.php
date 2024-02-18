@@ -35,7 +35,7 @@ class Migrator
 			if (!in_array($migration, $doneMigrations))
 			{
 				$commands = file_get_contents(ROOT . '/src/Migration/' . $migration);
-				$commandList = explode(';',$commands);
+				$commandList = explode(';', $commands);
 
 				foreach ($commandList as $commandSQL)
 				{

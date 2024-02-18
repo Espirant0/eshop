@@ -11,20 +11,27 @@ class IndexController extends BaseController
     public function showIndexPage($categoryName): void
     {
 		FileCache::deleteCacheByKey('bicycle');
+
 		if (!isset($_GET['find']))
 		{
 			$property = '';
 		}
-		else $property = $_GET['find'];
+		else
+        {
+            $property = $_GET['find'];
+        }
+
         if (empty($categoryName))
         {
             $categoryName[] = '';
         }
-		$bicycleList = BicycleRepo::getBicyclelist($categoryName[0], $property);
-		if($bicycleList == [])
+
+		$bicycleList = BicycleRepo::getBicycleListConsideringCategoryName($categoryName[0], $property);
+
+		if ($bicycleList == [])
 		{
-			$this->render('layout.php',[
-				'content' => $this->strRender('MainPage/nullSearch.php', [
+			echo $this->render('layout.php',[
+				'content' => $this->render('MainPage/nullSearch.php', [
 					'search' => $property,
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
@@ -32,8 +39,8 @@ class IndexController extends BaseController
 		}
         else
 		{
-			$this->render('layout.php', [
-				'content' => $this->strRender('MainPage/index.php', [
+			echo $this->render('layout.php', [
+				'content' => $this->render('MainPage/index.php', [
 					'category_name' => $categoryName[0],
 					'bicycleList' => $bicycleList,
 				]),

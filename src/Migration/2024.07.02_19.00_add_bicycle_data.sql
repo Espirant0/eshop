@@ -166,6 +166,7 @@ INSERT INTO role (name)
 VALUES
     ('Администратор'),
     ('Пользователь');
+
 INSERT INTO user (id, name, role_id, address, password)
 VALUES
     ('+79999999999','Admin',1, 'Админская улица, 999','password'),

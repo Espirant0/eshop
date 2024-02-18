@@ -7,8 +7,8 @@ class PageNotFoundController extends BaseController
 {
 	public function PageNotFoundViewer(): void
 	{
-		$this->render('layout.php', [
-			'content' => $this->strRender('NotFoundPage/404.php',[]),
+		echo $this->render('layout.php', [
+			'content' => $this->render('NotFoundPage/404.php',[]),
 			'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem()
 		]);
 	}

@@ -7,12 +7,15 @@ use App\Service\DBHandler;
 use App\Model\Bicycle;
 class BicycleRepo extends BaseRepo
 {
-	public static function getBicycleList(string $categoryName = '', string $property = ''): array
+	public static function getBicycleListConsideringCategoryName(string $categoryName = '', string $property = ''): array
 	{
         $queryDop = '';
-        if ($categoryName !== '') {
+
+        if ($categoryName !== '')
+        {
             $queryDop = "AND c2.engName = '$categoryName'";
         }
+
         $DBOperator = new DBHandler();
         $result = $DBOperator->query(
             "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.engName as color, ma.engName as material, m.name as vendor, ta.engName as target, c2.engName as category, ic.category_id, c2.name as category_name
@@ -33,11 +36,13 @@ class BicycleRepo extends BaseRepo
 		{
 			throw new \Exception($DBOperator->connect_error);
 		}
-		if(str_contains($property,':'))
+
+		if (str_contains($property,':'))
 		{
 			$filter = explode(':', $property);
 			$property = '';
 		}
+
 		while ($row = mysqli_fetch_assoc($result))
 		{
 			$category[] = new Category(
@@ -45,14 +50,17 @@ class BicycleRepo extends BaseRepo
 				$row['category_name'],
 				$row['category']
 			);
+
 			if(!str_contains(strtolower($row['title']), strtolower($property)))
 			{
 				continue;
 			}
-			if(isset($filter) && $row[$filter[0]] != $filter[1])
+
+			if (isset($filter) && $row[$filter[0]] !== $filter[1])
 			{
 				continue;
 			}
+
 			$Bicycles[] = new Bicycle
 			(
 				$row['id'],
@@ -68,10 +76,8 @@ class BicycleRepo extends BaseRepo
 				$category
 			);
 			unset($category);
-
 		}
 
 		return $Bicycles;
 	}
-
 }

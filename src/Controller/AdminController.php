@@ -14,7 +14,7 @@ class AdminController extends BaseController
 	public function showAdminPage(?array $errors = null): void
 	{
 		if (AuthService::checkAuth()) {
-			$this->render('AdminPage/admin.php', [
+			echo $this->render('AdminPage/admin.php', [
 				'bicycleList' => AdminPanelRepo::getBicycleList(),
 				'categoryList' => CategoryListRepo::getCategoryList(),
 				'buttonList' => CategoryListRepo::getObjectList(),
@@ -26,7 +26,7 @@ class AdminController extends BaseController
 				'orderList' => OrderRepo::getOrderList(),
 			]);
 		} else {
-			$this->render('AuthPage/auth.php', [
+			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 			]);
 		}

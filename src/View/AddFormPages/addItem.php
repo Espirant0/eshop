@@ -12,11 +12,19 @@
 <body>
 <div class="auth_container">
 	<div class="auth_errors">
-		<?php if(!empty($errors)):?>
+		<?php if (!empty($errors)): ?>
 			<div>
-				<?= implode('<br>', $errors);?>
+				<?php foreach ($errors as $field => $messages): ?>
+					<div>
+						<ul>
+							<?php foreach ($messages as $message): ?>
+								<li><?= $message ?></li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				<?php endforeach; ?>
 			</div>
-		<?php endif;?>
+		<?php endif; ?>
 	</div>
 	<div class="form_container">
 		<form action="/admin_panel/add" method="post" class="auth_form">

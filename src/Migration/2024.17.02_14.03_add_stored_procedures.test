@@ -1,0 +1,54 @@
+CREATE PROCEDURE getCategoryList()
+BEGIN
+SELECT id, name, engName FROM category;
+END;
+
+CREATE PROCEDURE getCategoryListConsideringExistingItem()
+BEGIN
+SELECT DISTINCT c.id, c.name, c.engName
+        FROM category c
+        LEFT JOIN items_category ic ON c.id = ic.category_id
+        JOIN item i ON i.id = ic.item_id
+        WHERE i.status = 1;
+END;
+
+CREATE PROCEDURE getBicycleById(IN idBicycle INT)
+BEGIN
+SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color,c.engName as color_engname, ma.name as material, ma.engName as material_engname, m.name as vendor, ta.name as target, ta.engName as target_engname, c2.engName as category_engname, ic.category_id, c2.name as category_name
+		FROM item i
+		INNER JOIN manufacturer m on m.id = i.manufacturer_id
+		INNER JOIN color c on c.id = i.color_id
+		INNER JOIN material ma on ma.id = i.material_id
+		INNER JOIN target_audience ta on ta.id = i.target_id
+		INNER JOIN items_category ic on i.id = ic.item_id
+		INNER JOIN category c2 on ic.category_id = c2.id
+		WHERE i.id = idBicycle AND i.status = 1;
+END;
+
+CREATE PROCEDURE getOrderList()
+BEGIN
+SELECT o.id, i.title as item, s.name as status, o.data_create, o.user_id, o.price, o.address
+		FROM orders o
+		INNER JOIN status s on s.id = o.status_id
+		INNER JOIN item i on i.id = o.item_id;
+END;
+
+CREATE PROCEDURE saveOrder(IN itemId INT, IN date DATE, IN price INT, IN number INT, IN address VARCHAR(255))
+BEGIN
+        INSERT INTO orders (item_id, status_id, data_create, price, user_id, address)
+		VALUES (itemId, 1, date, price, number, address);
+END;
+
+CREATE PROCEDURE getUserByLogin(IN login VARCHAR(255))
+BEGIN
+SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
+	    INNER JOIN role r on u.role_id = r.id
+		WHERE u.id = login;
+END;
+
+CREATE PROCEDURE getUserList()
+BEGIN
+SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
+		         INNER JOIN role r on u.role_id = r.id
+		ORDER BY u.id;
+END;

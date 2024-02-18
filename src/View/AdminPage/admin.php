@@ -5,6 +5,7 @@
  * @var int $page;
  * @var int $pagesCount
  * @var string $tableName;
+ * @var string $title;
  */
 
 use App\Model\Category;
@@ -20,7 +21,7 @@ use Core\Database\Repo\AdminPanelRepo;
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title>admin</title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="admin_content">

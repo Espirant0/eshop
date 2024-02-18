@@ -3,6 +3,7 @@
  * @var string $content
  * @var Category $category
  * @var CategoryList $categoryList
+ * @var string $title;
  */
 
 use App\Model\Category;
@@ -21,7 +22,7 @@ use App\Service\AuthService;
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
 	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title><?=TITLE?></title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="grid">

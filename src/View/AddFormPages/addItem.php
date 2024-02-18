@@ -1,6 +1,7 @@
 <?php
 /**
  * @var string $tableName;
+ * @var string $title;
  */
 ?>
 <!doctype html>
@@ -12,7 +13,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title>edit</title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="auth_container">

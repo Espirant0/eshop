@@ -13,12 +13,13 @@ class OrderController extends BaseController
     public function showOrderPage(): void
     {
         $categoryListRepo = new CategoryListRepo();
-
+		$bicycle = (new FileCache())->get('bicycle');
 		$this->render('layout.php', [
 			'content' => $this->strRender('OrderPage/order.php', [
-				'bicycle' => (new FileCache())->get('bicycle'),
+				'bicycle' => $bicycle,
 			]),
-            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem()
+            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
+			'title' => $bicycle->getName(),
 		]);
     }
 
@@ -27,7 +28,8 @@ class OrderController extends BaseController
         $categoryListRepo = new CategoryListRepo();
 		$this->render('layout.php', [
 			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
-            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem()
+            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
+			'title' => 'Заказ',
 		]);
     }
 

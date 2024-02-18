@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string $title;
+ */
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,7 +12,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title>error</title>
+	<title><?=$title?></title>
 </head>
 <body>
 	<div class="error_container">

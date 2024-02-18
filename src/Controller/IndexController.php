@@ -48,6 +48,7 @@ class IndexController extends BaseController
 					'search' => $search,
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+				'title' => 'Ничего не найдено'
 			]);
 		}
         else
@@ -61,6 +62,7 @@ class IndexController extends BaseController
 					'pagesCount' => $this->getPagesCount($itemsPerPage,'item', $property),
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+				'title' => TITLE,
 			]);
 		}
     }

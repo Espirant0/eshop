@@ -12,6 +12,7 @@ class AuthController extends BaseController
 	{
 		$this->render('AuthPage/auth.php', [
 			'errors' => $errors,
+			'title' => 'Авторизация',
 			]);
 	}
 

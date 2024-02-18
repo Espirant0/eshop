@@ -1,6 +1,7 @@
 <?php
 /**
- * @var $errors array
+ * @var array $errors;
+ * @var string $title;
  */
 ?>
 
@@ -13,7 +14,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title>auth</title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="auth_container">

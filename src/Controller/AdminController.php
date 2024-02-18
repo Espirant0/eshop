@@ -35,10 +35,12 @@ class AdminController extends BaseController
 				'errors' => $errors,
 				'page' => $pageNumber,
 				'pagesCount' => $this->getPagesCount($itemsPerPage,$tableName, null),
+				'title' => 'Админ-панель',
 			]);
 		} else {
 			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
+				'title' => 'Авторизация',
 			]);
 		}
 	}

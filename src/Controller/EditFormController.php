@@ -20,11 +20,13 @@ class EditFormController extends BaseController
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
 				'tableName' => $tableName[0],
+				'title' => 'Редактировать',
 			]);
 		}
 		else{
 			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
+				'title' => 'Авторизация',
 			]);
 		}
 	}
@@ -34,11 +36,13 @@ class EditFormController extends BaseController
 			$this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 				'tableName' => $tableName[0],
+				'title' => 'Добавить товар',
 			]);
 		}
 		else{
 			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
+				'title' => 'Авторизация',
 			]);
 		}
 	}

@@ -38,7 +38,7 @@ class AdminController extends BaseController
 				'title' => 'Админ-панель',
 			]);
 		} else {
-			echo $this->render('AuthPage/auth.php', [
+			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
 			]);

@@ -9,7 +9,7 @@ class AuthController extends BaseController
 {
 	public function showAuthPage(?array $errors = null): void
 	{
-		echo $this->render('AuthPage/auth.php', [
+		$this->render('AuthPage/auth.php', [
 			'errors' => $errors,
 			'title' => 'Авторизация',
 			]);
@@ -32,7 +32,6 @@ class AuthController extends BaseController
 			}
             else
             {
-				//$isPasswordCorrect = password_verify($password, $user->getPassword());
 				$isPasswordCorrect = password_verify($password, $user->getPassword());
 
 				if (!$isPasswordCorrect)

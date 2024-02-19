@@ -26,7 +26,7 @@ class EditFormController extends BaseController
 		}
 		else
         {
-			echo $this->render('AuthPage/auth.php', [
+			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
 			]);
@@ -36,7 +36,7 @@ class EditFormController extends BaseController
 	{
 		if(AuthService::checkAuth())
         {
-			echo $this->render('AddFormPages/addItem.php', [
+			$this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 				'tableName' => $tableName[0],
 				'title' => 'Добавить товар',
@@ -44,7 +44,7 @@ class EditFormController extends BaseController
 		}
 		else
         {
-			echo $this->render('AuthPage/auth.php', [
+			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
 			]);

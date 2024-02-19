@@ -38,29 +38,58 @@
 				<input type="text" name="title" class="login_input auth_input" placeholder="Введите название" required>
 			</label>
 			<label>
-				<input type="number" name="category" class="login_input auth_input" placeholder="Введите id категории" required>
-			</label>
-			<label>
-				<input type="number" name="color_id" class="password_input auth_input" placeholder="Введите id цвета" required>
-			</label>
-			<label>
-				<input type="number" name="create_year" class="login_input auth_input" placeholder="Введите год выпуска" required>
-			</label>
-			<label>
-				<input type="number" name="material_id" class="password_input auth_input" placeholder="Введите id материала" required>
-			</label>
-			<label>
 				<input type="number" name="price" class="login_input auth_input" placeholder="Введите цену" required>
 			</label>
 			<label>
 				<input type="text" name="description" class="password_input auth_input" placeholder="Введите описание" required>
 			</label>
 			<label>
-				<input type="number" name="status" class="password_input auth_input" placeholder="Введите id статуса" required>
+				<input type="number" name="create_year" class="login_input auth_input" placeholder="Введите год выпуска" required>
 			</label>
-			<label>
-				<input type="number" name="manufacturer_id" class="password_input auth_input" placeholder="Введите id производителя" required>
-			</label>
+			<label for="category">Выберите категорию:</label>
+			<select name="category" >
+				<option value="1">Электрический</option>
+				<option value="2">BMX</option>
+				<option value="3">Горный</option>
+				<option value="4">Дорожный</option>
+				<option value="5">Фэтбайк</option>
+				<option value="6">Подростковый</option>
+				<option value="7">Детский</option>
+			</select>
+			<label for="color_id">Выберите цвет:</label>
+			<select name="color_id" >
+				<option value="1">Чёрный</option>
+				<option value="2">Красный</option>
+				<option value="3">Жёлтый</option>
+				<option value="4">Серый</option>
+				<option value="5">Оранжевый</option>
+				<option value="6">Хаки</option>
+				<option value="7">Синий</option>
+				<option value="8">Розовый</option>
+				<option value="9">Фиолетовый</option>
+			</select>
+			<label for="material_id">Выберите материал:</label>
+			<select name="material_id" >
+				<option value="1">Сталь</option>
+				<option value="2">Алюминий</option>
+			</select>
+			<label for="status">Выберите статус:</label>
+			<select name="status" >
+				<option value="1">Доступен</option>
+				<option value="0">Сокрыт</option>
+			</select>
+			<label for="manufacturer_id">Выберите производителя:</label>
+			<select name="manufacturer_id" >
+				<option value="1">Ortler</option>
+				<option value="2">Specialized</option>
+				<option value="3">Giant</option>
+				<option value="4">Bulls</option>
+				<option value="5">TechTeam</option>
+				<option value="6">Fracren</option>
+				<option value="7">Velopro</option>
+				<option value="8">Trinx</option>
+				<option value="9">Author</option>
+			</select>
 			<button class="auth_btn">Добавить</button>
 		</form>
 	</div>

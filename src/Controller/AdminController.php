@@ -56,7 +56,7 @@ class AdminController extends BaseController
 	public function resetData():void
 	{
 		if(AuthService::checkAuth()){
-			ClearTestData::clear();
+			#ClearTestData::clear();
 			FileCache::deleteAllCache(); #Костыль, не очищается нижний кэш при полном удалении
 			FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 			HttpService::redirect('admin_panel');

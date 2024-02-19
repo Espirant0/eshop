@@ -51,7 +51,7 @@ class EditFormController extends BaseController
 		}
 	}
 
-	public function addItem(): void
+	public function addItem($tableName): void
 	{
 		$data = ['title'=>$_POST['title'],
 				 'category'=>$_POST['category'],
@@ -75,7 +75,7 @@ class EditFormController extends BaseController
 
 		$validator = new Validator();
 
-		if($validator->validate($data,$rules) == true)
+		if($validator->validate($data,$rules))
 		{
 			AdminPanelRepo::addItem(
 				$_POST['title'],
@@ -93,7 +93,7 @@ class EditFormController extends BaseController
 		else
 		{
 			$errors = $validator->errors();
-			$this->showAddFormPage($errors);
+			$this->showAddFormPage($tableName,$errors);
 		}
 	}
 
@@ -121,7 +121,7 @@ class EditFormController extends BaseController
 		else
 		{
 			$errors[] = 'Вы не ввели значение!';
-			$this->showEditFormPage($errors);
+			$this->showEditFormPage([$tableName],$errors);
 		}
 
 	}

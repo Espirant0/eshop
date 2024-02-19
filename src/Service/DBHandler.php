@@ -54,7 +54,7 @@ class DBHandler extends \mysqli
 	 */
 	public function getResult(string $sqlQuery): array
 	{
-		return $this->query($this->real_escape_string($sqlQuery))->fetch_all(MYSQLI_ASSOC);
+		return $this->query($sqlQuery)->fetch_all(MYSQLI_ASSOC);
 	}
 
 	/**

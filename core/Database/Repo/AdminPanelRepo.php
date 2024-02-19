@@ -40,7 +40,7 @@ class AdminPanelRepo extends BaseRepo
 
 		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($lastAddedId,$category)");
 		ImageHandler::createNewItemImage($lastAddedId, $title);
-		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('{$lastAddedId}',1,1)");
+		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('$lastAddedId',1,1)");
 	}
 	public static function updateItem(string $table, int $itemId, array $newValues):void
 	{

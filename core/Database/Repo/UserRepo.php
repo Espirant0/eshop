@@ -9,11 +9,11 @@ class UserRepo extends BaseRepo
 {
 	public static function getUserByLogin(string $login)
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$login = $DBOperator->real_escape_string($login);
 		$result = $DBOperator->query("SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
 	        INNER JOIN role r on u.role_id = r.id
-		    WHERE u.id = '{$login}';
+		    WHERE u.id = '$login';
 		    ");
 
 		if (!$result)
@@ -29,14 +29,13 @@ class UserRepo extends BaseRepo
             {
                 return null;
             }
-
             return new User($login, $row['name'], $row['address'], $row['role_name'], $row['password']);
 		}
 	}
 
 	public static function getUserList():array
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$userList = [];
 		$result = $DBOperator->query("
 		SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u

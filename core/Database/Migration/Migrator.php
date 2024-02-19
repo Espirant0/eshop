@@ -9,7 +9,7 @@ class Migrator
 {
 	public static function migrate(): void
 	{
-		$DBOperator = new DBHandler;
+		$DBOperator = DBHandler::getInstance();
 
 		if ($DBOperator->query("SHOW TABLES LIKE 'migration'")->num_rows === 0)
 		{
@@ -67,7 +67,7 @@ class Migrator
 
 	public static function deleteData(): void
 	{
-		$DBOperator = new DBHandler;
+		$DBOperator = DBHandler::getInstance();
 		$config = new Config();
 		$res = $DBOperator->query('SHOW TABLES');
 		$DBOperator->query('SET foreign_key_checks = 0');
@@ -76,7 +76,7 @@ class Migrator
 		while ($row = mysqli_fetch_assoc($res))
 		{
 			$tableName = $row[$tables];
-			$mysql="DROP TABLE $tableName";
+			$mysql="DROP TABLE {$tableName}";
 			$DBOperator->query($mysql);
 		}
 

@@ -10,7 +10,7 @@ class DBHandler extends \mysqli
 	private string $dbUser;
 	private string $dbPassword;
 	private string $dbName;
-	public function __construct()
+	private function __construct()
 	{
 		$config = new Config();
 		$this->dbHost = $config->option('DB_HOST');

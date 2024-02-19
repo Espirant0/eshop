@@ -10,7 +10,7 @@ class DetailRepo extends BaseRepo
 {
 	public static function getBicycleById(int $id): Bicycle
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query(
 			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color,c.engName as color_engname, ma.name as material, ma.engName as material_engname, m.name as vendor, ta.name as target, ta.engName as target_engname, c2.engName as category_engname, ic.category_id, c2.name as category_name
 		FROM item i

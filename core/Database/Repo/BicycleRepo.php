@@ -20,7 +20,7 @@ class BicycleRepo extends BaseRepo
             $queryDop = "AND c2.engName = '$categoryName'";
         }
 
-        $DBOperator = new DBHandler();
+        $DBOperator = DBHandler::getInstance();
         $result = $DBOperator->query(
             "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.engName as color, ma.engName as material, m.name as vendor, ta.engName as target, c2.engName as category, ic.category_id, c2.name as category_name
         FROM item i
@@ -88,7 +88,7 @@ class BicycleRepo extends BaseRepo
 			$property=null;
 		}
 		$filteredBicycleList=[];
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query(
 			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.engName as color, ma.engName as material, m.name as vendor, ta.engName as target, c2.engName as category, ic.category_id, c2.name as category_name
         FROM item i

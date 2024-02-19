@@ -10,7 +10,7 @@ class RoutesGenerator
     public static function generateRoutes(): array
     {
         $config = new Config();
-        $DBOperator = new DBHandler();
+        $DBOperator = DBHandler::getInstance();
 
         $tables = $DBOperator->query("SHOW TABLES FROM {$config->option('DB_NAME')};");
 

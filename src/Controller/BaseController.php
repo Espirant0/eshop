@@ -40,7 +40,7 @@ abstract class BaseController
 
 	public function getPagesCount(int $itemsPerPage, string $table, ?array $filter):int
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		if($table === '')
 		{
 			return 0;

@@ -22,7 +22,7 @@ class AdminPanelRepo extends BaseRepo
 		string $colorId,
 	): void
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$title = mysqli_real_escape_string($DBOperator, $title);
 		$category = mysqli_real_escape_string($DBOperator,$category);
 		$colorId = (int)mysqli_real_escape_string($DBOperator, $colorId);
@@ -44,7 +44,7 @@ class AdminPanelRepo extends BaseRepo
 	}
 	public static function updateItem(string $table, int $itemId, array $newValues):void
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$table = mysqli_real_escape_string($DBOperator,$table);
 		$expression = '';
 		foreach ($newValues as $key => $value) {
@@ -64,14 +64,14 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function deleteBicycle(int $itemId):void
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
 	public static function checkItemColumns(string $table, string $field, mixed $value):bool
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$table = strtoupper(mysqli_real_escape_string($DBOperator,$table));
 		$fields = [];
 		$value = (ctype_digit($value))? 'int': 'varchar';
@@ -90,7 +90,7 @@ class AdminPanelRepo extends BaseRepo
 		{
 			return [];
 		}
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$table = mysqli_real_escape_string($DBOperator,$table);
 		$fields = [];
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
@@ -100,7 +100,7 @@ class AdminPanelRepo extends BaseRepo
 		}
 		return $fields;
 	}
-	public static function getItemList(int $currentPage, string $item): array
+	public static function getItemList(string $item, int $currentPage = 1): array
 	{
 		if($item === '')
 		{
@@ -109,14 +109,14 @@ class AdminPanelRepo extends BaseRepo
 		$config = new Config();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$startId = ($currentPage - 1) * $itemsPerPage;
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$item = mysqli_real_escape_string($DBOperator, $item);
 		$itemFields = self::getItemColumns($item);
 		$queryFields = implode(' ,', $itemFields);
 		$result = $DBOperator->query("
 				SELECT {$queryFields} 
 				FROM {$item} 
-				WHERE $item.id IN(SELECT id FROM item WHERE id > $startId)
+				WHERE id IN(SELECT id FROM {$item} WHERE id > $startId)
 				ORDER BY id
 				LIMIT $itemsPerPage;
 		");

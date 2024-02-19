@@ -14,7 +14,7 @@ class CategoryListRepo extends BaseRepo
 	{
         /*return (new FileCache())->remember('category', 3600, function()
         {*/
-            $DBOperator = new DBHandler();
+            $DBOperator = DBHandler::getInstance();
             $result = $DBOperator->query('SELECT id, name, engName FROM category');
 
             return self::createCategoryList($result);
@@ -25,7 +25,7 @@ class CategoryListRepo extends BaseRepo
     {
 		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function()
 		{
-			$DBOperator = new DBHandler();
+			$DBOperator = DBHandler::getInstance();
 			$result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName
                                             FROM category c
                                             LEFT JOIN items_category ic ON c.id = ic.category_id
@@ -57,7 +57,7 @@ class CategoryListRepo extends BaseRepo
 		$config = new Config();
 		$dbName = $config->option('DB_NAME');
 
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query('SHOW TABLES');
 
 		$objectList = new CategoryList();

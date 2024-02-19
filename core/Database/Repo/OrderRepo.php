@@ -12,7 +12,7 @@ class OrderRepo extends BaseRepo
 {
 	public static function getOrderList(): array
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query(
             "SELECT o.id, i.title as item, s.name as status, o.data_create, o.user_id, o.price, o.address
 					FROM orders o
@@ -45,7 +45,7 @@ class OrderRepo extends BaseRepo
 
 	public static function saveOrder($itemId, int $price, string $number, string$address):void
 	{
-		$DBOperator = new DBHandler();
+		$DBOperator = DBHandler::getInstance();
 		$date = date('Y-m-d');
 		$number = $DBOperator->real_escape_string($number);
 		$address = $DBOperator->real_escape_string($address);

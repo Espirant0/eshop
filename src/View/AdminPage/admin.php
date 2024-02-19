@@ -55,7 +55,7 @@ use Core\Database\Repo\AdminPanelRepo;
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach (AdminPanelRepo::getItemList($page, $tableName) as $item):?>
+					<?php foreach (AdminPanelRepo::getItemList($tableName, $page) as $item):?>
 						<tr>
 							<?php foreach ($item as $itemValue): ?>
 								<td><?=$itemValue?></td>

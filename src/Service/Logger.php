@@ -4,6 +4,7 @@ namespace App\Service;
 
 class Logger
 {
+	private static $messageLine=1;
 	public static function writeErrorToLog(\ErrorException $info, string $trace = '', string $type = 'Error'):void
 	{
 		$errorLogPath = ROOT.'/var/logs';
@@ -34,6 +35,16 @@ class Logger
 				break;
 			}
 		}
+	}
+	public static function writeToLog(string $message):void
+	{
 
+		$errorLogFile = ROOT."/var/logs/MESSAGELOG.txt";
+		if(self::$messageLine==1)
+		{
+			file_put_contents($errorLogFile,"----------новый прогон---------\n", FILE_APPEND);
+		}
+		file_put_contents($errorLogFile,"[".self::$messageLine."]".$message."\n", FILE_APPEND);
+		self::$messageLine++;
 	}
 }

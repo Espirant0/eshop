@@ -36,8 +36,6 @@ class Application
 
         http_response_code(404);
         $err=new PageNotFoundController();
-		$err->PageNotFoundViewer(
-
-		);
+		$err->PageNotFoundViewer();
     }
 }

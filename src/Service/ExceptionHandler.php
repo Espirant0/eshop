@@ -2,6 +2,7 @@
 
 namespace App\Service;
 use App\Controller\ErrorController;
+use App\Controller\PageNotFoundController;
 
 class ExceptionHandler
 {
@@ -67,6 +68,12 @@ class ExceptionHandler
 		$exc=new \ErrorException($exception->getMessage(), $exception->getCode(), 1, $exception->getFile(),$exception->getLine());
 		$trace=$exc->getTraceAsString();
 		Logger::writeErrorToLog($exc,$trace,$type);
-		self::errorPageRedirect();
+		if ($exc->getCode()==-1)
+		{
+			http_response_code(404);
+			$err=new PageNotFoundController();
+			$err->PageNotFoundViewer();
+		}
+		else self::errorPageRedirect();
 	}
 }

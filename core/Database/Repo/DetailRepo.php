@@ -27,6 +27,7 @@ class DetailRepo extends BaseRepo
 		{
 			throw new \Exception($DBOperator->connect_error);
 		}
+		if($result->num_rows<1) throw new \Exception('No ID',-1);
 
 		$row = mysqli_fetch_assoc($result);
 		$itemId = $row['id'];

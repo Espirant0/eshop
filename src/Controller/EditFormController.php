@@ -63,7 +63,7 @@ class EditFormController extends BaseController
 				 'material_id'=>$_POST['material_id'],
 				 'color_id'=>$_POST['color_id']];
 
-		$rules = ['title' => ['required'], //если нужно необязательным просто required убрать,я тестил просто
+		$rules = ['title' => ['required'],
 				  'category'=>['required','numeric'],
 				  'create_year'=>['required','numeric','min:4'],
 				  'price'=>['required','numeric'],

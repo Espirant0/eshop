@@ -40,7 +40,7 @@ class IndexController extends BaseController
 			$search=null;
 		}
 		else $search = $property['search'];
-		$bicycleList = BicycleRepo::getBicyclelist($pageNumber, $categoryName[0], $property);
+		$bicycleList = BicycleRepo::getBicycleList($pageNumber, $categoryName[0], $property);
 		if($bicycleList == [] || $pageNumber < 1)
 		{
 			$this->render('layout.php',[

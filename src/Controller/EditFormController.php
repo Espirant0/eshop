@@ -11,36 +11,42 @@ use Core\Validator\Validator;
 
 class EditFormController extends BaseController
 {
-	public function showEditFormPage(?array $errors = null): void
+	public function showEditFormPage($tableName, ?array $errors = null): void
 	{
-		if (AuthService::checkAuth())
-        {
-			echo $this->render('EditFormPage/edit.php', [
+		$fields = AdminPanelRepo::getItemColumns($tableName[0]);
+		$cache = new FileCache();
+		$cache->set($tableName[0], $fields, 3600);
+		if(AuthService::checkAuth()) {
+			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $_GET['id'],
-				'table' => $_GET['table'],
-				'fieldList' => AdminPanelRepo::getItemColumns($_GET['table']),
+				'tableName' => $tableName[0],
+				'title' => 'Редактировать',
 			]);
 		}
 		else
         {
 			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
+				'title' => 'Авторизация',
 			]);
 		}
 	}
-	public function showAddFormPage(?array $errors = null): void
+	public function showAddFormPage($tableName,?array $errors = null): void
 	{
 		if(AuthService::checkAuth())
         {
 			echo $this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
+				'tableName' => $tableName[0],
+				'title' => 'Добавить товар',
 			]);
 		}
 		else
         {
 			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
+				'title' => 'Авторизация',
 			]);
 		}
 	}
@@ -91,28 +97,32 @@ class EditFormController extends BaseController
 		}
 	}
 
-	public function updateValue(): void
+	public function updateValue($tableName): void
 	{
 		$errors = [];
-		$itemId = (int)$_GET['id'];
-		$table = (string)$_GET['table'];
-		$itemField = (string)$_POST['field'];
-		$newValue = $_POST['value'];
-		if(AdminPanelRepo::checkItemColumns($table, $itemField, $newValue))
-        {
-			if ($itemField == 'title')
-			{
-				ImageHandler::renameImageForExistingItem($itemId, $newValue);
+		$itemId = $_GET['id'];
+		$table = $tableName[0];
+		$fields = (new FileCache())->get($table);
+		$newValues = [];
+		foreach ($fields as $field)
+		{
+			if($_POST[$field]!=='') {
+				$newValues[$field] = $_POST[$field];
 			}
-
-			AdminPanelRepo::updateItem($table, $itemId, $itemField, $newValue);
+		}
+		if($table === 'item') {
+			ImageHandler::renameImageForExistingItem($itemId, $_POST['title']);
+		}
+		if(!empty($newValues)) {
+			AdminPanelRepo::updateItem($table, $itemId, $newValues);
 			FileCache::deleteCacheByKey($table);
 			HttpService::redirect('admin_panel');
 		}
 		else
 		{
-			$errors[] = 'Неверное значение!';
+			$errors[] = 'Вы не ввели значение!';
 			$this->showEditFormPage($errors);
 		}
+
 	}
 }

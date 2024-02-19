@@ -12,4 +12,9 @@ class PageNotFoundController extends BaseController
 			'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem()
 		]);
 	}
+
+	public function PageNotFoundViewerAdmin(): void
+	{
+		$this->render('NotFoundPage/404.php',[]);
+	}
 }

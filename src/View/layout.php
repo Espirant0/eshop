@@ -3,6 +3,7 @@
  * @var string $content
  * @var Category $category
  * @var CategoryList $categoryList
+ * @var string $title;
  */
 
 use App\Model\Category;
@@ -21,7 +22,7 @@ use App\Service\AuthService;
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
 	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title><?=TITLE?></title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="grid">
@@ -30,7 +31,7 @@ use App\Service\AuthService;
 			<ul class="tags">
 				<a href="/"><li><p>Главная</p></li></a>
 				<?php foreach($categoryList as $category):?>
-				<a href="<?="/category/{$category->getEngName()}"?>"><li><span><?=$category->getName();?></span></li></a>
+				<a href="/category/<?=$category->getEngName()?>/"><li><span><?=$category->getName();?></span></li></a>
 					<?php endforeach;?>
 			</ul>
 		</div>
@@ -39,8 +40,8 @@ use App\Service\AuthService;
 		<div class="search_line">
 			<div class="input__line">
 				<form action="/search.php?find">
-					<input type="search" placeholder="Поиск по каталогу..." class="input_main" name="find" id="find">
-					<input type="submit" formaction="/?find" class="search_btn" value="Искать">
+					<input type="search" placeholder="Поиск по каталогу..." class="input_main" name="search" id="search">
+					<input type="submit" formaction="/?search" class="search_btn" value="Искать">
 				</form>
 			</div>
 			<a href="/auth" class="sign_in_btn <?=AuthService::checkAuth()? 'disable': 'active'?>">Войти</a>

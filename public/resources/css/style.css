@@ -303,6 +303,10 @@ a {
 .pages{
     display: flex;
     justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    position: relative;
+    bottom: 0;
 }
 .page_number{
     padding: 5px;
@@ -376,6 +380,9 @@ a {
     background: transparent;
     border-width: 1px ;
 }
+.tab{
+    margin-top: 30px;
+}
 .tab_nav{
     display: flex;
     justify-content: center;
@@ -397,7 +404,9 @@ a {
     pointer-events: none;
     color: red;
 }
-
+.tab-pane{
+    text-align: center;
+}
 .tab-pane:not(.tab-pane-show) {
     display: none;
 }

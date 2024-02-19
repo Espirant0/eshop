@@ -16,7 +16,8 @@ class Bicycle
 	private int $speed;
 	private string $material = '';
 	private string $vendor = '';
-	private array $categories;
+	private ?array $categories = [];
+	private string $target;
 	/**
 	 * @var Image[] $images
 	 */
@@ -40,7 +41,8 @@ class Bicycle
 								string $status,
 								string $vendor,
 								int $speed,
-								array $categories)
+								?array $categories,
+								string $target)
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -53,6 +55,7 @@ class Bicycle
 		$this->vendor = $vendor;
 		$this->speed = $speed;
 		$this->categories=$categories;
+		$this->target = $target;
 		$images = [];
 		/**
 		 * @var Image[] $images
@@ -195,5 +198,15 @@ class Bicycle
 			}
 		}
 		return 'Has no image';
+	}
+
+	public function getTarget(): string
+	{
+		return $this->target;
+	}
+
+	public function setTarget(string $target): void
+	{
+		$this->target = $target;
 	}
 }

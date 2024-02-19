@@ -1,6 +1,10 @@
 <?php
 /**
- * @var Bicycle[] $bicycleList
+ * @var Bicycle[] $bicycleList;
+ * @var string $categoryName;
+ * @var string $page;
+ * @var int $pagesCount;
+ * @var string $httpQuery;
  */
 
 use App\Model\Bicycle;
@@ -19,8 +23,16 @@ use App\Model\Bicycle;
 	<?php endforeach;?>
 </div>
 <div class="pages">
-	<a href="" class="first page_number">1</a>
-	<a href="" class="second page_number">2</a>
-	<p class="page_number">...</p>
-	<a href="" class="last page_number">6</a>
+	<a href="/?<?=$httpQuery?>"
+	   class="page_number <?=(!isset($page) || $page =='1')? 'disable':'active'?>">
+		В начало
+	</a>
+	<a href="/?<?=$httpQuery?>&page=<?= (!isset($page))?'1':((int)$page-1)?>"
+	   class="page_number <?=(!isset($page) || $page == '1')? 'disable':'active'?>">
+		Назад
+	</a>
+	<a href="/?<?=$httpQuery?>&page=<?= (!isset($page))?'2':((int)$page+1)?>"
+	   class="page_number <?=((int)$page === $pagesCount)? 'disable':'active'?>">
+		Вперёд
+	</a>
 </div>

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+use App\Service\DBHandler;
+
 abstract class BaseController
 {
 	public function render(string $templateName, array $params): string
@@ -21,5 +23,29 @@ abstract class BaseController
         ob_start();
         require $template;
         return ob_get_clean();
+	}
+
+	public function getPagesCount(int $itemsPerPage, string $table, ?array $filter):int
+	{
+		$DBOperator = new DBHandler();
+		if($table === '')
+		{
+			return 0;
+		}
+		$queryAdditions= '';
+		$tableList=$DBOperator->getResult("SELECT REFERENCED_TABLE_NAME
+													FROM information_schema.KEY_COLUMN_USAGE
+													WHERE TABLE_NAME = '$table' AND TABLE_SCHEMA = 'eshop' AND CONSTRAINT_NAME <> 'PRIMARY'");
+		if (isset($filter['category'])) {
+			$filterString = $filter['category'];
+			$queryAdditions = "i INNER JOIN items_category ic on i.id = ic.item_id
+        INNER JOIN category c2 on ic.category_id = c2.id WHERE c2.engName = '$filterString'";
+		}
+		$table = mysqli_real_escape_string($DBOperator,$table);
+		$result = $DBOperator->query(
+			"SELECT COUNT(*) AS count FROM $table $queryAdditions
+					
+		");
+		return ceil($result->fetch_row()[0] / $itemsPerPage);
 	}
 }

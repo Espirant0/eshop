@@ -1,9 +1,12 @@
 <?php
 /**
  * @var int $itemId;
- * @var string $table;
- * @var array $fieldList;
+ * @var string $tableName;
+ * @var string $title;
  */
+
+use App\Cache\FileCache;
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -14,7 +17,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title>edit</title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="auth_container">
@@ -26,17 +29,12 @@
 		<?php endif;?>
 	</div>
 	<div class="form_container">
-		<form action="/admin_panel/update?id=<?=$itemId;?>&table=<?=$table?>" method="post" class="auth_form">
-			<label>
-				<select name="field" class="login_input auth_input" required>
-					<?php foreach ($fieldList as $field):?>
-						<option><?=$field?></option>
-					<?php endforeach;?>
-				</select>
-			</label>
-			<label>
-				<input type="text" name="value" class="password_input auth_input" placeholder="Введите новое значение" required>
-			</label>
+		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
+			<?php foreach ((new FileCache())->get($tableName) as $field):?>
+				<label>
+					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
+				</label>
+			<?php endforeach;?>
 			<button class="auth_btn">Обновить</button>
 		</form>
 	</div>

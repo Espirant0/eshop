@@ -39,13 +39,14 @@ class DetailRepo extends BaseRepo
 		$itemStatus = $row['status'];
 		$itemSpeed = $row['speed'];
 		$itemManufacturer = $row['vendor'];
+		$itemTarget = $row['target'];
 		$categoryList = [new Category('category',$row['category_name'],$row['category_engname']),
 			new Category('vendor',$row['vendor'],$row['vendor']),
 			new Category('color',$row['color'],$row['color_engname']),
 			new Category('material',$row['material'],$row['material_engname']),
 			new Category('target',$row['target'], $row['target_engname'])];
 
-		$bicycle = new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,$itemSpeed,$categoryList);
+		$bicycle = new Bicycle($itemId, $itemName, $itemColor, $itemYear,$itemMaterial,$itemPrice,$itemDescription, $itemStatus,$itemManufacturer,$itemSpeed,$categoryList, $itemTarget);
 		$itemCache = new FileCache();
 		$itemCache->set('bicycle', $bicycle, 3600);
 		return $bicycle;

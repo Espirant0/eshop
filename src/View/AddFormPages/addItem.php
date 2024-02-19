@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $tableName;
+ * @var string $title;
+ */
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,7 +13,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title>edit</title>
+	<title><?=$title?></title>
 </head>
 <body>
 <div class="auth_container">
@@ -27,7 +33,7 @@
 		<?php endif; ?>
 	</div>
 	<div class="form_container">
-		<form action="/admin_panel/add" method="post" class="auth_form">
+		<form action="/admin_panel/<?=$tableName?>/add" method="post" class="auth_form">
 			<label>
 				<input type="text" name="title" class="login_input auth_input" placeholder="Введите название" required>
 			</label>

@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Controller;
+
 use App\Cache\FileCache;
-use Core\Database\Repo\AdminPanelRepo;
+use App\Config\Config;
 use Core\Database\Repo\BicycleRepo;
 use Core\Database\Repo\CategoryListRepo;
 
@@ -10,41 +11,58 @@ class IndexController extends BaseController
 {
     public function showIndexPage($categoryName): void
     {
-		FileCache::deleteCacheByKey('bicycle');
-
-		if (!isset($_GET['find']))
+		$config = new Config();
+		$itemsPerPage = $config->option('PRODUCT_LIMIT');
+		$pageNumber = 1;
+		if(isset($_GET['page']))
 		{
-			$property = '';
+			$pageNumber = (int)$_GET['page'];
+			unset($_GET['page']);
 		}
-		else
-        {
-            $property = $_GET['find'];
-        }
-
+		$property=[];
+		FileCache::deleteCacheByKey('bicycle');
+		if (count($_GET)>0)
+		{
+			$property = $_GET;
+		}
+		$httpQuery=$_GET;
         if (empty($categoryName))
         {
-            $categoryName[] = '';
+			if(isset($_GET['category'])) $categoryName[]=$_GET['category'];
+            else $categoryName[] = '';
         }
-
-		$bicycleList = BicycleRepo::getBicycleListConsideringCategoryName($categoryName[0], $property);
-
-		if ($bicycleList == [])
+		else
 		{
-			echo $this->render('layout.php',[
-				'content' => $this->render('MainPage/nullSearch.php', [
-					'search' => $property,
+			$httpQuery['category'] = $categoryName[0];
+		}
+		if(!isset($property['search']))
+		{
+			$search=null;
+		}
+		else $search = $property['search'];
+		$bicycleList = BicycleRepo::getBicyclelist($pageNumber, $categoryName[0], $property);
+		if($bicycleList == [] || $pageNumber < 1)
+		{
+			$this->render('layout.php',[
+				'content' => $this->strRender('MainPage/nullSearch.php', [
+					'search' => $search,
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+				'title' => 'Ничего не найдено'
 			]);
 		}
         else
 		{
-			echo $this->render('layout.php', [
-				'content' => $this->render('MainPage/index.php', [
-					'category_name' => $categoryName[0],
+			$this->render('layout.php', [
+				'content' => $this->strRender('MainPage/index.php', [
+					'categoryName' => $categoryName[0],
 					'bicycleList' => $bicycleList,
+					'page' => $pageNumber,
+					'httpQuery'=>http_build_query($httpQuery),
+					'pagesCount' => $this->getPagesCount($itemsPerPage,'item', $property),
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+				'title' => TITLE,
 			]);
 		}
     }

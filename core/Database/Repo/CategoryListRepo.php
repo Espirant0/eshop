@@ -12,13 +12,13 @@ class CategoryListRepo extends BaseRepo
 {
 	public static function getCategoryList(): CategoryList
 	{
-        return (new FileCache())->remember('category', 3600, function()
-        {
+        /*return (new FileCache())->remember('category', 3600, function()
+        {*/
             $DBOperator = new DBHandler();
             $result = $DBOperator->query('SELECT id, name, engName FROM category');
 
             return self::createCategoryList($result);
-        });
+        /*});*/
 	}
 
     public static function getCategoryListConsideringExistingItem(): CategoryList
@@ -52,30 +52,28 @@ class CategoryListRepo extends BaseRepo
         return $categoryList;
     }
 
-	public static function getObjectList(): CategoryList
+	public function getObjectList(): CategoryList
 	{
 		$config = new Config();
-		$dbNAME = $config->option('DB_NAME');
+		$dbName = $config->option('DB_NAME');
 
 		$DBOperator = new DBHandler();
 		$result = $DBOperator->query('SHOW TABLES');
 
 		$objectList = new CategoryList();
-		$tablePostfix = 'Tables_in_' . $dbNAME;
+		$tablePostfix = 'Tables_in_' . $dbName;
 		$categoryBlackList = $config->option('CATEGORY_BLACK_LIST');
 
-		$idIterator = 1;
-
+		$idIterator = 0;
 		while ($row = mysqli_fetch_assoc($result))
 		{
 			if(!in_array($row[$tablePostfix], $categoryBlackList))
 			{
-				$category = new Category($idIterator, $config->option('DICTIONARY')[$row[$tablePostfix]], '');
+				$category = new Category($idIterator, $config->option('DICTIONARY')[$row[$tablePostfix]], $row[$tablePostfix]);
 				$objectList->addCategory($category);
 				$idIterator++;
 			}
 		}
-
 		return $objectList;
 	}
 }

@@ -14,9 +14,12 @@ class BicycleRepo extends BaseRepo
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$startId = ($currentPage - 1) * $itemsPerPage;
         $queryDop = '';
-        if ($categoryName !== '') {
+
+        if ($categoryName !== '')
+        {
             $queryDop = "AND c2.engName = '$categoryName'";
         }
+
         $DBOperator = new DBHandler();
         $result = $DBOperator->query(
             "SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.engName as color, ma.engName as material, m.name as vendor, ta.engName as target, c2.engName as category, ic.category_id, c2.name as category_name
@@ -42,6 +45,7 @@ class BicycleRepo extends BaseRepo
 		{
 			return BicycleRepo::getFilteredBicycleList($currentPage, $categoryName, $property);
 		}
+
 		while ($row = mysqli_fetch_assoc($result))
 		{
 			$category[] = new Category(

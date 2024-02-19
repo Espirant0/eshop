@@ -5,8 +5,8 @@ class ErrorController extends BaseController
 {
 	public function showErrorPage(): void
 	{
-		$this->render('ErrorPage/error.php',[
-			'title' => 'Ошибка!',
-		]);
+		ob_end_clean();
+		echo $this->render('ErrorPage/error.php',[]);
+		die();
 	}
 }

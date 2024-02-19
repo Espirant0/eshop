@@ -37,6 +37,7 @@ Router::get('/admin_panel/:tableName/edit', [new App\Controller\EditFormControll
 
 Router::post('/admin_panel/:tableName/update', [new App\Controller\EditFormController(), 'updateValue']);
 
+<<<<<<< 9252b2df7ddb4817d9b0581439daee939416f397
 Router::get('/admin_panel/:tableName/delete', [new App\Controller\AdminController(), 'deleteBicycle']);
 
 Router::get('/admin_panel/:tableName/add_form', [new App\Controller\EditFormController(), 'showAddFormPage']);
@@ -44,3 +45,8 @@ Router::get('/admin_panel/:tableName/add_form', [new App\Controller\EditFormCont
 Router::post('/admin_panel/:tableName/add', [new App\Controller\EditFormController(), 'addItem']);
 
 Router::get('/admin_panel/dev_reset', [new App\Controller\AdminController(), 'resetData']);
+=======
+Router::post('/admin_panel/add', [new App\Controller\EditFormController(), 'addItem']);
+
+require_once 'routesForFiltration.php';
+>>>>>>> d49067f5b409095f343afafe487153843b2b1223

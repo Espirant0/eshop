@@ -10,10 +10,23 @@ use App\Model\Bicycle;
 <div class="main_content_inner">
 	<div class="content">
 		<div class="image_container">
-			<a href="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" data-lightbox="roadtrip" class="poster_link"><img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="poster"></a>
+			<a href="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>"
+			   data-lightbox="roadtrip" class="poster_link">
+				<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>"
+					 alt=""
+					 class="poster"
+				>
+			</a>
 			<div class="lower_images">
 				<?php foreach ($bicycle->getImages() as $image):?>
-					<a href="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$image->getName()}"?>" data-lightbox="roadtrip"><img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$image->getName()}"?>" alt="" class="lower_poster"></a>
+					<a href="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$image->getName()}"?>"
+					   <?=$image->isMain()? '' : 'data-lightbox="roadtrip"'?>
+					   class="<?=$image->isMain()? 'disable' : 'active'?>">
+						<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$image->getName()}"?>"
+							 alt=""
+							 class="lower_poster"
+						>
+					</a>
 				<?php endforeach;?>
 			</div>
 		</div>

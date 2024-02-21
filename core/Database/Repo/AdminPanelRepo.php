@@ -23,7 +23,7 @@ class AdminPanelRepo extends BaseRepo
 		$manufacturerId = $bicycle->getVendor();
 		$materialId = $bicycle->getMaterial();
 		$colorId = $bicycle->getColor();
-		$category = $bicycle->getCategories()[0]->getID();
+		$category = $bicycle->getCategories()[0];
 		$speed = $bicycle->getSpeed();
 
 		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id)
@@ -38,7 +38,8 @@ class AdminPanelRepo extends BaseRepo
 		else
 		{
 			$number = 1;
-			foreach ($images['tmp_name'] as $image) {
+			foreach ($images['tmp_name'] as $image)
+            {
 				ImageHandler::createNewItemImage($image, $itemId, $title, $number);
 				if($number === 1){
 					$isMain = 1;

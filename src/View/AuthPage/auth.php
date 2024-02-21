@@ -31,7 +31,7 @@
 				<input type="text" name="login" class="login_input auth_input" placeholder="Введите логин" required>
 			</label>
 			<label>
-				<input type="text" name="password" class="password_input auth_input" placeholder="Введите пароль" required>
+				<input type="password" name="password" class="password_input auth_input" placeholder="Введите пароль" required>
 			</label>
 			<button class="auth_btn">Войти</button>
 		</form>

@@ -32,8 +32,12 @@ class ImageHandler
 	}
 	public static function getAllImageNamesForItemByTitleAndId(int|string $id, string $itemTitle):array
 	{
-		$files = scandir(ROOT. '/public/resources/product/img/'.$id.'.'.$itemTitle);
-		$files = array_diff($files, array('.', '..'));
+		$files = [];
+		if(file_exists(ROOT. '/public/resources/product/img/'.$id.'.'.$itemTitle))
+		{
+			$files = scandir(ROOT . '/public/resources/product/img/' . $id . '.' . $itemTitle);
+			$files = array_diff($files, array('.', '..'));
+		}
 		return array_values($files);
 	}
 
@@ -49,10 +53,18 @@ class ImageHandler
 		return false;
 	}
 
-	public static function createNewItemImage(int|string $id, string $title):void
+	public static function createNewItemDefaultImage(int|string $id, string $title):void
 	{
 		mkdir(ROOT . "/public/resources/product/img/{$id}.{$title}", 0777,true);
 		copy(ROOT.'/public/resources/img/item.jpg',ROOT."/public/resources/product/img/{$id}.{$title}/{$title}_1.jpg");
+	}
+
+	public static function createNewItemImage(string $image, int|string $id, string $title, int $imageNumber):void
+	{
+		if(!file_exists(ROOT . "/public/resources/product/img/{$id}.{$title}")) {
+			mkdir(ROOT . "/public/resources/product/img/{$id}.{$title}", 0777, true);
+		}
+		copy($image,ROOT."/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}.jpg");
 	}
 	public static function renameImageForExistingItem(int|string $id, string $newTitle):void
 	{
@@ -67,5 +79,18 @@ class ImageHandler
 			}
 		}
 		rename(ROOT."/public/resources/product/img/$oldTitle",ROOT."/public/resources/product/img/$id.$newTitle");
+	}
+
+	public static function can_upload($file)
+	{
+		for ($i = 0; $i < count($file['name']); $i++) {
+			$getMime = explode('.', $file['name'][$i]);
+			$mime = strtolower(end($getMime));
+			$types = ['jpg', 'png', 'gif', 'bmp', 'jpeg'];
+			if (!in_array($mime, $types)) {
+				return false;
+			}
+			return true;
+		}
 	}
 }

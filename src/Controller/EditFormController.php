@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Cache\FileCache;
+use App\Model\Bicycle;
 use App\Service\AuthService;
 use App\Service\HttpService;
 use App\Service\ImageHandler;
@@ -14,6 +15,7 @@ class EditFormController extends BaseController
 	public function showEditFormPage($tableName, ?array $errors = null): void
 	{
 		$fields = AdminPanelRepo::getItemColumns($tableName[0]);
+		array_shift($fields);
 		$cache = new FileCache();
 		$cache->set($tableName[0], $fields, 3600);
 		if(AuthService::checkAuth()) {
@@ -53,15 +55,29 @@ class EditFormController extends BaseController
 
 	public function addItem($tableName): void
 	{
+		$images = [];
+
+		if(!empty($_FILES['files']['name'][0])) {
+			$check = ImageHandler::can_upload($_FILES['files']);
+			if ($check) {
+				$images = $_FILES['files'];
+			}
+			else {
+				$errors[] = ['Ошибка загрузки файлов'];
+				$this->showAddFormPage($tableName, $errors);
+				return;
+			}
+		}
+
 		$data = ['title'=>$_POST['title'],
-				 'category'=>$_POST['category'],
-				 'create_year'=>$_POST['create_year'],
-				 'price'=>$_POST['price'],
-				 'description'=>$_POST['description'],
-				 'status'=>$_POST['status'],
-				 'manufacturer_id'=>$_POST['manufacturer_id'],
-				 'material_id'=>$_POST['material_id'],
-				 'color_id'=>$_POST['color_id']];
+			 'category'=>$_POST['category'],
+			 'create_year'=>$_POST['create_year'],
+			 'price'=>$_POST['price'],
+			 'description'=>$_POST['description'],
+			 'status'=>$_POST['status'],
+			 'manufacturer_id'=>$_POST['manufacturer_id'],
+			 'material_id'=>$_POST['material_id'],
+			 'color_id'=>$_POST['color_id']];
 
 		$rules = ['title' => ['required'],
 				  'category'=>['required','numeric'],
@@ -73,21 +89,26 @@ class EditFormController extends BaseController
 				  'material_id'=>['required','numeric'],
 				  'color_id'=>['required','numeric']];
 
+		$itemId = AdminPanelRepo::getLastFreeId();
 		$validator = new Validator();
 
 		if($validator->validate($data,$rules))
 		{
-			AdminPanelRepo::addItem(
+			$bicycle = new Bicycle(
+				$itemId,
 				$_POST['title'],
-				$_POST['category'],
+				$_POST['color_id'],
 				$_POST['create_year'],
+				$_POST['material_id'],
 				$_POST['price'],
 				$_POST['description'],
 				$_POST['status'],
 				$_POST['manufacturer_id'],
-				$_POST['material_id'],
-				$_POST['color_id']
+				$_POST['speed'],
+				[$_POST['category']],
+				$_POST['target_id']
 			);
+			AdminPanelRepo::addItem($bicycle, $images);
 			HttpService::redirect('admin_panel');
 		}
 		else
@@ -110,7 +131,7 @@ class EditFormController extends BaseController
 				$newValues[$field] = $_POST[$field];
 			}
 		}
-		if($table === 'item') {
+		if($table === 'item' && (!empty($newValues))) {
 			ImageHandler::renameImageForExistingItem($itemId, $_POST['title']);
 		}
 		if(!empty($newValues)) {

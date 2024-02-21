@@ -1,5 +1,7 @@
 <?php
 namespace App\Service;
+use App\Config\Config;
+
 class ImageHandler
 {
 	private $directory;
@@ -80,6 +82,36 @@ class ImageHandler
 		}
 		rename(ROOT."/public/resources/product/img/$oldTitle",ROOT."/public/resources/product/img/$id.$newTitle");
 	}
+
+    public static function resizeImage($pathToUploadedImage)
+    {
+        $config = new Config();
+
+        $desiredWidth = $config->option('IMAGE_WIDTH');
+        $desiredHeight = $config->option('IMAGE_HEIGHT');
+
+        $imageInfo = getimagesize($pathToUploadedImage);
+        $originalWidth = $imageInfo[0];
+        $originalHeight = $imageInfo[1];
+
+        $originalImage = imagecreatefromstring(file_get_contents($pathToUploadedImage));
+
+        $resizedImage = imagecreatetruecolor($desiredWidth, $desiredHeight);
+
+        imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $desiredWidth, $desiredHeight, $originalWidth, $originalHeight);
+
+        $resizedImagePath = $pathToUploadedImage;
+
+        self::convertImageToJPEG($resizedImage, $resizedImagePath);
+
+        imagedestroy($originalImage);
+        imagedestroy($resizedImage);
+    }
+
+    public static function convertImageToJPEG($resizedImage, $resizedImagePath): void
+    {
+        imagejpeg($resizedImage, $resizedImagePath, 90);
+    }
 
 	public static function can_upload($file)
 	{

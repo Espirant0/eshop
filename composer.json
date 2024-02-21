@@ -28,6 +28,7 @@
   "require": {
     "ext-mysqli": "*",
       "ext-ctype": "*",
+    "ext-gd": "*",
     "ext-mbstring": "*"
   }
 }

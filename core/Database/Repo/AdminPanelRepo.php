@@ -10,37 +10,53 @@ use App\Service\ImageHandler;
 
 class AdminPanelRepo extends BaseRepo
 {
-	public static function addItem(
-		string $title,
-		string $category,
-		string $createYear,
-		string $price,
-		string $description,
-		string $status,
-		string $manufacturerId,
-		string $materialId,
-		string $colorId,
-	): void
+	public static function addItem(Bicycle $bicycle, array $images): void
 	{
 		$DBOperator = DBHandler::getInstance();
-		$title = mysqli_real_escape_string($DBOperator, $title);
-		$category = mysqli_real_escape_string($DBOperator,$category);
-		$colorId = (int)mysqli_real_escape_string($DBOperator, $colorId);
-		$createYear = (int)mysqli_real_escape_string($DBOperator, $createYear);
-		$materialId = (int)mysqli_real_escape_string($DBOperator, $materialId);
-		$description = mysqli_real_escape_string($DBOperator, $description);
-		$price = (int)mysqli_real_escape_string($DBOperator, $price);
-		$manufacturerId = (int)mysqli_real_escape_string($DBOperator, $manufacturerId);
-		$status = (int)mysqli_real_escape_string($DBOperator, $status);
 
-		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id,material_id, color_id)
-			                VALUES ('$title', $createYear, $price, '$description', $status, $manufacturerId, $materialId,$colorId)");
+		$itemId = $bicycle->getId();
+		$title = $bicycle->getName();
+		$year = $bicycle->getYear();
+		$price = $bicycle->getPrice();
+		$description = $bicycle->getDescription();
+		$status = $bicycle->getStatus();
+		$manufacturerId = $bicycle->getVendor();
+		$materialId = $bicycle->getMaterial();
+		$colorId = $bicycle->getColor();
+		$category = $bicycle->getCategories()[0]->getID();
+		$speed = $bicycle->getSpeed();
 
-		$lastAddedId = $DBOperator->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id)
+			                VALUES ('$title', $year, $price, '$description', $status, $manufacturerId, $speed, $materialId,$colorId)");
 
-		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($lastAddedId,$category)");
-		ImageHandler::createNewItemImage($lastAddedId, $title);
-		$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('$lastAddedId',1,1)");
+		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($itemId,'$category')");
+
+		if(empty($images))
+		{
+			ImageHandler::createNewItemDefaultImage($itemId, $title);
+		}
+		else
+		{
+			$number = 1;
+			foreach ($images['tmp_name'] as $image) {
+				ImageHandler::createNewItemImage($image, $itemId, $title, $number);
+				if($number === 1){
+					$isMain = 1;
+				}
+				else
+				{
+					$isMain = 0;
+				}
+				$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('$itemId',$isMain,$number)");
+				$number++;
+			}
+		}
+	}
+
+	public static function getLastFreeId():int
+	{
+		$DBOperator = DBHandler::getInstance();
+		return ($DBOperator->query('SELECT id FROM item ORDER BY id DESC LIMIT 1')->fetch_row()[0] + 1);
 	}
 	public static function updateItem(string $table, int $itemId, array $newValues):void
 	{
@@ -90,25 +106,33 @@ class AdminPanelRepo extends BaseRepo
 		{
 			return [];
 		}
+		$config = new Config();
+		$ignoredFields = $config->option('FIELDS_STOP_LIST');
 		$DBOperator = DBHandler::getInstance();
 		$table = mysqli_real_escape_string($DBOperator,$table);
 		$fields = [];
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
 		while ($row = mysqli_fetch_assoc($result))
 		{
-			$fields[] = $row['Field'];
+			if(!in_array($row['Field'], $ignoredFields)){
+				$fields[] = $row['Field'];
+			}
 		}
 		return $fields;
 	}
-	public static function getItemList(string $item, int $currentPage = 1): array
+	public static function getItemList(string $item, ?int $currentPage = 1): array
 	{
 		if($item === '')
 		{
 			return [];
 		}
-		$config = new Config();
-		$itemsPerPage = $config->option('PRODUCT_LIMIT');
-		$startId = ($currentPage - 1) * $itemsPerPage;
+		$limit = '';
+		if(isset($currentPage)) {
+			$config = new Config();
+			$itemsPerPage = $config->option('PRODUCT_LIMIT');
+			$startId = ($currentPage - 1) * $itemsPerPage;
+			$limit = "LIMIT {$itemsPerPage}";
+		}
 		$DBOperator = DBHandler::getInstance();
 		$item = mysqli_real_escape_string($DBOperator, $item);
 		$itemFields = self::getItemColumns($item);
@@ -118,11 +142,17 @@ class AdminPanelRepo extends BaseRepo
 				FROM {$item} 
 				WHERE id IN(SELECT id FROM {$item} WHERE id > $startId)
 				ORDER BY id
-				LIMIT $itemsPerPage;
+				$limit;
 		");
 		if (!$result) {
 			throw new \Exception($DBOperator->connect_error);
 		}
 		return mysqli_fetch_all($result);
+	}
+
+	public static function getItemById(string $table, int $itemId):array
+	{
+		$itemList = self::getItemList($table);
+		return $itemList[$itemId];
 	}
 }

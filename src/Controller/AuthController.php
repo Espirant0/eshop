@@ -19,10 +19,18 @@ class AuthController extends BaseController
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST')
         {
+			$error = 'Неверный логин или пароль';
+			if (!isset($_POST['login']) || !isset($_POST['password']))
+			{
+				$errors[] = $error;
+				$this->showAuthPage($errors);
+			}
 			$login = $_POST['login'];
+			if($login[0] === '8'){
+				$login = str_replace($login[0], '7', $login);
+			}
 			$password = $_POST['password'];
 
-			$error = 'Неверный логин или пароль';
 			$user = UserRepo::getUserByLogin($login);
 
 			if (!$user || $user->getRole() !== 'Администратор')

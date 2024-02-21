@@ -3,10 +3,14 @@
  * @var int $itemId;
  * @var string $tableName;
  * @var string $title;
+ * @var array $item;
  */
 
-use App\Cache\FileCache;
 
+use App\Cache\FileCache;
+use Core\Database\Repo\AdminPanelRepo;
+
+$item = AdminPanelRepo::getItemById($tableName, $itemId);
 ?>
 <!doctype html>
 <html lang="en">

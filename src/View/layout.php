@@ -34,6 +34,49 @@ use App\Service\AuthService;
 				<a href="/category/<?=$category->getEngName()?>/"><li><span><?=$category->getName();?></span></li></a>
 					<?php endforeach;?>
 			</ul>
+			<details class="filter_list">
+				<summary>Фильтр</summary>
+				<label for="category">Категория</label>
+				<select name="category" >
+					<option value="1">Электрический</option>
+					<option value="2">BMX</option>
+					<option value="3">Горный</option>
+					<option value="4">Дорожный</option>
+					<option value="5">Фэтбайк</option>
+					<option value="6">Подростковый</option>
+					<option value="7">Детский</option>
+				</select>
+				<label for="color_id">Цвет</label>
+				<select name="color_id" >
+					<option value="1">Чёрный</option>
+					<option value="2">Красный</option>
+					<option value="3">Жёлтый</option>
+					<option value="4">Серый</option>
+					<option value="5">Оранжевый</option>
+					<option value="6">Хаки</option>
+					<option value="7">Синий</option>
+					<option value="8">Розовый</option>
+					<option value="9">Фиолетовый</option>
+				</select>
+				<label for="material_id">Материал</label>
+				<select name="material_id" >
+					<option value="1">Сталь</option>
+					<option value="2">Алюминий</option>
+				</select>
+				<label for="manufacturer_id">Производитель</label>
+				<select name="manufacturer_id" >
+					<option value="1">Ortler</option>
+					<option value="2">Specialized</option>
+					<option value="3">Giant</option>
+					<option value="4">Bulls</option>
+					<option value="5">TechTeam</option>
+					<option value="6">Fracren</option>
+					<option value="7">Velopro</option>
+					<option value="8">Trinx</option>
+					<option value="9">Author</option>
+				</select>
+				<button class="">Искать</button>
+			</details>
 		</div>
 	</div>
 	<div class="top_line">

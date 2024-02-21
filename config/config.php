@@ -7,6 +7,7 @@ return [
     'DB_PASSWORD' => '',
     'DB_NAME' => '',
     'CATEGORY_BLACK_LIST' => ['image','items_category','migration','status'],
+	'FIELDS_STOP_LIST' => ['manufacturer_id', 'speed', 'material_id', 'color_id', 'target_id'],
     'DICTIONARY' => [
 		'role' => 'Роли',
 		'item' => 'Товары',
@@ -19,4 +20,5 @@ return [
         'user' => 'Пользователь',
     ],
 	'PRODUCT_LIMIT' => 9,
+	'TEXT_TRUNCATE' => 150,
 ];

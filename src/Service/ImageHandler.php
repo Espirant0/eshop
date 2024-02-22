@@ -1,5 +1,7 @@
 <?php
 namespace App\Service;
+use App\Config\Config;
+
 class ImageHandler
 {
 	private $directory;
@@ -55,35 +57,58 @@ class ImageHandler
 
 	public static function createNewItemDefaultImage(int|string $id, string $title):void
 	{
-		mkdir(ROOT . "/public/resources/product/img/{$id}.{$title}", 0777,true);
+        if (!mkdir($concurrentDirectory = ROOT . "/public/resources/product/img/{$id}.{$title}", 0777, true) && !is_dir($concurrentDirectory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        }
 		copy(ROOT.'/public/resources/img/item.jpg',ROOT."/public/resources/product/img/{$id}.{$title}/{$title}_1.jpg");
 	}
 
-	public static function createNewItemImage(string $image, int|string $id, string $title, int $imageNumber):void
-	{
-		if(!file_exists(ROOT . "/public/resources/product/img/{$id}.{$title}")) {
-			mkdir(ROOT . "/public/resources/product/img/{$id}.{$title}", 0777, true);
-		}
-		copy($image,ROOT."/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}.jpg");
-	}
-	public static function renameImageForExistingItem(int|string $id, string $newTitle):void
-	{
-		$files = scandir(ROOT. '/public/resources/product/img/');
-		$files = array_diff($files, array('.', '..'));
-		foreach ($files as $file)
-		{
-			if((int)explode('.',$file)[0]==(int)$id)
-			{
-				$oldTitle = $file;
-				break;
-			}
-		}
-		rename(ROOT."/public/resources/product/img/$oldTitle",ROOT."/public/resources/product/img/$id.$newTitle");
-	}
+    public static function createNewItemImage(string $image, int|string $id, string $title, int $imageNumber): void
+    {
+        $imageData = file_get_contents($image);
+        $resizedImage = self::resizeImageFromString($imageData);
+
+        if (!file_exists($directory = ROOT . "/public/resources/product/img/{$id}.{$title}") && !mkdir($directory, 0777, true) && !is_dir($directory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+        }
+
+        $destinationPath = ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}.jpg";
+        copy($resizedImage, $destinationPath);
+    }
+
+    public static function resizeImageFromString($uploadedImageString): bool|string
+    {
+        $config = new Config();
+
+        $desiredWidth = 1000;
+        $desiredHeight = 1000;
+
+        $originalImage = imagecreatefromstring($uploadedImageString);
+
+        $originalWidth = imagesx($originalImage);
+        $originalHeight = imagesy($originalImage);
+
+        $resizedImage = imagecreatetruecolor($desiredWidth, $desiredHeight);
+
+        imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $desiredWidth, $desiredHeight, $originalWidth, $originalHeight);
+
+        $tempImagePath = tempnam(sys_get_temp_dir(), 'resized_image');
+        self::convertImageToJPEG($resizedImage, $tempImagePath);
+
+        imagedestroy($originalImage);
+        imagedestroy($resizedImage);
+
+        return $tempImagePath;
+    }
+
+    public static function convertImageToJPEG($resizedImage, $resizedImagePath): void
+    {
+        imagejpeg($resizedImage, $resizedImagePath, 90);
+    }
 
 	public static function can_upload($file)
 	{
-		for ($i = 0; $i < count($file['name']); $i++) {
+		for ($i = 0, $iMax = count($file['name']); $i < $iMax; $i++) {
 			$getMime = explode('.', $file['name'][$i]);
 			$mime = strtolower(end($getMime));
 			$types = ['jpg', 'png', 'gif', 'bmp', 'jpeg'];

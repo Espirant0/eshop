@@ -38,7 +38,8 @@ class AdminPanelRepo extends BaseRepo
 		else
 		{
 			$number = 1;
-			foreach ($images['tmp_name'] as $image) {
+			foreach ($images['tmp_name'] as $image)
+            {
 				ImageHandler::createNewItemImage($image, $itemId, $title, $number);
 				if($number === 1){
 					$isMain = 1;

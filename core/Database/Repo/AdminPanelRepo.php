@@ -23,7 +23,7 @@ class AdminPanelRepo extends BaseRepo
 		$manufacturerId = $bicycle->getVendor();
 		$materialId = $bicycle->getMaterial();
 		$colorId = $bicycle->getColor();
-		$category = $bicycle->getCategories()[0]->getID();
+		$category = $bicycle->getCategories()[0];
 		$speed = $bicycle->getSpeed();
 
 		$DBOperator->query("INSERT INTO item (title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id)
@@ -153,6 +153,8 @@ class AdminPanelRepo extends BaseRepo
 	public static function getItemById(string $table, int $itemId):array
 	{
 		$itemList = self::getItemList($table);
-		return $itemList[$itemId];
+		$item = $itemList[$itemId];
+		array_shift($item);
+		return $item;
 	}
 }

@@ -11,6 +11,7 @@ use App\Cache\FileCache;
 use Core\Database\Repo\AdminPanelRepo;
 
 $item = AdminPanelRepo::getItemById($tableName, $itemId);
+$table = (new FileCache())->get($tableName);
 ?>
 <!doctype html>
 <html lang="en">
@@ -34,11 +35,13 @@ $item = AdminPanelRepo::getItemById($tableName, $itemId);
 	</div>
 	<div class="form_container">
 		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
-			<?php foreach ((new FileCache())->get($tableName) as $field):?>
+			<?php $value = 0; foreach ($table as $field):?>
 				<label>
-					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
+					<?=$field?>
 				</label>
-			<?php endforeach;?>
+				<input type="text" name="<?=$field?>" class="password_input auth_input" value="<?=$item[$value]?>">
+			<?php $value++?>
+			<?php endforeach; ?>
 			<button class="auth_btn">Обновить</button>
 		</form>
 	</div>

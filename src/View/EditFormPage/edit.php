@@ -24,7 +24,7 @@ use App\Cache\FileCache;
 	<div class="auth_errors">
 		<?php if(!empty($errors)):?>
 			<div>
-				<?= implode('<br>', $errors);?>
+				<?php var_dump($errors);?>
 			</div>
 		<?php endif;?>
 	</div>
@@ -33,6 +33,9 @@ use App\Cache\FileCache;
 			<?php foreach ((new FileCache())->get($tableName) as $field):?>
 				<label>
 					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
+					<?php if (!empty($errors[$field])):?>
+						<?php echo 'Ошибка';?>
+					<?php endif;?>
 				</label>
 			<?php endforeach;?>
 			<button class="auth_btn">Обновить</button>
@@ -42,4 +45,3 @@ use App\Cache\FileCache;
 </div>
 </body>
 </html>
-

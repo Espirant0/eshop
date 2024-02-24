@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Cache\FileCache;
+use App\Model\Bicycle;
 use App\Service\AuthService;
 use App\Service\HttpService;
 use App\Service\ImageHandler;
@@ -15,6 +16,7 @@ class EditFormController extends BaseController
 	public function showEditFormPage($tableName, ?array $errors = null): void
 	{
 		$fields = AdminPanelRepo::getItemColumns($tableName[0]);
+		array_shift($fields);
 		$cache = new FileCache();
 		$cache->set($tableName[0], $fields, 3600);
 		if(AuthService::checkAuth()) {
@@ -64,17 +66,21 @@ class EditFormController extends BaseController
 
 		if($validator->validate($data,$rules->getRules()))
 		{
-			AdminPanelRepo::addItem(
+			$bicycle = new Bicycle(
+				$itemId,
 				$_POST['title'],
-				$_POST['category'],
+				$_POST['color_id'],
 				$_POST['create_year'],
+				$_POST['material_id'],
 				$_POST['price'],
 				$_POST['description'],
 				$_POST['status'],
 				$_POST['manufacturer_id'],
-				$_POST['material_id'],
-				$_POST['color_id']
+				$_POST['speed'],
+				[$_POST['category']],
+				$_POST['target_id']
 			);
+			AdminPanelRepo::addItem($bicycle, $images);
 			HttpService::redirect('admin_panel');
 		}
 		else

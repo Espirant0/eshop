@@ -3,10 +3,15 @@
  * @var int $itemId;
  * @var string $tableName;
  * @var string $title;
+ * @var array $item;
  */
 
-use App\Cache\FileCache;
 
+use App\Cache\FileCache;
+use Core\Database\Repo\AdminPanelRepo;
+
+$item = AdminPanelRepo::getItemById($tableName, $itemId);
+$table = (new FileCache())->get($tableName);
 ?>
 <!doctype html>
 <html lang="en">
@@ -30,14 +35,16 @@ use App\Cache\FileCache;
 	</div>
 	<div class="form_container">
 		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
-			<?php foreach ((new FileCache())->get($tableName) as $field):?>
+			<?php $value = 0; foreach ($table as $field):?>
 				<label>
 					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
 					<?php if (!empty($errors[$field])):?>
 						<?php echo 'Ошибка';?>
 					<?php endif;?>
 				</label>
-			<?php endforeach;?>
+				<input type="text" name="<?=$field?>" class="password_input auth_input" value="<?=$item[$value]?>">
+			<?php $value++?>
+			<?php endforeach; ?>
 			<button class="auth_btn">Обновить</button>
 		</form>
 	</div>

@@ -11,6 +11,8 @@
 use App\Model\Category;
 use App\Model\CategoryList;
 use Core\Database\Repo\AdminPanelRepo;
+use App\Service\ViewService;
+use App\Config\Config;
 
 ?>
 <!doctype html>
@@ -25,9 +27,11 @@ use Core\Database\Repo\AdminPanelRepo;
 </head>
 <body>
 <div class="admin_content">
-	<a href="/" class="sign_in_btn">Главная</a>
-	<a href="/sign_out" class="sign_in_btn">Выйти</a>
-	<a href="/admin_panel/dev_reset" class="sign_in_btn">Откат БД</a>
+	<div class="buttons">
+		<a href="/" class="sign_in_btn">Главная</a>
+		<a href="/sign_out" class="sign_in_btn">Выйти</a>
+		<a href="/admin_panel/dev_reset" class="sign_in_btn">Откат БД</a>
+	</div>
 	<div class="tab" id="tab-1">
 		<div class="tab_nav">
 			<?php foreach ($objectList as $object): ?>
@@ -58,7 +62,7 @@ use Core\Database\Repo\AdminPanelRepo;
 					<?php foreach (AdminPanelRepo::getItemList($tableName, $page) as $item):?>
 						<tr>
 							<?php foreach ($item as $itemValue): ?>
-								<td><?=$itemValue?></td>
+								<td><?=ViewService::truncate((string)$itemValue, (new Config())->option('TEXT_TRUNCATE'))?></td>
 							<?php endforeach; ?>
 							<td>
 								<a href="/admin_panel/<?=$tableName?>/edit?id=<?=$item[0]?>">

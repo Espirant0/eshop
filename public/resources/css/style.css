@@ -130,7 +130,11 @@ a {
     font-weight: 700;
     line-height: 65px;
 }
-
+.image_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .poster{
     max-height: 350px;
 }
@@ -277,7 +281,7 @@ a {
 }
 
 .admin_content{
-    margin-top: 150px;
+    margin-top: 100px;
     margin-right: 200px;
     margin-left: 200px;
 }
@@ -322,7 +326,7 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 200px;
+    margin-top: 100px;
 }
 
 .auth_errors{
@@ -380,24 +384,29 @@ a {
     background: transparent;
     border-width: 1px ;
 }
-.tab{
-    margin-top: 30px;
-}
+
 .tab_nav{
     display: flex;
     justify-content: center;
     align-items: center;
-    column-gap: 20px;
+    column-gap: 10px;
+    font-size: 30px;
+}
+.buttons{
+    position: absolute;
+    top: 0;
+    margin-top: 40px;
 }
 .tab-btn{
     height: 50px;
-    padding: 20px;
+    padding: 10px;
     align-content: center;
+    border: 1px solid black;
 }
 .tab-content{
     display: flex;
     justify-content: center;
-    margin-top: 30px;
+    margin-top: 40px;
     width: 100%;
 }
 .tab-btn-active {
@@ -427,7 +436,19 @@ td, th{
     border-bottom: 1px solid black;
     padding: 10px;
 }
-
+.filter_list{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    text-align: center;
+}
+.filter_list > select, button{
+    margin: 0 auto;
+}
+.filter_list > label{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 .add_btn{
     font-size: 16px;
 }

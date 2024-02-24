@@ -18,5 +18,11 @@ return [
         'target_audience' => 'Целевая аудитория',
         'user' => 'Пользователь',
     ],
+	'DB_CHARACTERS' => [
+		'int' => 'int',
+		'decimal' => 'int',
+		'varchar' => 'string',
+		'char' => 'string'
+	],
 	'PRODUCT_LIMIT' => 9,
 ];

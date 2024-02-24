@@ -113,19 +113,22 @@ class BicycleRepo extends BaseRepo
 			{
 				continue;
 			}
-			if(isset($filter))
-			{
-				$skip = 0;
-				foreach ($filter as $value)
-				{
-					if($row[array_search($value,$filter)] != $value)
-					{
-						$skip = 1;
-						break;
-					}
-				}
-				if ($skip == 1) continue;
-			}
+            if (isset($filter)) {
+                $skip = 0;
+                foreach ($filter as $value) {
+                    $key = array_search($value, $filter, true);
+
+                    if ($key === false || !isset($row[$key])) {
+                        throw new \Exception('invalid data', -1);
+                    }
+
+                    if ($row[$key] !== $value) {
+                        $skip = 1;
+                        break;
+                    }
+                }
+                if ($skip === 1) continue;
+            }
 			$pageCounter++;
 			if ($pageCounter>($currentPage-1)*9)
 			{

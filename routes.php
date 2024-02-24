@@ -46,5 +46,3 @@ Router::post('/admin_panel/:tableName/add', [new App\Controller\EditFormControll
 Router::get('/admin_panel/dev_reset', [new App\Controller\AdminController(), 'resetData']);
 
 Router::post('/admin_panel/add', [new App\Controller\EditFormController(), 'addItem']);
-
-require_once 'routesForFiltration.php';

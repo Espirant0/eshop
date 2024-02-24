@@ -5,7 +5,6 @@ namespace Core;
 use App\Controller\PageNotFoundController;
 use App\Service\HttpService;
 use App\Service\ExceptionHandler;
-use App\Service\RoutesGenerator;
 use Core\Database\Migration\Migrator;
 
 class Application
@@ -16,9 +15,6 @@ class Application
 		set_exception_handler([ExceptionHandler::getInstance(),'exceptionToLogger']);
 		$migration = new Migrator();
 		$migration->migrate();
-
-        $routesGenerator = new RoutesGenerator();
-        $routesGenerator::addGenerateRoutesToCurrent();
 
         $route = Routing\Router::find($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 

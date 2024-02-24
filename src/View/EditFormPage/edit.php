@@ -29,7 +29,7 @@ $table = (new FileCache())->get($tableName);
 	<div class="auth_errors">
 		<?php if(!empty($errors)):?>
 			<div>
-				<?= implode('<br>', $errors);?>
+				<?php var_dump($errors);?>
 			</div>
 		<?php endif;?>
 	</div>
@@ -37,7 +37,10 @@ $table = (new FileCache())->get($tableName);
 		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
 			<?php $value = 0; foreach ($table as $field):?>
 				<label>
-					<?=$field?>
+					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
+					<?php if (!empty($errors[$field])):?>
+						<?php echo 'Ошибка';?>
+					<?php endif;?>
 				</label>
 				<input type="text" name="<?=$field?>" class="password_input auth_input" value="<?=$item[$value]?>">
 			<?php $value++?>
@@ -49,4 +52,3 @@ $table = (new FileCache())->get($tableName);
 </div>
 </body>
 </html>
-

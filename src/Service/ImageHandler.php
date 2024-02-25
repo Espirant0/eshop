@@ -104,6 +104,22 @@ class ImageHandler
 		imagejpeg($resizedImage, $resizedImagePath, 90);
 	}
 
+	public static function renameImageForExistingItem(int|string $id, string $newTitle):void
+	{
+		$files = scandir(ROOT. '/public/resources/product/img/');
+		$files = array_diff($files, array('.', '..'));
+		foreach ($files as $file)
+		{
+			if((int)explode('.',$file)[0]==(int)$id)
+			{
+				$oldTitle = $file;
+				break;
+			}
+		}
+		rename(ROOT."/public/resources/product/img/$oldTitle",ROOT."/public/resources/product/img/$id.$newTitle");
+	}
+
+
 	public static function can_upload($file)
 	{
 		for ($i = 0, $iMax = count($file['name']); $i < $iMax; $i++) {

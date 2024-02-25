@@ -6,9 +6,9 @@
  * @var array $item;
  */
 
+
 use App\Cache\FileCache;
 use Core\Database\Repo\AdminPanelRepo;
-use Core\Database\Repo\DetailRepo;
 
 $item = AdminPanelRepo::getItemById($tableName, $itemId);
 $table = (new FileCache())->get($tableName);
@@ -29,7 +29,7 @@ $table = (new FileCache())->get($tableName);
 	<div class="auth_errors">
 		<?php if(!empty($errors)):?>
 			<div>
-				<?= implode('<br>', $errors);?>
+				<?php var_dump($errors);?>
 			</div>
 		<?php endif;?>
 	</div>

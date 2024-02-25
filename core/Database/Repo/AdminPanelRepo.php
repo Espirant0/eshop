@@ -149,8 +149,6 @@ class AdminPanelRepo extends BaseRepo
 	public static function getItemById(string $table, int $itemId): array
 	{
 		$itemList = self::getItemList($table);
-		$item = $itemList[$itemId];
-		array_shift($item);
-		return $item;
+		return $itemList[$itemId - 1];
 	}
 }

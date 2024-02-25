@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model;
+use Core\Validator\Rules;
 
 class Category
 {
@@ -43,5 +44,17 @@ class Category
 	public function setEngName(?string $engName): void
 	{
 		$this->engName = $engName;
+	}
+
+	public static function getRulesValidationCategory(): Rules
+	{
+		return (new Rules())
+			->addRule(['engName', 'name'], 'min_optional:3');
+	}
+
+	public static function getRulesValidationVendor(): Rules
+	{
+		return (new Rules())
+			->addRule(['name'], 'min_optional:3');
 	}
 }

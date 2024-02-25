@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model;
+use Core\Validator\Rules;
 
 class Order
 {
@@ -101,5 +102,13 @@ class Order
 	public function setPrice(string $price): void
 	{
 		$this->price = $price;
+	}
+
+	public static function getRulesValidationOrder(): Rules
+	{
+		return (new Rules())
+			->addRule('price', ['numeric_optional', 'min_optional:3'])
+			->addRule('description', 'min_optional:3')
+			->addRule('create_year', 'min_optional:4');
 	}
 }

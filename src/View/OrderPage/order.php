@@ -1,18 +1,20 @@
 <?php
 /**
- * @var Bicycle $bicycle;
+ * @var Bicycle $bicycle ;
  */
 
 use App\Model\Bicycle;
 
 ?>
 <div class="order_content">
-	<a href="/detail/<?=$bicycle->getId()?>">
+	<a href="/detail/<?= $bicycle->getId() ?>">
 		<div class="item_card_order">
-			<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="item_img_order">
-			<p class="item_title"><?=$bicycle->getName()?></p>
+			<img
+				src="<?= "/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}" ?>"
+				alt="" class="item_img_order">
+			<p class="item_title"><?= $bicycle->getName() ?></p>
 			<div class="line"></div>
-			<p class="item_price"><?=$bicycle->getPrice()?></p>
+			<p class="item_price"><?= $bicycle->getPrice() ?> ₽</p>
 		</div>
 	</a>
 	<div class="form_inner">

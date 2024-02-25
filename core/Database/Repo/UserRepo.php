@@ -16,24 +16,21 @@ class UserRepo extends BaseRepo
 		    WHERE u.id = '$login';
 		    ");
 
-		if (!$result)
-        {
+		if (!$result) {
 			throw new Exception($DBOperator->connect_error);
 		}
 
-		while ($row = mysqli_fetch_assoc($result))
-		{
+		while ($row = mysqli_fetch_assoc($result)) {
 			$userLogin = $row['id'];
 
-            if (!isset($userLogin))
-            {
-                return null;
-            }
-            return new User($login, $row['name'], $row['address'], $row['role_name'], $row['password']);
+			if (!isset($userLogin)) {
+				return null;
+			}
+			return new User($login, $row['name'], $row['address'], $row['role_name'], $row['password']);
 		}
 	}
 
-	public static function getUserList():array
+	public static function getUserList(): array
 	{
 		$DBOperator = DBHandler::getInstance();
 		$userList = [];
@@ -45,9 +42,8 @@ class UserRepo extends BaseRepo
 		if (!$result) {
 			throw new Exception($DBOperator->connect_error);
 		}
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			$userList[] = new User($row['id'], $row['name'], $row['address'],$row['role_name'], $row['password']);
+		while ($row = mysqli_fetch_assoc($result)) {
+			$userList[] = new User($row['id'], $row['name'], $row['address'], $row['role_name'], $row['password']);
 		}
 		return $userList;
 	}

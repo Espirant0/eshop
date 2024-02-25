@@ -31,7 +31,7 @@ class Bicycle
 	 * @param category[] $categories
 	 * @var Image[] $images
 	 */
-	public function __construct(int $id,
+	public function __construct(int    $id,
 								string $name,
 								string $color,
 								string $year,
@@ -40,7 +40,7 @@ class Bicycle
 								string $description,
 								string $status,
 								string $vendor,
-								int $speed,
+								int    $speed,
 								?array $categories,
 								string $target)
 	{
@@ -54,14 +54,13 @@ class Bicycle
 		$this->status = $status;
 		$this->vendor = $vendor;
 		$this->speed = $speed;
-		$this->categories=$categories;
+		$this->categories = $categories;
 		$this->target = $target;
 		$images = [];
 		/**
 		 * @var Image[] $images
 		 */
-		foreach (ImageHandler::getAllImageNamesForItemByTitleAndId($this->id,$this->name) as $name)
-		{
+		foreach (ImageHandler::getAllImageNamesForItemByTitleAndId($this->id, $this->name) as $name) {
 			$images[] = new Image($name, ImageHandler::imageMainCheck($name));
 		}
 		$this->images = $images;
@@ -127,52 +126,52 @@ class Bicycle
 		$this->status = $status;
 	}
 
-	public function getName():string
+	public function getName(): string
 	{
 		return $this->name;
 	}
 
-	public function setName(string $name):void
+	public function setName(string $name): void
 	{
 		$this->name = $name;
 	}
 
-	public function getSpeed():string
+	public function getSpeed(): string
 	{
 		return $this->speed;
 	}
 
-	public function setSpeed(string $speed):void
+	public function setSpeed(string $speed): void
 	{
 		$this->speed = $speed;
 	}
 
-	public function getMaterial():string
+	public function getMaterial(): string
 	{
 		return $this->material;
 	}
 
-	public function setMaterial(string $material):void
+	public function setMaterial(string $material): void
 	{
 		$this->material = $material;
 	}
 
-	public function getVendor():string
+	public function getVendor(): string
 	{
 		return $this->vendor;
 	}
 
-	public function setVendor(string $vendor):void
+	public function setVendor(string $vendor): void
 	{
 		$this->vendor = $vendor;
 	}
 
-	public function getCategories():array
+	public function getCategories(): array
 	{
 		return $this->categories;
 	}
 
-	public function setCategories(array $categories):void
+	public function setCategories(array $categories): void
 	{
 		$this->categories = $categories;
 	}
@@ -184,16 +183,15 @@ class Bicycle
 	{
 		return $this->images;
 	}
+
 	/**
 	 * @var Image[] $imgArray
 	 */
-	public function getMainImageName():string
+	public function getMainImageName(): string
 	{
 		$imgArray = $this->images;
-		foreach ($imgArray as $image)
-		{
-			if($image->isMain())
-			{
+		foreach ($imgArray as $image) {
+			if ($image->isMain()) {
 				return $image->getName();
 			}
 		}

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Service;
+
 use App\Config\Config;
 
 class DBHandler extends \mysqli
@@ -10,6 +11,7 @@ class DBHandler extends \mysqli
 	private string $dbUser;
 	private string $dbPassword;
 	private string $dbName;
+
 	private function __construct()
 	{
 		$config = new Config();
@@ -20,18 +22,17 @@ class DBHandler extends \mysqli
 
 		parent::__construct($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName);
 
-		if ($this->connect_error)
-		{
+		if ($this->connect_error) {
 			throw new \Exception($this->connect_error);
 		}
 
 		$this->set_charset('utf8');
 		unset($config);
 	}
-	public static function getInstance():DBHandler
+
+	public static function getInstance(): DBHandler
 	{
-		if(!isset(self::$instance))
-		{
+		if (!isset(self::$instance)) {
 			self::$instance = new self;
 		}
 		return self::$instance;
@@ -41,8 +42,7 @@ class DBHandler extends \mysqli
 	{
 		$this->close();
 
-		if (!$this->real_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName))
-		{
+		if (!$this->real_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName)) {
 			throw new \Exception($this->connect_error);
 		}
 	}
@@ -70,15 +70,14 @@ class DBHandler extends \mysqli
 
 		$connection = mysqli_init();
 		$connected = mysqli_real_connect(
-            $connection,
-            $config->option('DB_HOST'),
-            $config->option('DB_USER'),
-            $config->option('DB_PASSWORD'),
-            $config->option('DB_NAME')
-        );
+			$connection,
+			$config->option('DB_HOST'),
+			$config->option('DB_USER'),
+			$config->option('DB_PASSWORD'),
+			$config->option('DB_NAME')
+		);
 
-		if (!$connected)
-		{
+		if (!$connected) {
 			unset($config);
 			return new \Exception($connection->connect_error);
 		}

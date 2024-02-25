@@ -17,12 +17,10 @@ class AdminController extends BaseController
 		$config = new Config();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$pageNumber = 1;
-		if(isset($_GET['page']))
-		{
+		if (isset($_GET['page'])) {
 			$pageNumber = (int)$_GET['page'];
 		}
-		if(empty($tableName))
-		{
+		if (empty($tableName)) {
 			$tableName = '';
 		} else {
 			$tableName = $tableName[0];
@@ -34,7 +32,7 @@ class AdminController extends BaseController
 				'tableName' => $tableName,
 				'errors' => $errors,
 				'page' => $pageNumber,
-				'pagesCount' => $this->getPagesCount($itemsPerPage,$tableName, null),
+				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName, null),
 				'title' => 'Админ-панель',
 			]);
 		} else {
@@ -53,16 +51,14 @@ class AdminController extends BaseController
 		$this->showAdminPage($tableName);
 	}
 
-	public function resetData():void
+	public function resetData(): void
 	{
-		if(AuthService::checkAuth()){
+		if (AuthService::checkAuth()) {
 			ClearTestData::clear();
 			FileCache::deleteAllCache();
 			FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 			HttpService::redirect('admin_panel');
-		}
-		else
-		{
+		} else {
 			HttpService::redirect('auth');
 		}
 	}

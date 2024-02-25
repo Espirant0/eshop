@@ -3,10 +3,7 @@
 namespace Core\Database\ORM;
 use App\Config\Config;
 use App\Service\DBHandler;
-use App\Service\ExceptionHandler;
 use App\Service\Logger;
-use function PHPUnit\Framework\equalTo;
-use function PHPUnit\Framework\isInstanceOf;
 
 class QueryBuilder
 {
@@ -100,7 +97,7 @@ class QueryBuilder
 	}
 	public static function select(string $itemList, string $table, bool $blacklist = false):self
 	{
-		if(strtolower($itemList) === 'all' || strtolower($itemList) === '*')
+		if(strtolower($itemList) === 'all')
 		{
 			$itemList = implode(', ', self::getTableColumnsNames($table));
 			$blacklist = false;
@@ -204,7 +201,7 @@ class QueryBuilder
 		$this->query->addUsedFunction('WHERE');
 		return $this;
 	}
-	public function orderBy(string $condition, string $column, int $flag = ASCENDING):self
+	public function orderBy(string $condition, int $flag = ASCENDING):self
 	{
 		$order = match ($flag)
 		{

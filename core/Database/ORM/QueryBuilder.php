@@ -100,20 +100,20 @@ class QueryBuilder
 	}
 	public static function select(string $itemList, string $table, bool $blacklist = false):self
 	{
+		if(strtolower($itemList) === 'all' || strtolower($itemList) === '*')
+		{
+			$itemList = implode(', ', self::getTableColumnsNames($table));
+			$blacklist = false;
+		}
 		foreach (explode(', ', $itemList) as $item)
 		{
 			if(!self::isColumnExistInTable($item,$table))
 			{
 				Logger::ORMLogging("column $item is not exists in $table. Orm is working in 'SELECT * from $table' mode",'SELECT-function');
-				return new self(new Query("SELECT * FROM $table"), $table);
+				return new self(new Query("SELECT * FROM $table", $table));
 			}
 		}
 		if(strtolower($itemList) != 'all') $items = self::itemListHandler($itemList, $table);
-		else
-		{
-			$items = '*';
-			$blacklist = false;
-		}
 		if($blacklist)
 		{
 			$columns = self::getTableColumnsNames($table);
@@ -247,6 +247,7 @@ class QueryBuilder
 				$query = explode('FROM',$this->getQuery());
 				$query[0] = str_replace("$nameToApply[$i],","$nameToApply[$i] AS $asName[$i],", $query[0]);
 				$this->query->setQuery(implode('FROM', $query));
+				$this->query->addRenameToList($nameToApply[$i], $asName[$i]);
 			}
 		}
 		elseif (is_string($nameToApply) && is_string($asName))
@@ -254,6 +255,7 @@ class QueryBuilder
 			$query = explode('FROM',$this->getQuery());
 			$query[0] = str_replace("$nameToApply,","$nameToApply AS $asName,", $query[0]);
 			$this->query->setQuery(implode('FROM', $query));
+			$this->query->addRenameToList($nameToApply, $asName);
 		}
 		else
 		{
@@ -261,7 +263,6 @@ class QueryBuilder
 			$nameToApply = $nameToApply[0];
 			$asName = $asName[0];
 		}
-
 		return $this;
 	}
 	public static function insert(string $table, array|string $column, array|string $value, array $validationRules = []):bool
@@ -365,12 +366,172 @@ class QueryBuilder
 				$query = str_replace(', )',')',$query);
 			}
 		}
-		echo $query;
+		if (!isset($query)) return false;
 		DBHandler::getInstance()->query($query);
 		return true;
 	}
-	public static function update(string $table, array|string $column, array|string $newValue):bool
+	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions, array $validationRules = [])
 	{
-		return 0;
+		$config = new Config();
+		$restrictions = $config->option("DB_CHARACTERS");
+		if(is_string($column))
+		{
+			$column = str_replace(', ',',', $column);
+			$column = explode(',', $column);
+		}
+		if(is_string($newValue))
+		{
+			$newValue = str_replace(', ',',', $newValue);
+			$newValue = explode(',', $newValue);
+		}
+		if(is_string($updateConditions) && !is_int($updateConditions))
+		{
+			$updateConditions = str_replace(', ',',', $updateConditions);
+			$updateConditions = explode(',', $updateConditions);
+		}
+		if(is_int($updateConditions))
+		{
+			$updateConditions = ["id = $updateConditions"];
+		}
+		$columnRestrictions = self::getTableRestrictions($table);
+		if(self::isTableExists($table))
+		{
+			$valueKey = 0;
+			if(count($column) != count($newValue)) return false;
+			if(count($column) != count($updateConditions) && count($updateConditions) != 1) return false;
+			if(count($updateConditions) > 1) $conditionsKey = 0;
+			$queryList = [];
+			foreach($column as $col)
+			{
+				$query = "UPDATE $table SET ";
+				$newValue[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(),$newValue[$valueKey]);
+				$splittedString = explode(', ',$columnRestrictions[$col])[0];
+				$maxChar = explode(':',$splittedString);
+				if(count($maxChar)>1) $maxChar = $maxChar[1];
+				else unset($maxChar);
+				if(self::isColumnExistInTable($col, $table))
+				{
+					if(str_contains('auto_increment', $columnRestrictions[$col])) return false;
+					$query = $query . "$col = ";
+					if(array_search(explode(':', $splittedString)[0], $restrictions) === 'int')
+					{
+						if(is_numeric($newValue[$valueKey]))
+						{
+							if(isset($maxChar))
+							{
+								if ($maxChar > mb_strlen($newValue[$valueKey]))
+								{
+									$newValue[$valueKey] = (int)$newValue[$valueKey];
+									if (isset($conditionsKey))
+									{
+										$query = $query . "$newValue[$valueKey] WHERE $updateConditions[$conditionsKey]";
+										$conditionsKey++;
+									}
+									else $query = $query . "$newValue[$valueKey] WHERE $updateConditions[0]";
+									$valueKey++;
+								}
+								else return false;
+							}
+							else
+							{
+								if (isset($conditionsKey))
+								{
+									$query = $query . "$newValue[$valueKey] WHERE $updateConditions[$conditionsKey]";
+									$conditionsKey++;
+								}
+								else $query = $query . "$newValue[$valueKey] WHERE $updateConditions[0]";
+								$valueKey++;
+							}
+						}
+						else return false;
+					}
+					else
+					{
+						if(isset($maxChar))
+						{
+							if ($maxChar > mb_strlen($newValue[$valueKey]))
+							{
+								$newValue[$valueKey] = (string)$newValue[$valueKey];
+								if (isset($conditionsKey))
+								{
+									$query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[$conditionsKey]";
+									$conditionsKey++;
+								}
+								else $query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[0]";
+								$valueKey++;
+							}
+							else return false;
+						}
+						else
+						{
+							$newValue[$valueKey] = (string)$newValue[$valueKey];
+							if (isset($conditionsKey))
+							{
+								$query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[$conditionsKey]";
+								$conditionsKey++;
+							}
+							else $query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[0]";
+							$valueKey++;
+						}
+					}
+				}
+				else return false;
+				$queryList[] = $query;
+			}
+			var_dump($queryList);
+			foreach($queryList as $query)
+			{
+				if(!(new Query($query,$table))->testQuery()) return false;
+			}
+			foreach ($queryList as $query)
+			{
+				DBHandler::getInstance()->query($query);
+			}
+		}
+		return true;
+	}
+	public function aggregate(string $column, int $function = COUNT, ?string $as = null, ?string $groupBy = null):self
+	{
+		$agregateTable = $this->query->getQueryTables();
+		$exist = false;
+		foreach($agregateTable as $table)
+		{
+			if(self::isColumnExistInTable(explode('.',$column)[1], $table))
+			{
+				$exist = true;
+				break;
+			}
+		}
+		if(!$exist) return $this;
+		$function = match($function)
+		{
+			AVERAGE => 'AVG',
+			SUM => 'SUM',
+			MIN => 'MIN',
+			MAX => 'MAX',
+			default => 'COUNT',
+		};
+		$query = explode(' FROM ',$this->getQuery())[0];
+		$pattern = '/[A-Za-z]+\.[A-Za-z]+/';
+		$matches = [];
+		preg_match_all($pattern, $query, $matches);
+		var_dump($matches);
+		if(!in_array($column, $matches[0])) return $this;
+		else
+		{
+			$query = $this->getQuery();
+			$query = explode("$column",$query);
+			if(isset($as))
+			{
+				$query[0] = $query[0] . "$function($column) AS $as";
+				$this->query->addRenameToList("$column","$as");
+			}
+			else $query[0] = $query[0] . "$function($column)";
+			if (isset($groupBy)) $query = implode('',$query) ." GROUP BY $groupBy";
+			else $query = implode('',$query) ." GROUP BY $column";
+			$this->query->setQuery($query);
+			$this->query->addUsedFunction($function);
+		}
+		return $this;
 	}
 }

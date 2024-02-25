@@ -4,7 +4,7 @@
  * @var Category $category
  * @var CategoryList $categoryList
  * @var string $categoryName
- * @var string $title;
+ * @var string $title ;
  */
 
 use App\Model\Category;
@@ -12,8 +12,7 @@ use App\Model\CategoryList;
 use App\Service\AuthService;
 
 $isAuthorized = AuthService::checkAuth();
-if(!isset($categoryName))
-{
+if (!isset($categoryName)) {
 	$categoryName = '';
 }
 ?>
@@ -27,8 +26,8 @@ if(!isset($categoryName))
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css" />
-	<title><?=$title?></title>
+	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css"/>
+	<title><?= $title ?></title>
 </head>
 <body>
 <div class="grid">
@@ -40,20 +39,20 @@ if(!isset($categoryName))
 						<p>Главная</p>
 					</li>
 				</a>
-				<?php foreach($categoryList as $category):?>
-					<a href="/category/<?=$category->getEngName()?>/">
-						<li <?=($categoryName === $category->getEngName())? 'class="category_active"' : ''?>>
+				<?php foreach ($categoryList as $category): ?>
+					<a href="/category/<?= $category->getEngName() ?>/">
+						<li <?= ($categoryName === $category->getEngName()) ? 'class="category_active"' : '' ?>>
 							<span>
-								<?=$category->getName();?>
+								<?= $category->getName(); ?>
 							</span>
 						</li>
 					</a>
-				<?php endforeach;?>
+				<?php endforeach; ?>
 			</ul>
 			<details class="filter_list">
 				<summary>Фильтр</summary>
 				<label for="category">Категория</label>
-				<select name="category" >
+				<select name="category">
 					<option value="1">Электрический</option>
 					<option value="2">BMX</option>
 					<option value="3">Горный</option>
@@ -63,7 +62,7 @@ if(!isset($categoryName))
 					<option value="7">Детский</option>
 				</select>
 				<label for="color_id">Цвет</label>
-				<select name="color_id" >
+				<select name="color_id">
 					<option value="1">Чёрный</option>
 					<option value="2">Красный</option>
 					<option value="3">Жёлтый</option>
@@ -75,12 +74,12 @@ if(!isset($categoryName))
 					<option value="9">Фиолетовый</option>
 				</select>
 				<label for="material_id">Материал</label>
-				<select name="material_id" >
+				<select name="material_id">
 					<option value="1">Сталь</option>
 					<option value="2">Алюминий</option>
 				</select>
 				<label for="manufacturer_id">Производитель</label>
-				<select name="manufacturer_id" >
+				<select name="manufacturer_id">
 					<option value="1">Ortler</option>
 					<option value="2">Specialized</option>
 					<option value="3">Giant</option>
@@ -114,15 +113,15 @@ if(!isset($categoryName))
 					<img src="/resources/img/user-circle-regular.svg" alt="" class="account_img" onclick="dropdown()">
 				</div>
 				<div class="account_links" id="dropdown">
-					<a href="/auth" class="sign_in_btn <?=$isAuthorized? 'disable': 'active'?>">Войти</a>
-					<a href="/sign_out" class="sign_in_btn <?=$isAuthorized? 'active': 'disable'?>">Выйти</a>
+					<a href="/auth" class="sign_in_btn <?= $isAuthorized ? 'disable' : 'active' ?>">Войти</a>
+					<a href="/sign_out" class="sign_in_btn <?= $isAuthorized ? 'active' : 'disable' ?>">Выйти</a>
 					<a href="/admin_panel" class="admin_btn">Админ-панель</a>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="main_section">
-		<?=$content?>
+		<?= $content ?>
 	</div>
 </div>
 </body>

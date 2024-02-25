@@ -1,7 +1,7 @@
 <?php
 /**
- * @var array $errors;
- * @var string $title;
+ * @var array $errors ;
+ * @var string $title ;
  */
 ?>
 
@@ -14,7 +14,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title><?=$title?></title>
+	<title><?= $title ?></title>
 </head>
 <body>
 <div class="auth_container">
@@ -22,11 +22,11 @@
 		<img src="resources/img/user-circle-solid.svg" class="auth_img">
 	</div>
 	<div class="auth_errors">
-		<?php if(!empty($errors)):?>
+		<?php if (!empty($errors)): ?>
 			<div>
-				<?= implode('<br>', $errors);?>
+				<?= implode('<br>', $errors); ?>
 			</div>
-		<?php endif;?>
+		<?php endif; ?>
 	</div>
 	<div class="form_container">
 		<form action="/login" method="post" class="auth_form">

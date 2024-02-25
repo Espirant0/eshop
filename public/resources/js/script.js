@@ -9,7 +9,7 @@ function dropdown() {
 }
 
 // Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
+window.onclick = function (event) {
 	if (!event.target.matches('.account_img')) {
 
 		var dropdowns = document.getElementsByClassName("account_links");

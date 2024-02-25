@@ -31,21 +31,15 @@ class AdminPanelRepo extends BaseRepo
 
 		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($itemId,'$category')");
 
-		if(empty($images))
-		{
+		if (empty($images)) {
 			ImageHandler::createNewItemDefaultImage($itemId, $title);
-		}
-		else
-		{
+		} else {
 			$number = 1;
-			foreach ($images['tmp_name'] as $image)
-            {
+			foreach ($images['tmp_name'] as $image) {
 				ImageHandler::createNewItemImage($image, $itemId, $title, $number);
-				if($number === 1){
+				if ($number === 1) {
 					$isMain = 1;
-				}
-				else
-				{
+				} else {
 					$isMain = 0;
 				}
 				$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('$itemId',$isMain,$number)");
@@ -54,22 +48,22 @@ class AdminPanelRepo extends BaseRepo
 		}
 	}
 
-	public static function getLastFreeId():int
+	public static function getLastFreeId(): int
 	{
 		$DBOperator = DBHandler::getInstance();
 		return ($DBOperator->query('SELECT id FROM item ORDER BY id DESC LIMIT 1')->fetch_row()[0] + 1);
 	}
-	public static function updateItem(string $table, int $itemId, array $newValues):void
+
+	public static function updateItem(string $table, int $itemId, array $newValues): void
 	{
 		$DBOperator = DBHandler::getInstance();
-		$table = mysqli_real_escape_string($DBOperator,$table);
+		$table = mysqli_real_escape_string($DBOperator, $table);
 		$expression = '';
 		foreach ($newValues as $key => $value) {
 			$newValues[$key] = mysqli_real_escape_string($DBOperator, $value);
-			$expression.= ' '.$key.' = '."'$newValues[$key]'".', ';
+			$expression .= ' ' . $key . ' = ' . "'$newValues[$key]'" . ', ';
 		}
 		$expression = rtrim($expression, ', ');
-		var_dump($expression);
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$DBOperator->query("
 							UPDATE $table 
@@ -79,56 +73,53 @@ class AdminPanelRepo extends BaseRepo
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
-	public static function deleteBicycle(int $itemId):void
+	public static function deleteBicycle(int $itemId): void
 	{
 		$DBOperator = DBHandler::getInstance();
 		$DBOperator->query("UPDATE item SET item.status = 0 WHERE item.id = '$itemId'");
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
-	public static function checkItemColumns(string $table, string $field, mixed $value):bool
+	public static function checkItemColumns(string $table, string $field, mixed $value): bool
 	{
 		$DBOperator = DBHandler::getInstance();
-		$table = strtoupper(mysqli_real_escape_string($DBOperator,$table));
+		$table = strtoupper(mysqli_real_escape_string($DBOperator, $table));
 		$fields = [];
-		$value = (ctype_digit($value))? 'int': 'varchar';
+		$value = (ctype_digit($value)) ? 'int' : 'varchar';
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			$fields[] = [$row['Field'] => current(explode('(',$row['Type']))];
+		while ($row = mysqli_fetch_assoc($result)) {
+			$fields[] = [$row['Field'] => current(explode('(', $row['Type']))];
 		}
 
 		return in_array([$field => $value], $fields, true);
 	}
 
-	public static function getItemColumns(string $table):array
+	public static function getItemColumns(string $table): array
 	{
-		if($table === '')
-		{
+		if ($table === '') {
 			return [];
 		}
 		$config = new Config();
 		$ignoredFields = $config->option('FIELDS_STOP_LIST');
 		$DBOperator = DBHandler::getInstance();
-		$table = mysqli_real_escape_string($DBOperator,$table);
+		$table = mysqli_real_escape_string($DBOperator, $table);
 		$fields = [];
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			if(!in_array($row['Field'], $ignoredFields)){
+		while ($row = mysqli_fetch_assoc($result)) {
+			if (!in_array($row['Field'], $ignoredFields)) {
 				$fields[] = $row['Field'];
 			}
 		}
 		return $fields;
 	}
+
 	public static function getItemList(string $item, ?int $currentPage = 1): array
 	{
-		if($item === '')
-		{
+		if ($item === '') {
 			return [];
 		}
 		$limit = '';
-		if(isset($currentPage)) {
+		if (isset($currentPage)) {
 			$config = new Config();
 			$itemsPerPage = $config->option('PRODUCT_LIMIT');
 			$startId = ($currentPage - 1) * $itemsPerPage;
@@ -155,7 +146,7 @@ class AdminPanelRepo extends BaseRepo
 		return $itemList;
 	}
 
-	public static function getItemById(string $table, int $itemId):array
+	public static function getItemById(string $table, int $itemId): array
 	{
 		$itemList = self::getItemList($table);
 		$item = $itemList[$itemId];

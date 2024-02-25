@@ -10,10 +10,9 @@ use App\Service\DBHandler;
 
 class CategoryListRepo extends BaseRepo
 {
-    public static function getCategoryListConsideringExistingItem(): CategoryList
-    {
-		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function()
-		{
+	public static function getCategoryListConsideringExistingItem(): CategoryList
+	{
+		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function () {
 			$DBOperator = DBHandler::getInstance();
 			$result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName
                                             FROM category c
@@ -21,25 +20,24 @@ class CategoryListRepo extends BaseRepo
                                             JOIN item i ON i.id = ic.item_id
 												WHERE i.status = 1;');
 
-        	return self::createCategoryList($result);
+			return self::createCategoryList($result);
 		});
-    }
+	}
 
-    public static function createCategoryList($result): CategoryList
-    {
-        $categoryList = new CategoryList();
+	public static function createCategoryList($result): CategoryList
+	{
+		$categoryList = new CategoryList();
 
-        while ($row = mysqli_fetch_assoc($result))
-        {
-            $categoryId = (int)$row['id'];
-            $categoryName = $row['name'];
-            $categoryEngName = $row['engName'];
-            $category = new Category($categoryId, $categoryName, $categoryEngName);
-            $categoryList->addCategory($category);
-        }
+		while ($row = mysqli_fetch_assoc($result)) {
+			$categoryId = (int)$row['id'];
+			$categoryName = $row['name'];
+			$categoryEngName = $row['engName'];
+			$category = new Category($categoryId, $categoryName, $categoryEngName);
+			$categoryList->addCategory($category);
+		}
 
-        return $categoryList;
-    }
+		return $categoryList;
+	}
 
 	public function getObjectList(): CategoryList
 	{
@@ -54,10 +52,8 @@ class CategoryListRepo extends BaseRepo
 		$categoryBlackList = $config->option('CATEGORY_BLACK_LIST');
 
 		$idIterator = 0;
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			if(!in_array($row[$tablePostfix], $categoryBlackList))
-			{
+		while ($row = mysqli_fetch_assoc($result)) {
+			if (!in_array($row[$tablePostfix], $categoryBlackList)) {
 				$category = new Category($idIterator, $config->option('DICTIONARY')[$row[$tablePostfix]], $row[$tablePostfix]);
 				$objectList->addCategory($category);
 				$idIterator++;

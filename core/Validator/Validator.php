@@ -13,12 +13,10 @@ class Validator
 		$this->errors = [];
 		$this->data = $data;
 
-		foreach ($rules as $key => $rule)
-		{
+		foreach ($rules as $key => $rule) {
 			$rules = $rule;
 
-			foreach ($rules as $rule)
-			{
+			foreach ($rules as $rule) {
 				$rule = explode(':', $rule);
 
 				$ruleName = $rule[0];
@@ -26,8 +24,7 @@ class Validator
 
 				$error = $this->validateRule($key, $ruleName, $ruleValue);
 
-				if ($error)
-				{
+				if ($error) {
 					$this->errors[$key][] = $error;
 				}
 			}
@@ -45,72 +42,61 @@ class Validator
 	{
 		$value = $this->data[$key];
 
-		switch ($ruleName)
-		{
+		switch ($ruleName) {
 			case 'required':
-				if (empty($value))
-				{
+				if (empty($value)) {
 					return "Поле должно быть обязательным";
 				}
 				break;
 
 			case 'min':
-				if (mb_strlen($value) < $ruleValue)
-				{
+				if (mb_strlen($value) < $ruleValue) {
 					return "Поле должно иметь минимум $ruleValue символа";
 				}
 				break;
 
 			case 'max':
-				if (mb_strlen($value) > $ruleValue)
-				{
+				if (mb_strlen($value) > $ruleValue) {
 					return "Поле должно иметь не более $ruleValue символа";
 				}
 				break;
 			case 'email':
-				if (!filter_var($value, FILTER_VALIDATE_EMAIL))
-				{
+				if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
 					return "Поле должен быть корректный е-майл";
 				}
 				break;
 
 			case 'confirmed':
-				if ($value !== $this->data["{$key}_confirmation"])
-				{
+				if ($value !== $this->data["{$key}_confirmation"]) {
 					return "Field $key must be confirmed";
 				}
 				break;
 
 			case 'alpha':
-				if (!ctype_alpha($value))
-				{
+				if (!ctype_alpha($value)) {
 					return "Field $key must contain only alphabetic characters";
 				}
 				break;
 
 			case 'numeric':
-				if (!ctype_digit($value))
-				{
+				if (!ctype_digit($value)) {
 					return "Поле должно содержать только числа";
 				}
 				break;
 
 			case 'numeric_optional': // Новое правило поле может быть пустым,но иметь только числа
-				if (!empty($value) && !ctype_digit($value))
-				{
+				if (!empty($value) && !ctype_digit($value)) {
 					return "Поле должно содержать только числа";
 				}
 				break;
 
 			case 'min_optional':
-				if (!empty($value) && mb_strlen($value) < $ruleValue)
-				{
+				if (!empty($value) && mb_strlen($value) < $ruleValue) {
 					return "Поле должно иметь минимум $ruleValue символа";
 				}
 				break;
 			case 'alpha_optional':
-				if (!empty($value) && !ctype_alpha($value))
-				{
+				if (!empty($value) && !ctype_alpha($value)) {
 					return "Поле может содержать только буквы";
 				}
 				break;
@@ -120,7 +106,6 @@ class Validator
 	}
 
 }
-
 
 
 class Rules
@@ -137,21 +122,17 @@ class Rules
 	 */
 	public function addRule($fields, $rules): self
 	{
-		if (!is_array($fields))
-		{
+		if (!is_array($fields)) {
 			$fields = [$fields];
 		}
 
-		if (!is_array($rules))
-		{
+		if (!is_array($rules)) {
 			$rules = [$rules];
 		}
 
 		// Добавляем текущие правила в массив $currentRules
-		foreach ($fields as $field)
-		{
-			foreach ($rules as $rule)
-			{
+		foreach ($fields as $field) {
+			foreach ($rules as $rule) {
 				$this->currentRules[$field][] = $rule;
 			}
 		}

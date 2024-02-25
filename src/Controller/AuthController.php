@@ -12,44 +12,37 @@ class AuthController extends BaseController
 		$this->render('AuthPage/auth.php', [
 			'errors' => $errors,
 			'title' => 'Авторизация',
-			]);
+		]);
 	}
 
 	public function userLogin(): void
 	{
-		if ($_SERVER['REQUEST_METHOD'] === 'POST')
-        {
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$error = 'Неверный логин или пароль';
-			if (!isset($_POST['login']) || !isset($_POST['password']))
-			{
+			if (!isset($_POST['login']) || !isset($_POST['password'])) {
 				$errors[] = $error;
 				$this->showAuthPage($errors);
 			}
 			$login = $_POST['login'];
-			if($login[0] === '8'){
+			if ($login[0] === '8') {
 				$login = str_replace($login[0], '7', $login);
 			}
 			$password = $_POST['password'];
 
 			$user = UserRepo::getUserByLogin($login);
 
-			if (!$user || $user->getRole() !== 'Администратор')
-            {
+			if (!$user || $user->getRole() !== 'Администратор') {
 				$errors[] = $error;
 				$this->showAuthPage($errors);
-			}
-            else
-            {
+			} else {
 				$isPasswordCorrect = password_verify($password, $user->getPassword());
 
-				if (!$isPasswordCorrect)
-                {
+				if (!$isPasswordCorrect) {
 					$errors[] = $error;
 					$this->showAuthPage($errors);
 				}
 
-				if (empty($errors))
-                {
+				if (empty($errors)) {
 					session_start();
 					$_SESSION['USER'] = $user;
 					HttpService::redirect('admin_panel');

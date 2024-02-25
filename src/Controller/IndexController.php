@@ -80,6 +80,7 @@ class IndexController extends BaseController
 				]),
 				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
 				'title' => TITLE,
+				'categoryName' => $categoryName[0],
 			]);
 		}
     }

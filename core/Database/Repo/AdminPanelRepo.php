@@ -134,6 +134,7 @@ class AdminPanelRepo extends BaseRepo
 			$startId = ($currentPage - 1) * $itemsPerPage;
 			$limit = "LIMIT {$itemsPerPage}";
 		}
+		$itemList = [];
 		$DBOperator = DBHandler::getInstance();
 		$item = mysqli_real_escape_string($DBOperator, $item);
 		$itemFields = self::getItemColumns($item);
@@ -148,7 +149,10 @@ class AdminPanelRepo extends BaseRepo
 		if (!$result) {
 			throw new \Exception($DBOperator->connect_error);
 		}
-		return mysqli_fetch_all($result);
+		while ($row = mysqli_fetch_assoc($result)) {
+			$itemList[] = $row;
+		}
+		return $itemList;
 	}
 
 	public static function getItemById(string $table, int $itemId):array

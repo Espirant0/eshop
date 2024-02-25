@@ -10,17 +10,6 @@ use App\Service\DBHandler;
 
 class CategoryListRepo extends BaseRepo
 {
-	public static function getCategoryList(): CategoryList
-	{
-        /*return (new FileCache())->remember('category', 3600, function()
-        {*/
-            $DBOperator = DBHandler::getInstance();
-            $result = $DBOperator->query('SELECT id, name, engName FROM category');
-
-            return self::createCategoryList($result);
-        /*});*/
-	}
-
     public static function getCategoryListConsideringExistingItem(): CategoryList
     {
 		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function()

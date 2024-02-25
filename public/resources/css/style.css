@@ -351,6 +351,16 @@ input::-webkit-input-placeholder{
     width: 385px;
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.20);
 }
+.edit_input{
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 5px;
+    outline: none;
+    border: 1px solid black;
+    height: 40px;
+    width: 385px;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.20);
+}
 .order_btn{
     margin-top: 10px;
     height: 40px;
@@ -713,9 +723,7 @@ td{
 .account_links > .disable{
     display: none;
 }
-.disable{
-    display: none;
-}
+
 .active{
     display: block;
 }
@@ -757,4 +765,23 @@ td{
 }
 .input__line{
     display: flex;
+}
+.add_img{
+    width: 15px;
+    margin-right: 5px;
+    margin-top: 7px;
+}
+.add_line, .edit_line, .delete_line{
+    display: flex;
+    justify-content: center;
+}
+.edit_img, .delete_img{
+    width: 20px;
+    margin-right: 5px;
+}
+.delete_img{
+    margin-top: 20px;
+}
+.disable{
+    display: none;
 }

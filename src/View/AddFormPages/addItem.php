@@ -58,19 +58,19 @@ use Core\Database\Repo\AdminPanelRepo;
 					<label for="category">Выберите категорию:</label>
 					<select name="category">
 						<?php foreach (AdminPanelRepo::getItemList('category') as $item):?>
-							<option value="<?=$item[0]?>"><?=$item[1]?></option>
+							<option value="<?=$item['id']?>"><?=$item['name']?></option>
 						<?php endforeach; ?>
 					</select>
 					<label for="color_id">Выберите цвет:</label>
 					<select name="color_id">
 						<?php foreach (AdminPanelRepo::getItemList('color') as $item):?>
-							<option value="<?=$item[0]?>"><?=$item[1]?></option>
+							<option value="<?=$item['id']?>"><?=$item['name']?></option>
 						<?php endforeach; ?>
 					</select>
 					<label for="material_id">Выберите материал:</label>
 					<select name="material_id" >
 						<?php foreach (AdminPanelRepo::getItemList('material') as $item):?>
-							<option value="<?=$item[0]?>"><?=$item[1]?></option>
+							<option value="<?=$item['id']?>"><?=$item['name']?></option>
 						<?php endforeach; ?>
 					</select>
 					<label for="status">Выберите статус:</label>
@@ -81,13 +81,13 @@ use Core\Database\Repo\AdminPanelRepo;
 					<label for="manufacturer_id">Выберите аудиторию:</label>
 					<select name="target_id" >
 						<?php foreach (AdminPanelRepo::getItemList('target_audience') as $item):?>
-							<option value="<?=$item[0]?>"><?=$item[1]?></option>
+							<option value="<?=$item['id']?>"><?=$item['name']?></option>
 						<?php endforeach; ?>
 					</select>
 					<label for="manufacturer_id">Выберите производителя:</label>
 					<select name="manufacturer_id" >
 						<?php foreach (AdminPanelRepo::getItemList('manufacturer') as $item):?>
-							<option value="<?=$item[0]?>"><?=$item[1]?></option>
+							<option value="<?=$item['id']?>"><?=$item['name']?></option>
 						<?php endforeach; ?>
 					</select>
 				</div>

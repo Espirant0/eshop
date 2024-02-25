@@ -18,6 +18,7 @@ if(!isset($tableName))
 {
 	$tableName = '';
 }
+$itemList = AdminPanelRepo::getItemList($tableName, $page);
 ?>
 <!doctype html>
 <html lang="en">
@@ -61,28 +62,37 @@ if(!isset($tableName))
 						<?php endforeach; ?>
 						<th>Действие
 							<br>
-							<a href="/admin_panel/<?=$tableName?>/add_form"
-							   class="add_btn <?=($tableName!=='item')?'disable':'active'?>">
-								Добавить
-							</a>
+							<div class="add_line <?=($tableName!=='item')?'disable':'active'?>">
+								<img src="/resources/img/plus-solid.svg" alt="" class="add_img">
+								<a href="/admin_panel/<?=$tableName?>/add_form"
+								   class="add_btn">
+									Добавить
+								</a>
+							</div>
 						</th>
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach (AdminPanelRepo::getItemList($tableName, $page) as $item):?>
+					<?php foreach ($itemList as $item):?>
 						<tr>
 							<?php foreach ($item as $itemValue): ?>
-								<td><?=ViewService::truncate((string)$itemValue, (new Config())->option('TEXT_TRUNCATE'))?></td>
+								<td><?=ViewService::truncate($itemValue, (new Config())->option('TEXT_TRUNCATE'))?></td>
 							<?php endforeach; ?>
 							<td>
-								<a href="/admin_panel/<?=$tableName?>/edit?id=<?=$item[0]?>">
-									Изменить
-								</a>
-								<a href="/admin_panel/<?=$tableName?>/delete?id=<?=$item[0]?>"
-								   class="delete_btn <?=($tableName!=='item')?'disable':'active'?>"
-								   onclick="return window.confirm('Удалить этот объект?');">
-									Удалить
-								</a>
+								<div class="edit_line">
+									<img src="/resources/img/edit-solid.svg" alt="" class="edit_img">
+									<a href="/admin_panel/<?=$tableName?>/edit?id=<?=$item['id']?>">
+										Изменить
+									</a>
+								</div>
+								<div class="delete_line <?=($tableName!=='item')?'disable':'active'?>">
+									<img src="/resources/img/trash-alt-solid.svg" alt="" class="delete_img">
+									<a href="/admin_panel/<?=$tableName?>/delete?id=<?=$item['id']?>"
+									   class="delete_btn"
+									   onclick="return window.confirm('Удалить этот объект?');">
+										Удалить
+									</a>
+								</div>
 							</td>
 						</tr>
 					<?php endforeach; ?>

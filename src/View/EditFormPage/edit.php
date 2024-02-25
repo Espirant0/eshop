@@ -6,7 +6,6 @@
  * @var array $item;
  */
 
-
 use App\Cache\FileCache;
 use Core\Database\Repo\AdminPanelRepo;
 
@@ -28,20 +27,21 @@ $table = (new FileCache())->get($tableName);
 <div class="auth_container">
 	<div class="auth_errors">
 		<?php if(!empty($errors)):?>
-			<div>
-				<?php var_dump($errors);?>
-			</div>
+			<?php foreach ($errors as $error):?>
+				<div>
+					<?=$error;?>
+				</div>
+			<?php endforeach; ?>
 		<?php endif;?>
 	</div>
 	<div class="edit_inner">
 		<div class="form_container">
 			<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
-				<?php $value = 0; foreach ($table as $field):?>
+				<?php foreach ($table as $field):?>
 					<label>
 						<?=$field?>
 					</label>
-					<input type="text" name="<?=$field?>" class="password_input auth_input" value="<?=$item[$value]?>">
-				<?php $value++?>
+					<input type="text" name="<?=$field?>" class="edit_input" value="<?=$item[$field]?>">
 				<?php endforeach; ?>
 				<button class="auth_btn">Обновить</button>
 			</form>

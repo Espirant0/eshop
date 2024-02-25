@@ -12,7 +12,7 @@ use App\Model\Bicycle;
 			<img src="<?="/resources/product/img/{$bicycle->getId()}.{$bicycle->getName()}/{$bicycle->getMainImageName()}"?>" alt="" class="item_img_order">
 			<p class="item_title"><?=$bicycle->getName()?></p>
 			<div class="line"></div>
-			<p class="item_price"><?=$bicycle->getPrice()?></p>
+			<p class="item_price"><?=$bicycle->getPrice()?> ₽</p>
 		</div>
 	</a>
 	<div class="form_inner">

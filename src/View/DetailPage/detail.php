@@ -34,17 +34,17 @@ use App\Model\Bicycle;
 			<div class="headline">
 				<p class="main_title"><?=$bicycle->getName()?></p>
 			</div>
-			<div class="line"></div>
+			<div class="detail_line"></div>
 			<p class="about">О товаре</p>
 			<div class="info">
-				<ul>
+				<ul class="ul_left">
 					<li class="ul_left_col">Стоимость</li>
 					<li class="ul_left_col">Производитель</li>
 					<li class="ul_left_col">Год производства</li>
 					<li class="ul_left_col">Скоростей</li>
 				</ul>
-				<ul>
-					<li class="ul_right_col"><?=$bicycle->getPrice()?></li>
+				<ul class="ul_right">
+					<li class="ul_right_col"><?=$bicycle->getPrice()?> ₽</li>
 					<li class="ul_right_col"><?=$bicycle->getVendor()?></li>
 					<li class="ul_right_col"><?=$bicycle->getYear()?></li>
 					<li class="ul_right_col"><?=$bicycle->getSpeed()?></li>

@@ -3,6 +3,7 @@
  * @var string $content
  * @var Category $category
  * @var CategoryList $categoryList
+ * @var string $categoryName
  * @var string $title;
  */
 
@@ -10,6 +11,11 @@ use App\Model\Category;
 use App\Model\CategoryList;
 use App\Service\AuthService;
 
+$isAuthorized = AuthService::checkAuth();
+if(!isset($categoryName))
+{
+	$categoryName = '';
+}
 ?>
 
 <!doctype html>
@@ -29,10 +35,20 @@ use App\Service\AuthService;
 	<div class="menu">
 		<div class="menu_container">
 			<ul class="tags">
-				<a href="/"><li><p>Главная</p></li></a>
+				<a href="/">
+					<li>
+						<p>Главная</p>
+					</li>
+				</a>
 				<?php foreach($categoryList as $category):?>
-				<a href="/category/<?=$category->getEngName()?>/"><li><span><?=$category->getName();?></span></li></a>
-					<?php endforeach;?>
+					<a href="/category/<?=$category->getEngName()?>/">
+						<li <?=($categoryName === $category->getEngName())? 'class="category_active"' : ''?>>
+							<span>
+								<?=$category->getName();?>
+							</span>
+						</li>
+					</a>
+				<?php endforeach;?>
 			</ul>
 			<details class="filter_list">
 				<summary>Фильтр</summary>
@@ -80,16 +96,29 @@ use App\Service\AuthService;
 		</div>
 	</div>
 	<div class="top_line">
+		<div class="logo_inner">
+			<a href="/"><img src="/resources/img/logo.png" alt="" class="logo"></a>
+		</div>
 		<div class="search_line">
 			<div class="input__line">
+				<div class="search_img_inner">
+					<img src="/resources/img/search-solid.svg" alt="" class="search_img">
+				</div>
 				<form action="/search.php?find">
-					<input type="search" placeholder="Поиск по каталогу..." class="input_main" name="search" id="search">
+					<input type="search" placeholder="Поиск по каталогу" class="input_main" name="search" id="search">
 					<input type="submit" formaction="/?search" class="search_btn" value="Искать">
 				</form>
 			</div>
-			<a href="/auth" class="sign_in_btn <?=AuthService::checkAuth()? 'disable': 'active'?>">Войти</a>
-			<a href="/sign_out" class="sign_in_btn <?=AuthService::checkAuth()? 'active': 'disable'?>">Выйти</a>
-			<a href="/admin_panel" class="admin_btn">Админка</a>
+			<div class="account">
+				<div class="account_btn">
+					<img src="/resources/img/user-circle-regular.svg" alt="" class="account_img" onclick="dropdown()">
+				</div>
+				<div class="account_links" id="dropdown">
+					<a href="/auth" class="sign_in_btn <?=$isAuthorized? 'disable': 'active'?>">Войти</a>
+					<a href="/sign_out" class="sign_in_btn <?=$isAuthorized? 'active': 'disable'?>">Выйти</a>
+					<a href="/admin_panel" class="admin_btn">Админ-панель</a>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="main_section">

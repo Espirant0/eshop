@@ -6,9 +6,9 @@
  * @var array $item;
  */
 
-
 use App\Cache\FileCache;
 use Core\Database\Repo\AdminPanelRepo;
+use Core\Database\Repo\DetailRepo;
 
 $item = AdminPanelRepo::getItemById($tableName, $itemId);
 $table = (new FileCache())->get($tableName);
@@ -33,17 +33,19 @@ $table = (new FileCache())->get($tableName);
 			</div>
 		<?php endif;?>
 	</div>
-	<div class="form_container">
-		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
-			<?php $value = 0; foreach ($table as $field):?>
-				<label>
-					<?=$field?>
-				</label>
-				<input type="text" name="<?=$field?>" class="password_input auth_input" value="<?=$item[$value]?>">
-			<?php $value++?>
-			<?php endforeach; ?>
-			<button class="auth_btn">Обновить</button>
-		</form>
+	<div class="edit_inner">
+		<div class="form_container">
+			<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
+				<?php $value = 0; foreach ($table as $field):?>
+					<label>
+						<?=$field?>
+					</label>
+					<input type="text" name="<?=$field?>" class="password_input auth_input" value="<?=$item[$value]?>">
+				<?php $value++?>
+				<?php endforeach; ?>
+				<button class="auth_btn">Обновить</button>
+			</form>
+		</div>
 	</div>
 	<a href="/admin_panel" class="home_btn">Назад</a>
 </div>

@@ -7,7 +7,7 @@ Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
 Router::get('/category/:categoryName/', [new App\Controller\IndexController(), "showIndexPage"]);
 
-Router::get('/detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
+Router::get('/detail/(\d+)', [new App\Controller\DetailController(), 'showDetailPage']);
 
 Router::get('/order', [new App\Controller\OrderController(), 'showOrderPage']);
 

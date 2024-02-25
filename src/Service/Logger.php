@@ -42,7 +42,8 @@ class Logger
 			}
 		}
 	}
-	public static function writeToLog(string $message):void
+
+	public static function writeToLog(string $message): void
 	{
 		self::createLogDirectory();
 		$errorLogFile = ROOT."/var/logs/MESSAGELOG.txt";

@@ -14,7 +14,7 @@ class OrderRepo extends BaseRepo
 	{
 		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query(
-            "SELECT o.id, i.title as item, s.name as status, o.data_create, o.user_id, o.price, o.address
+			"SELECT o.id, i.title as item, s.name as status, o.data_create, o.user_id, o.price, o.address
 					FROM orders o
 						 INNER JOIN status s on s.id = o.status_id
 						 INNER JOIN item i on i.id = o.item_id
@@ -22,28 +22,26 @@ class OrderRepo extends BaseRepo
 
 		$orders = [];
 
-		if (!$result)
-		{
+		if (!$result) {
 			throw new \Exception($DBOperator->connect_error);
 		}
 
-		while ($row = mysqli_fetch_assoc($result))
-		{
+		while ($row = mysqli_fetch_assoc($result)) {
 			$orders[] = new Order
 			(
-			    $row['id'],
-			    $row['item'],
-			    $row['status'],
+				$row['id'],
+				$row['item'],
+				$row['status'],
 				$row['address'],
 				$row['user_id'],
 				$row['price'],
-			    $row['data_create'],
+				$row['data_create'],
 			);
 		}
 		return $orders;
 	}
 
-	public static function saveOrder($itemId, int $price, string $number, string$address):void
+	public static function saveOrder($itemId, int $price, string $number, string $address): void
 	{
 		$DBOperator = DBHandler::getInstance();
 		$date = date('Y-m-d');
@@ -54,8 +52,7 @@ class OrderRepo extends BaseRepo
 			"INSERT INTO orders (item_id, status_id, data_create, price, user_id, address) 
 					VALUES ($itemId, 1, '$date', '$price', '$number', '$address')
 		;");
-		if (!$result)
-		{
+		if (!$result) {
 			throw new \Exception($DBOperator->connect_error);
 		}
 	}

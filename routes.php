@@ -7,19 +7,19 @@ Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
 Router::get('/category/:categoryName/', [new App\Controller\IndexController(), "showIndexPage"]);
 
-Router::get('/detail/:itemId', [new App\Controller\DetailController(), 'showDetailPage']);
+Router::get('/detail/(\d+)', [new App\Controller\DetailController(), 'showDetailPage']);
 
 Router::get('/order', [new App\Controller\OrderController(), 'showOrderPage']);
 
-Router::post('/order/confirm', [new App\Controller\OrderController(), 'saveOrder'] );
+Router::post('/order/confirm', [new App\Controller\OrderController(), 'saveOrder']);
 
 Router::get('/confirmed', [new App\Controller\OrderController(), 'showConfirmedOrderPage']);
 
-Router::get('/error', [new App\Controller\ErrorController(), 'showErrorPage'] );
+Router::get('/error', [new App\Controller\ErrorController(), 'showErrorPage']);
 
 //Авторизация
 
-Router::get('/auth', [new App\Controller\AuthController(), 'showAuthPage'] );
+Router::get('/auth', [new App\Controller\AuthController(), 'showAuthPage']);
 
 Router::post('/login', [new App\Controller\AuthController(), 'userLogin']);
 
@@ -27,11 +27,11 @@ Router::get('/sign_out', [new App\Controller\AuthController(), 'signOut']);
 
 //Административная часть
 
-Router::get('/admin_panel', [new App\Controller\AdminController(), 'showAdminPage'] );
+Router::get('/admin_panel', [new App\Controller\AdminController(), 'showAdminPage']);
 
-Router::get('/admin_panel/', [new App\Controller\AdminController(), 'showAdminPage'] );
+Router::get('/admin_panel/', [new App\Controller\AdminController(), 'showAdminPage']);
 
-Router::get('/admin_panel/:tableName/', [new App\Controller\AdminController(), 'showAdminPage'] );
+Router::get('/admin_panel/:tableName/', [new App\Controller\AdminController(), 'showAdminPage']);
 
 Router::get('/admin_panel/:tableName/edit', [new App\Controller\EditFormController(), 'showEditFormPage']);
 
@@ -46,5 +46,3 @@ Router::post('/admin_panel/:tableName/add', [new App\Controller\EditFormControll
 Router::get('/admin_panel/dev_reset', [new App\Controller\AdminController(), 'resetData']);
 
 Router::post('/admin_panel/add', [new App\Controller\EditFormController(), 'addItem']);
-
-require_once 'routesForFiltration.php';

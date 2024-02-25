@@ -1,12 +1,16 @@
 <?php
 /**
- * @var int $itemId;
- * @var string $tableName;
- * @var string $title;
+ * @var int $itemId ;
+ * @var string $tableName ;
+ * @var string $title ;
+ * @var array $item ;
  */
 
 use App\Cache\FileCache;
+use Core\Database\Repo\AdminPanelRepo;
 
+$item = AdminPanelRepo::getItemById($tableName, $itemId);
+$table = (new FileCache())->get($tableName);
 ?>
 <!doctype html>
 <html lang="en">
@@ -17,26 +21,31 @@ use App\Cache\FileCache;
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title><?=$title?></title>
+	<title><?= $title ?></title>
 </head>
 <body>
 <div class="auth_container">
 	<div class="auth_errors">
-		<?php if(!empty($errors)):?>
-			<div>
-				<?= implode('<br>', $errors);?>
-			</div>
-		<?php endif;?>
+		<?php if (!empty($errors)): ?>
+			<?php foreach ($errors as $error): ?>
+				<div>
+					<?= $error; ?>
+				</div>
+			<?php endforeach; ?>
+		<?php endif; ?>
 	</div>
-	<div class="form_container">
-		<form action="/admin_panel/<?=$tableName?>/update?id=<?=$itemId;?>" method="post" class="auth_form">
-			<?php foreach ((new FileCache())->get($tableName) as $field):?>
-				<label>
-					<input type="text" name="<?=$field?>" class="password_input auth_input" placeholder="Введите <?=$field?>">
-				</label>
-			<?php endforeach;?>
-			<button class="auth_btn">Обновить</button>
-		</form>
+	<div class="edit_inner">
+		<div class="form_container">
+			<form action="/admin_panel/<?= $tableName ?>/update?id=<?= $itemId; ?>" method="post" class="auth_form">
+				<?php foreach ($table as $field): ?>
+					<label>
+						<?= $field ?>
+					</label>
+					<input type="text" name="<?= $field ?>" class="edit_input" value="<?= $item[$field] ?>">
+				<?php endforeach; ?>
+				<button class="auth_btn">Обновить</button>
+			</form>
+		</div>
 	</div>
 	<a href="/admin_panel" class="home_btn">Назад</a>
 </div>

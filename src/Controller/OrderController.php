@@ -10,30 +10,31 @@ use Core\Database\Repo\OrderRepo;
 
 class OrderController extends BaseController
 {
-    public function showOrderPage(): void
-    {
-        $categoryListRepo = new CategoryListRepo();
+	public function showOrderPage(): void
+	{
+		$categoryListRepo = new CategoryListRepo();
 		$bicycle = (new FileCache())->get('bicycle');
 		$this->render('layout.php', [
 			'content' => $this->strRender('OrderPage/order.php', [
 				'bicycle' => $bicycle,
 			]),
-            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
+			'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
 			'title' => $bicycle->getName(),
 		]);
-    }
+	}
 
-    public function showConfirmedOrderPage(): void
-    {
-        $categoryListRepo = new CategoryListRepo();
+	public function showConfirmedOrderPage(): void
+	{
+		$categoryListRepo = new CategoryListRepo();
 		$this->render('layout.php', [
 			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
-            'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
+			'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
 			'title' => 'Заказ',
 		]);
-    }
+	}
 
-	public function saveOrder(){
+	public function saveOrder()
+	{
 		$item = (new FileCache())->get('bicycle');
 		$itemId = $item->getId();
 		$price = $item->getPrice();

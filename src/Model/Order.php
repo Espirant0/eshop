@@ -13,14 +13,14 @@ class Order
 	private string $createDate;
 
 	public function __construct(
-		int $orderId,
+		int    $orderId,
 		string $itemName,
-        string $status,
-        string $deliveryAddress,
+		string $status,
+		string $deliveryAddress,
 		string $number,
 		string $price,
-        string $createDate
-    )
+		string $createDate
+	)
 	{
 		$this->orderId = $orderId;
 		$this->itemName = $itemName;
@@ -31,52 +31,53 @@ class Order
 		$this->createDate = $createDate;
 	}
 
-	public function getOrderId():int
+	public function getOrderId(): int
 	{
 		return $this->orderId;
 	}
 
-	public function setOrderId(int $orderId):void
+	public function setOrderId(int $orderId): void
 	{
 		$this->orderId = $orderId;
 	}
 
 
-	public function getStatus():string
+	public function getStatus(): string
 	{
 		return $this->status;
 	}
 
-	public function setStatus(string $status):void
+	public function setStatus(string $status): void
 	{
 		$this->status = $status;
 	}
 
-	public function getNumber():string
+	public function getNumber(): string
 	{
 		return $this->number;
 	}
 
-	public function setNumber(string $number):void
+	public function setNumber(string $number): void
 	{
 		$this->number = $number;
 	}
 
-	public function getCreateDate():string
+	public function getCreateDate(): string
 	{
 		return $this->createDate;
 	}
 
-	public function setCreateDate(string $createDate):void
+	public function setCreateDate(string $createDate): void
 	{
 		$this->createDate = $createDate;
 	}
 
 
-	public function getItemName():string
+	public function getItemName(): string
 	{
 		return $this->itemName;
 	}
+
 	public function setItemName(int $itemName): void
 	{
 		$this->itemName = $itemName;
@@ -86,14 +87,17 @@ class Order
 	{
 		return $this->deliveryAddress;
 	}
+
 	public function setDeliveryAddress(string $deliveryAddress): void
 	{
 		$this->deliveryAddress = $deliveryAddress;
 	}
+
 	public function getPrice(): string
 	{
 		return $this->price;
 	}
+
 	public function setPrice(string $price): void
 	{
 		$this->price = $price;

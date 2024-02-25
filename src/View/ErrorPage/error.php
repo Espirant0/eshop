@@ -1,6 +1,6 @@
 <?php
 /**
- * @var string $title;
+ * @var string $title ;
  */
 ?>
 <!doctype html>
@@ -12,12 +12,12 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
-	<title><?=$title?></title>
+	<title><?= $title ?></title>
 </head>
 <body>
-	<div class="error_container">
-		<p class="error_header error_text">Упс! Что-то пошло не так!</p>
-		<p class="error_text">Мы уже знаем о проблемe и пытаемся её решить :)</p>
-	</div>
+<div class="error_container">
+	<p class="error_header error_text">Упс! Что-то пошло не так!</p>
+	<p class="error_text">Мы уже знаем о проблемe и пытаемся её решить :)</p>
+</div>
 </body>
 </html>

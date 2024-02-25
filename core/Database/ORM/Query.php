@@ -9,10 +9,23 @@ class Query
 	private string $query = '';
 	private array $usedFunctions = [];
 	private array $usedColumns = [];
+	private array $usedRenaming = [];
 	public function __construct(string $query, string $table)
 	{
 		$this->query = $query;
 		$this->queryTables[] = $table;
+	}
+	public function addRenameToList(string $column, string $name):void
+	{
+		$this->usedRenaming[] = ["$column" => "$name"];
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUsedRenaming(): array
+	{
+		return $this->usedRenaming;
 	}
 
 	/**
@@ -74,7 +87,7 @@ class Query
 	{
 		try
 		{
-			DBHandler::getInstance()->getResult('sadasdasdsdfgkndfjklosn');
+			DBHandler::getInstance()->getResult($this->getQuery());
 		}
 		catch (\Error|\Exception $e)
 		{

@@ -121,7 +121,6 @@ class EditFormController extends BaseController
 
 		if ($table === 'item') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule('price', ['numeric_optional', 'min_optional:3'])
 				->addRule('description', 'min_optional:3')
 				->addRule('create_year', 'min_optional:4');
@@ -129,37 +128,32 @@ class EditFormController extends BaseController
 
 		if ($table === 'material') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule(['engName', 'name'], 'min_optional:3');
 		}
 
 		if ($table === 'role') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule(['name'], 'min_optional:3');
 		}
 
 		if ($table === 'category') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule(['engName', 'name'], 'min_optional:3');
 		}
 
 		if ($table === 'color') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule(['engName', 'name'], 'min_optional:3');
 		}
 
 		if ($table === 'manufacturer') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule(['name'], 'min_optional:3');
 		}
 
 		if ($table === 'orders') {
 			$rules = (new Rules())
-				->addRule(['id', 'item_id', 'status_id', 'price', 'user_id'], 'numeric_optional')
+				->addRule(['item_id', 'status_id', 'price', 'user_id'], 'numeric_optional')
 				->addRule('address', 'min_optional:3')
 				->addRule('price', 'min_optional:4');
 		}
@@ -167,7 +161,6 @@ class EditFormController extends BaseController
 
 		if ($table === 'target_audience') {
 			$rules = (new Rules())
-				->addRule('id', 'numeric_optional')
 				->addRule(['name', 'engName'], 'min_optional:3');
 		}
 

@@ -7,7 +7,6 @@ use App\Service\Logger;
 
 class QueryBuilder
 {
-
 	private Query $query;
 	public function __construct(Query $query = new Query('',''))
 	{

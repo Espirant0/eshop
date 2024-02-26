@@ -1,7 +1,6 @@
 <?php
 namespace Core\Database\ORM;
 use App\Service\DBHandler;
-use App\Service\ExceptionHandler;
 
 class Query
 {

@@ -39,3 +39,16 @@ QueryBuilder::insert('color','engName, name', '123, asd');
 //TODO работа со звёздочкой
 echo QueryBuilder::select('*','item')->aggregate('*',COUNT)->getQuery();
 */
+$DBOperator = DBHandler::getInstance();
+/*$result = $DBOperator->getResult(
+	QueryBuilder::select('id, name, engName', 'category')
+		->join('', 'items_category', flag: LEFT)
+		->join('', 'item')
+		->where('item.status = 1')->getQuery()
+);*/
+var_dump(QueryBuilder::select('id, name, engName', 'category')
+	->join(' ', 'items_category', flag: LEFT)
+	->join(' ', 'item')
+	->where('item.status = 1')->getQuery());
+
+//var_dump(QueryBuilder::select('id','item')->join('name', 'manufacturer')->where('item.id > 10')->getQuery());

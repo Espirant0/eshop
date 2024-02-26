@@ -12,7 +12,8 @@ use App\Model\CategoryList;
 use App\Service\AuthService;
 
 $isAuthorized = AuthService::checkAuth();
-if (!isset($categoryName)) {
+if (!isset($categoryName))
+{
 	$categoryName = '';
 }
 ?>
@@ -24,6 +25,7 @@ if (!isset($categoryName)) {
 	<meta name="viewport"
 		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="icon" href="/resources/img/icon.png" type="image/x-icon">
 	<link rel="stylesheet" href="/resources/css/reset.css">
 	<link rel="stylesheet" href="/resources/css/style.css">
 	<link rel="stylesheet" href="/resources/js/lightbox2-2.11.4/dist/css/lightbox.css"/>

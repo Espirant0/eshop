@@ -11,7 +11,8 @@ class Migrator
 	{
 		$DBOperator = DBHandler::getInstance();
 
-		if ($DBOperator->query("SHOW TABLES LIKE 'migration'")->num_rows === 0) {
+		if ($DBOperator->query("SHOW TABLES LIKE 'migration'")->num_rows === 0)
+		{
 			self::deleteData();
 			$mSQL = file_get_contents(ROOT . '/src/Migration/2024.03.02_20.50_migration_initiation.sql');
 
@@ -22,18 +23,22 @@ class Migrator
 		$doneMigrationsQuery = $DBOperator->getResult('SELECT * FROM migration');
 		$doneMigrations = [];
 
-		foreach ($doneMigrationsQuery as $migration) {
+		foreach ($doneMigrationsQuery as $migration)
+		{
 			$doneMigrations[] = $migration['name'];
 		}
 
 		$migrations = self::getMigrationFiles();
 
-		foreach ($migrations as $migration) {
-			if (!in_array($migration, $doneMigrations)) {
+		foreach ($migrations as $migration)
+		{
+			if (!in_array($migration, $doneMigrations))
+			{
 				$commands = file_get_contents(ROOT . '/src/Migration/' . $migration);
 				$commandList = explode(';', $commands);
 
-				foreach ($commandList as $commandSQL) {
+				foreach ($commandList as $commandSQL)
+				{
 					if ($commandSQL == '') continue;
 					$DBOperator->query($commandSQL);
 				}
@@ -49,8 +54,10 @@ class Migrator
 		$migrationFiles = [];
 		$migrations = scandir(ROOT . '/src/Migration');
 
-		foreach ($migrations as $migration) {
-			if (preg_match('/.(sql)/', $migration)) {
+		foreach ($migrations as $migration)
+		{
+			if (preg_match('/.(sql)/', $migration))
+			{
 				$migrationFiles[] = $migration;
 			}
 		}
@@ -66,7 +73,8 @@ class Migrator
 		$DBOperator->query('SET foreign_key_checks = 0');
 		$tables = 'Tables_in_' . $config->option('DB_NAME');
 
-		while ($row = mysqli_fetch_assoc($res)) {
+		while ($row = mysqli_fetch_assoc($res))
+		{
 			$tableName = $row[$tables];
 			$mysql = "DROP TABLE {$tableName}";
 			$DBOperator->query($mysql);

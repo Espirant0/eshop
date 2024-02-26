@@ -16,14 +16,17 @@ class UserRepo extends BaseRepo
 		    WHERE u.id = '$login';
 		    ");
 
-		if (!$result) {
+		if (!$result)
+		{
 			throw new Exception($DBOperator->connect_error);
 		}
 
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$userLogin = $row['id'];
 
-			if (!isset($userLogin)) {
+			if (!isset($userLogin))
+			{
 				return null;
 			}
 			return new User($login, $row['name'], $row['address'], $row['role_name'], $row['password']);
@@ -39,10 +42,12 @@ class UserRepo extends BaseRepo
 		         INNER JOIN role r on u.role_id = r.id
 		ORDER BY u.id
 		");
-		if (!$result) {
+		if (!$result)
+		{
 			throw new Exception($DBOperator->connect_error);
 		}
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$userList[] = new User($row['id'], $row['name'], $row['address'], $row['role_name'], $row['password']);
 		}
 		return $userList;

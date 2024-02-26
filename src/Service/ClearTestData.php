@@ -19,11 +19,14 @@ class ClearTestData
 		echo 'Found ' . $counted . " directories to delete\n";
 		$countedDir = 0;
 		$countedFiles = 0;
-		foreach ($files as $file) {
-			if ((int)explode('.', $file)[0] > 26) {
+		foreach ($files as $file)
+		{
+			if ((int)explode('.', $file)[0] > 26)
+			{
 				$innerFiles = scandir(ROOT . "/public/resources/product/img/{$file}");
 				$innerFiles = array_diff($innerFiles, array('.', '..'));
-				foreach ($innerFiles as $innerFile) {
+				foreach ($innerFiles as $innerFile)
+				{
 					unlink(ROOT . "/public/resources/product/img/{$file}/$innerFile");
 					$countedFiles++;
 				}
@@ -32,10 +35,13 @@ class ClearTestData
 			}
 		}
 		$renamedDirs = 0;
-		foreach ($files as $file) {
-			foreach ($standart as $standartName) {
+		foreach ($files as $file)
+		{
+			foreach ($standart as $standartName)
+			{
 				if ((int)explode('.', $file)[0] == (int)explode('.', $standartName)[0] &&
-					explode('.', $file)[1] != explode('.', $standartName)[1]) {
+					explode('.', $file)[1] != explode('.', $standartName)[1])
+				{
 					rename(ROOT . "/public/resources/product/img/{$file}", ROOT . "/public/resources/product/img/{$standartName}");
 					$renamedDirs++;
 				}

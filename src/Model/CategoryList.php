@@ -65,8 +65,10 @@ class CategoryList implements \Iterator
 	 */
 	public function removeCategoryByName(string $name): void
 	{
-		foreach ($this->data as $category) {
-			if ($category->getName() === $name) {
+		foreach ($this->data as $category)
+		{
+			if ($category->getName() === $name)
+			{
 				unset($this->data[$name]);
 				break;
 			}
@@ -79,8 +81,10 @@ class CategoryList implements \Iterator
 	 */
 	public function removeCategoryByID(string $ID): void
 	{
-		foreach ($this->data as $category) {
-			if ($category->getID() === $ID) {
+		foreach ($this->data as $category)
+		{
+			if ($category->getID() === $ID)
+			{
 				unset($this->data[$ID]);
 				break;
 			}

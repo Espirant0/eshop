@@ -17,15 +17,19 @@ class AdminController extends BaseController
 		$config = new Config();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$pageNumber = 1;
-		if (isset($_GET['page'])) {
+		if (isset($_GET['page']))
+		{
 			$pageNumber = (int)$_GET['page'];
 		}
-		if (empty($tableName)) {
+		if (empty($tableName))
+		{
 			$tableName = '';
-		} else {
+		} else
+		{
 			$tableName = $tableName[0];
 		}
-		if (AuthService::checkAuth()) {
+		if (AuthService::checkAuth())
+		{
 			$this->render('AdminPage/admin.php', [
 				'objectList' => (new CategoryListRepo())->getObjectList(),
 				'pageNumber' => $pageNumber,
@@ -35,7 +39,8 @@ class AdminController extends BaseController
 				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName, null),
 				'title' => 'Админ-панель',
 			]);
-		} else {
+		} else
+		{
 			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
@@ -53,12 +58,14 @@ class AdminController extends BaseController
 
 	public function resetData(): void
 	{
-		if (AuthService::checkAuth()) {
+		if (AuthService::checkAuth())
+		{
 			ClearTestData::clear();
 			FileCache::deleteAllCache();
 			FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 			HttpService::redirect('admin_panel');
-		} else {
+		} else
+		{
 			HttpService::redirect('auth');
 		}
 	}

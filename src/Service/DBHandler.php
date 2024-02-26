@@ -22,7 +22,8 @@ class DBHandler extends \mysqli
 
 		parent::__construct($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName);
 
-		if ($this->connect_error) {
+		if ($this->connect_error)
+		{
 			throw new \Exception($this->connect_error);
 		}
 
@@ -32,7 +33,8 @@ class DBHandler extends \mysqli
 
 	public static function getInstance(): DBHandler
 	{
-		if (!isset(self::$instance)) {
+		if (!isset(self::$instance))
+		{
 			self::$instance = new self;
 		}
 		return self::$instance;
@@ -42,7 +44,8 @@ class DBHandler extends \mysqli
 	{
 		$this->close();
 
-		if (!$this->real_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName)) {
+		if (!$this->real_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName))
+		{
 			throw new \Exception($this->connect_error);
 		}
 	}
@@ -77,7 +80,8 @@ class DBHandler extends \mysqli
 			$config->option('DB_NAME')
 		);
 
-		if (!$connected) {
+		if (!$connected)
+		{
 			unset($config);
 			return new \Exception($connection->connect_error);
 		}

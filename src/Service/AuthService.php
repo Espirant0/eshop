@@ -9,7 +9,8 @@ class AuthService
 		ExceptionHandler::tryCatch(function () {
 			session_start();
 		});
-		if (!isset($_SESSION['USER'])) {
+		if (!isset($_SESSION['USER']))
+		{
 			return false;
 		}
 		return true;

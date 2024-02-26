@@ -12,7 +12,8 @@ abstract class BaseCache
 	{
 		$data = $this->get($key);
 
-		if ($data === null) {
+		if ($data === null)
+		{
 			$value = $fetcher();
 			$this->set($key, $value, $ttl);
 			return $value;

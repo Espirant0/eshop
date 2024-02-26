@@ -24,7 +24,8 @@ class Route
 		$matches = [];
 		$result = preg_match($regexp, $uri, $matches);
 
-		if ($result) {
+		if ($result)
+		{
 			array_shift($matches);
 			$this->variables[] = $matches;
 		}

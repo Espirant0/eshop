@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model;
+
 use Core\Validator\Rules;
 
 class Category

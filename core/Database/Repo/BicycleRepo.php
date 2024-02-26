@@ -16,7 +16,8 @@ class BicycleRepo extends BaseRepo
 		$startId = ($currentPage - 1) * $itemsPerPage;
 		$queryDop = '';
 
-		if ($categoryName !== '') {
+		if ($categoryName !== '')
+		{
 			$queryDop = "AND c2.engName = '$categoryName'";
 		}
 
@@ -37,14 +38,17 @@ class BicycleRepo extends BaseRepo
 
 		$Bicycles = [];
 
-		if (!$result) {
+		if (!$result)
+		{
 			throw new \Exception($DBOperator->connect_error);
 		}
-		if ($property != []) {
+		if ($property != [])
+		{
 			return BicycleRepo::getFilteredBicycleList($currentPage, $categoryName, $property);
 		}
 
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$category[] = new Category(
 				$row['category_id'],
 				$row['category_name'],
@@ -73,12 +77,14 @@ class BicycleRepo extends BaseRepo
 
 	public static function getFilteredBicycleList(int $currentPage, string $categoryName = '', ?array $property = []): array
 	{
-		if (isset($property['search'])) {
+		if (isset($property['search']))
+		{
 			$filter = $property;
 			unset($filter['search']);
 			if (count($filter) == 0) unset($filter);
 			$property = $property['search'];
-		} else {
+		} else
+		{
 			$filter = $property;
 			$property = null;
 		}
@@ -97,25 +103,31 @@ class BicycleRepo extends BaseRepo
         ORDER BY i.id"
 		);
 		$pageCounter = 0;
-		foreach ($result as $row) {
+		foreach ($result as $row)
+		{
 			$category[] = new Category(
 				$row['category_id'],
 				$row['category_name'],
 				$row['category']
 			);
-			if (!is_null($property) && !str_contains(strtolower($row['title']), strtolower($property))) {
+			if (!is_null($property) && !str_contains(strtolower($row['title']), strtolower($property)))
+			{
 				continue;
 			}
-			if (isset($filter)) {
+			if (isset($filter))
+			{
 				$skip = 0;
-				foreach ($filter as $value) {
+				foreach ($filter as $value)
+				{
 					$key = array_search($value, $filter, true);
 
-					if ($key === false || !isset($row[$key])) {
+					if ($key === false || !isset($row[$key]))
+					{
 						throw new \Exception('invalid data', -1);
 					}
 
-					if ($row[$key] !== $value) {
+					if ($row[$key] !== $value)
+					{
 						$skip = 1;
 						break;
 					}
@@ -123,7 +135,8 @@ class BicycleRepo extends BaseRepo
 				if ($skip === 1) continue;
 			}
 			$pageCounter++;
-			if ($pageCounter > ($currentPage - 1) * 9) {
+			if ($pageCounter > ($currentPage - 1) * 9)
+			{
 				$filteredBicycleList[] = new Bicycle
 				(
 					$row['id'],

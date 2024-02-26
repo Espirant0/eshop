@@ -11,7 +11,8 @@ class ExceptionHandler
 
 	public static function getInstance(): ExceptionHandler
 	{
-		if (!isset(self::$instance)) {
+		if (!isset(self::$instance))
+		{
 			self::$instance = new ExceptionHandler();
 		}
 		return self::$instance;
@@ -28,17 +29,22 @@ class ExceptionHandler
 	{
 		restore_error_handler();
 		restore_exception_handler();
-		try {
+		try
+		{
 			$try();
-		} catch (\Exception|\Error $exc) {
+		} catch (\Exception|\Error $exc)
+		{
 			set_error_handler([ExceptionHandler::getInstance(), 'errorToLogger']);
 			set_exception_handler([ExceptionHandler::getInstance(), 'exceptionToLogger']);
-			if (str_contains(get_class($exc), 'Exception')) {
+			if (str_contains(get_class($exc), 'Exception'))
+			{
 				self::getInstance()->ExceptionToLogger($exc, 'TryCatch:Exception');
-			} else {
+			} else
+			{
 				self::getInstance()->errorToLogger(type: 'TryCatch:Error', obj: $exc);
 			}
-		} finally {
+		} finally
+		{
 			set_error_handler([ExceptionHandler::getInstance(), 'errorToLogger']);
 			set_exception_handler([ExceptionHandler::getInstance(), 'exceptionToLogger']);
 		}
@@ -47,7 +53,8 @@ class ExceptionHandler
 	public function errorToLogger(int $errno = 0, string $errstr = '', string $errfile = '', ?int $errline = null, ?array $errcontext = null, $type = 'Error', ?\Error $obj = null): void
 	{
 		$trace = '';
-		if ($obj != null) {
+		if ($obj != null)
+		{
 			$errno = $obj->getCode();
 			$errstr = $obj->getMessage();
 			$errfile = $obj->getFile();
@@ -64,7 +71,8 @@ class ExceptionHandler
 		$exc = new \ErrorException($exception->getMessage(), $exception->getCode(), 1, $exception->getFile(), $exception->getLine());
 		$trace = $exc->getTraceAsString();
 		Logger::writeErrorToLog($exc, $trace, $type);
-		if ($exc->getCode() == -1) {
+		if ($exc->getCode() == -1)
+		{
 			http_response_code(404);
 			$err = new PageNotFoundController();
 			$err->PageNotFoundViewer();

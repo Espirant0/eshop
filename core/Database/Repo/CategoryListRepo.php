@@ -28,7 +28,8 @@ class CategoryListRepo extends BaseRepo
 	{
 		$categoryList = new CategoryList();
 
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$categoryId = (int)$row['id'];
 			$categoryName = $row['name'];
 			$categoryEngName = $row['engName'];
@@ -52,8 +53,10 @@ class CategoryListRepo extends BaseRepo
 		$categoryBlackList = $config->option('CATEGORY_BLACK_LIST');
 
 		$idIterator = 0;
-		while ($row = mysqli_fetch_assoc($result)) {
-			if (!in_array($row[$tablePostfix], $categoryBlackList)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
+			if (!in_array($row[$tablePostfix], $categoryBlackList))
+			{
 				$category = new Category($idIterator, $config->option('DICTIONARY')[$row[$tablePostfix]], $row[$tablePostfix]);
 				$objectList->addCategory($category);
 				$idIterator++;

@@ -1,5 +1,7 @@
 <?php
+
 namespace Core\Database\ORM;
+
 use App\Service\DBHandler;
 
 class Query
@@ -9,12 +11,14 @@ class Query
 	private array $usedFunctions = [];
 	private array $usedColumns = [];
 	private array $usedRenaming = [];
+
 	public function __construct(string $query, string $table)
 	{
 		$this->query = $query;
 		$this->queryTables[] = $table;
 	}
-	public function addRenameToList(string $column, string $name):void
+
+	public function addRenameToList(string $column, string $name): void
 	{
 		$this->usedRenaming[] = ["$column" => "$name"];
 	}
@@ -34,14 +38,15 @@ class Query
 	{
 		return $this->query;
 	}
-	public function setQuery($query):void
+
+	public function setQuery($query): void
 	{
 		$this->query = $query;
 	}
 
-	public function addToQuery($query):void
+	public function addToQuery($query): void
 	{
-		$this->query = $this->query.' '.$query;
+		$this->query = $this->query . ' ' . $query;
 	}
 
 	/**
@@ -59,11 +64,12 @@ class Query
 	{
 		$this->queryTables = $queryTables;
 	}
+
 	/**
 	 * @param array $queryTables
 	 */
 
-	public function addQueryTable(string $table):void
+	public function addQueryTable(string $table): void
 	{
 		$this->queryTables[] = $table;
 	}
@@ -82,37 +88,37 @@ class Query
 		$this->usedFunctions[] = $usedFunction;
 	}
 
-	public function testQuery():bool
+	public function testQuery(): bool
 	{
 		try
 		{
 			DBHandler::getInstance()->getResult($this->getQuery());
-		}
-		catch (\Error|\Exception $e)
+		} catch (\Error|\Exception $e)
 		{
 			$result = false;
-		}
-		finally
+		} finally
 		{
 			if (!isset($result)) $result = true;
 		}
 		return $result;
 	}
-	public function addUsedColumns(array|string $columns):void
+
+	public function addUsedColumns(array|string $columns): void
 	{
-		if(!is_array($columns))
+		if (!is_array($columns))
 		{
-			$columns = str_replace(' ','',$columns);
-			$columns = explode(',',$columns);
+			$columns = str_replace(' ', '', $columns);
+			$columns = explode(',', $columns);
 		}
 		foreach ($columns as $column) $this->usedColumns[] = $column;
 	}
 
-	public function getUsedColumns():array
+	public function getUsedColumns(): array
 	{
 		return $this->usedColumns;
 	}
-	public function __toString():string
+
+	public function __toString(): string
 	{
 		return $this->query;
 	}

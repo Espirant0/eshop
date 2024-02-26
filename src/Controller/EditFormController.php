@@ -12,29 +12,30 @@ use App\Service\HttpService;
 use App\Service\ImageHandler;
 use Core\Database\Repo\AdminPanelRepo;
 use Core\Validator\Validator;
-use Core\Validator\Rules;
 
 class EditFormController extends BaseController
 {
 	public function showEditFormPage($tableName, ?array $errors = null): void
 	{
 		$itemId = (int)$_GET['id'];
-		if ($itemId === 0) {
+		if ($itemId === 0)
+		{
 			throw new \Exception('ID not int', -1);
 		}
-
 		$fields = AdminPanelRepo::getItemColumns($tableName[0]);
 		array_shift($fields);
 		$cache = new FileCache();
 		$cache->set($tableName[0], $fields, 3600);
-		if (AuthService::checkAuth()) {
+		if (AuthService::checkAuth())
+		{
 			$this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $itemId,
 				'tableName' => $tableName[0],
 				'title' => 'Редактировать',
 			]);
-		} else {
+		} else
+		{
 			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
@@ -44,13 +45,15 @@ class EditFormController extends BaseController
 
 	public function showAddFormPage($tableName, ?array $errors = null): void
 	{
-		if (AuthService::checkAuth()) {
+		if (AuthService::checkAuth())
+		{
 			$this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 				'tableName' => $tableName[0],
 				'title' => 'Добавить товар',
 			]);
-		} else {
+		} else
+		{
 			$this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
@@ -62,11 +65,14 @@ class EditFormController extends BaseController
 	{
 		$images = [];
 
-		if (!empty($_FILES['files']['name'][0])) {
+		if (!empty($_FILES['files']['name'][0]))
+		{
 			$check = ImageHandler::can_upload($_FILES['files']);
-			if ($check) {
+			if ($check)
+			{
 				$images = $_FILES['files'];
-			} else {
+			} else
+			{
 				$errors[] = ['Ошибка загрузки файлов'];
 				$this->showAddFormPage($tableName, $errors);
 				return;
@@ -80,7 +86,8 @@ class EditFormController extends BaseController
 		$rules = Bicycle::getRulesValidationItem();
 
 
-		if ($validator->validate($data, $rules->getRules())) {
+		if ($validator->validate($data, $rules->getRules()))
+		{
 			$bicycle = new Bicycle(
 				$itemId,
 				$_POST['title'],
@@ -97,7 +104,8 @@ class EditFormController extends BaseController
 			);
 			AdminPanelRepo::addItem($bicycle, $images);
 			HttpService::redirect('admin_panel');
-		} else {
+		} else
+		{
 			$errors = $validator->errors();
 			$this->showAddFormPage($tableName, $errors);
 		}
@@ -113,8 +121,10 @@ class EditFormController extends BaseController
 		$fields = (new FileCache())->get($table);
 		$newValues = [];
 
-		foreach ($fields as $field) {
-			if ($_POST[$field] !== '') {
+		foreach ($fields as $field)
+		{
+			if ($_POST[$field] !== '')
+			{
 				$newValues[$field] = $_POST[$field];
 			}
 		}
@@ -145,20 +155,25 @@ class EditFormController extends BaseController
 				$rules = Category::getRulesValidationCategory();
 		}
 
-		if (!empty($newValues)) {
-			if ($validator->validate($data, $rules->getRules())) {
-				if ($table === 'item') {
+		if (!empty($newValues))
+		{
+			if ($validator->validate($data, $rules->getRules()))
+			{
+				if ($table === 'item')
+				{
 					ImageHandler::renameImageForExistingItem($itemId, $_POST['title']);
 				}
 
 				AdminPanelRepo::updateItem($table, $itemId, $newValues);
 				FileCache::deleteCacheByKey($table);
 				HttpService::redirect('admin_panel');
-			} else {
+			} else
+			{
 				$errors = $validator->errors();
 				$this->showEditFormPage($tableName, $errors);
 			}
-		} else {
+		} else
+		{
 			$errors[] = ['Введите значения!'];
 			$this->showEditFormPage($tableName, $errors);
 		}

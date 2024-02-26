@@ -22,11 +22,13 @@ class OrderRepo extends BaseRepo
 
 		$orders = [];
 
-		if (!$result) {
+		if (!$result)
+		{
 			throw new \Exception($DBOperator->connect_error);
 		}
 
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$orders[] = new Order
 			(
 				$row['id'],
@@ -52,7 +54,8 @@ class OrderRepo extends BaseRepo
 			"INSERT INTO orders (item_id, status_id, data_create, price, user_id, address) 
 					VALUES ($itemId, 1, '$date', '$price', '$number', '$address')
 		;");
-		if (!$result) {
+		if (!$result)
+		{
 			throw new \Exception($DBOperator->connect_error);
 		}
 	}

@@ -31,15 +31,20 @@ class AdminPanelRepo extends BaseRepo
 
 		$DBOperator->query("INSERT INTO items_category(item_id, category_id) VALUES ($itemId,'$category')");
 
-		if (empty($images)) {
+		if (empty($images))
+		{
 			ImageHandler::createNewItemDefaultImage($itemId, $title);
-		} else {
+		} else
+		{
 			$number = 1;
-			foreach ($images['tmp_name'] as $image) {
+			foreach ($images['tmp_name'] as $image)
+			{
 				ImageHandler::createNewItemImage($image, $itemId, $title, $number);
-				if ($number === 1) {
+				if ($number === 1)
+				{
 					$isMain = 1;
-				} else {
+				} else
+				{
 					$isMain = 0;
 				}
 				$DBOperator->query("INSERT INTO image (item_id, is_main, ord) VALUES ('$itemId',$isMain,$number)");
@@ -59,7 +64,8 @@ class AdminPanelRepo extends BaseRepo
 		$DBOperator = DBHandler::getInstance();
 		$table = mysqli_real_escape_string($DBOperator, $table);
 		$expression = '';
-		foreach ($newValues as $key => $value) {
+		foreach ($newValues as $key => $value)
+		{
 			$newValues[$key] = mysqli_real_escape_string($DBOperator, $value);
 			$expression .= ' ' . $key . ' = ' . "'$newValues[$key]'" . ', ';
 		}
@@ -87,7 +93,8 @@ class AdminPanelRepo extends BaseRepo
 		$fields = [];
 		$value = (ctype_digit($value)) ? 'int' : 'varchar';
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$fields[] = [$row['Field'] => current(explode('(', $row['Type']))];
 		}
 
@@ -96,7 +103,8 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function getItemColumns(string $table): array
 	{
-		if ($table === '') {
+		if ($table === '')
+		{
 			return [];
 		}
 		$config = new Config();
@@ -105,8 +113,10 @@ class AdminPanelRepo extends BaseRepo
 		$table = mysqli_real_escape_string($DBOperator, $table);
 		$fields = [];
 		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
-		while ($row = mysqli_fetch_assoc($result)) {
-			if (!in_array($row['Field'], $ignoredFields)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
+			if (!in_array($row['Field'], $ignoredFields))
+			{
 				$fields[] = $row['Field'];
 			}
 		}
@@ -115,11 +125,13 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function getItemList(string $item, ?int $currentPage = 1): array
 	{
-		if ($item === '') {
+		if ($item === '')
+		{
 			return [];
 		}
 		$limit = '';
-		if (isset($currentPage)) {
+		if (isset($currentPage))
+		{
 			$config = new Config();
 			$itemsPerPage = $config->option('PRODUCT_LIMIT');
 			$startId = ($currentPage - 1) * $itemsPerPage;
@@ -137,10 +149,12 @@ class AdminPanelRepo extends BaseRepo
 				ORDER BY id
 				$limit;
 		");
-		if (!$result) {
+		if (!$result)
+		{
 			throw new \Exception($DBOperator->connect_error);
 		}
-		while ($row = mysqli_fetch_assoc($result)) {
+		while ($row = mysqli_fetch_assoc($result))
+		{
 			$itemList[] = $row;
 		}
 		return $itemList;
@@ -153,6 +167,7 @@ class AdminPanelRepo extends BaseRepo
 		$pagesCount = ceil($itemId / $config->option('PRODUCT_LIMIT'));
 
 		$itemList = self::getItemList($table, $pagesCount);
+
 		return $itemList[$itemId - 1 - $config->option('PRODUCT_LIMIT') * ($pagesCount - 1)];
 	}
 }

@@ -22,7 +22,8 @@ class FileCache extends BaseCache
 		$hash = sha1($key);
 		$path = ROOT . '/var/cache/' . $hash . '.php';
 
-		if (!file_exists($path)) {
+		if (!file_exists($path))
+		{
 			return null;
 		}
 
@@ -30,7 +31,8 @@ class FileCache extends BaseCache
 
 		$ttl = $data['ttl'];
 
-		if (time() > $ttl) {
+		if (time() > $ttl)
+		{
 			return null;
 		}
 
@@ -42,15 +44,18 @@ class FileCache extends BaseCache
 		$hash = sha1($key);
 		$path = ROOT . '/var/cache/' . $hash . '.php';
 
-		if (file_exists($path)) {
+		if (file_exists($path))
+		{
 			unlink($path);
 		}
 	}
 
 	public static function deleteAllCache(): void
 	{
-		if (file_exists('./var/cache')) {
-			foreach (glob('./var/cache/*') as $cache) {
+		if (file_exists('./var/cache'))
+		{
+			foreach (glob('./var/cache/*') as $cache)
+			{
 				unlink($cache);
 			}
 		}

@@ -18,12 +18,14 @@ class Application
 
 		$route = Routing\Router::find($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
-		if ($route) {
+		if ($route)
+		{
 			$action = $route->action;
 			$action(...$route->getVariables());
 			return;
 		}
-		if (str_contains($_SERVER['REQUEST_URI'], 'admin_panel')) {
+		if (str_contains($_SERVER['REQUEST_URI'], 'admin_panel'))
+		{
 			HttpService::redirect('admin_panel');
 			return;
 		}

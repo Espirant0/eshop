@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Cache\FileCache;
 use App\Service\HttpService;
 use Core\Database\Repo\CategoryListRepo;
-use Core\Database\Repo\DetailRepo;
 use Core\Database\Repo\OrderRepo;
 
 class OrderController extends BaseController

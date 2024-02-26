@@ -76,16 +76,16 @@ class CategoryList implements \Iterator
 	}
 
 	/**
-	 * @param string $ID
+	 * @param string $id
 	 * @return void
 	 */
-	public function removeCategoryByID(string $ID): void
+	public function removeCategoryById(string $id): void
 	{
 		foreach ($this->data as $category)
 		{
-			if ($category->getID() === $ID)
+			if ($category->getId() === $id)
 			{
-				unset($this->data[$ID]);
+				unset($this->data[$id]);
 				break;
 			}
 		}

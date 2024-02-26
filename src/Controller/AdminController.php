@@ -36,7 +36,7 @@ class AdminController extends BaseController
 				'tableName' => $tableName,
 				'errors' => $errors,
 				'page' => $pageNumber,
-				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName, null),
+				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName),
 				'title' => 'Админ-панель',
 			]);
 		} else

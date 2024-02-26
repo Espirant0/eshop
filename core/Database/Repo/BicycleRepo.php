@@ -77,6 +77,8 @@ class BicycleRepo extends BaseRepo
 
 	public static function getFilteredBicycleList(int $currentPage, string $categoryName = '', ?array $property = []): array
 	{
+		$config = new Config();
+		$limit = $config->option('PRODUCT_LIMIT');
 		if (isset($property['search']))
 		{
 			$filter = $property;
@@ -135,7 +137,7 @@ class BicycleRepo extends BaseRepo
 				if ($skip === 1) continue;
 			}
 			$pageCounter++;
-			if ($pageCounter > ($currentPage - 1) * 9)
+			if ($pageCounter > ($currentPage - 1) * $limit)
 			{
 				$filteredBicycleList[] = new Bicycle
 				(
@@ -153,7 +155,7 @@ class BicycleRepo extends BaseRepo
 					$row['target']
 				);
 			}
-			if ($pageCounter == $currentPage * 9) break;
+			if ($pageCounter == $currentPage * $limit) break;
 		}
 		return $filteredBicycleList;
 	}

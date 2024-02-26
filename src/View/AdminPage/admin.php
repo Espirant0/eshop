@@ -56,7 +56,7 @@ $itemList = AdminPanelRepo::getItemList($tableName, $page);
 				<p class="gear_text">Выберите таблицу слева для просмотра и редактирования сущностей</p>
 			</div>
 			<div class="tab-pane <?= $tableName !== '' ? 'tab-pane-show' : 'disable' ?>"
-				 data-id="<?= $object->getID() ?>">
+				 data-id="<?= $object->getId() ?>">
 				<table class="table_inner">
 					<thead>
 					<tr>

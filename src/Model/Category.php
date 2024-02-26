@@ -6,25 +6,25 @@ use Core\Validator\Rules;
 
 class Category
 {
-	private string $ID;
+	private string $id;
 	private string $name;
 	private string $engName;
 
-	public function __construct(string $ID, string $name, string $engName)
+	public function __construct(string $id, string $name, string $engName)
 	{
-		$this->ID = $ID;
+		$this->id = $id;
 		$this->name = $name;
 		$this->engName = $engName;
 	}
 
-	public function getID(): string
+	public function getId(): string
 	{
-		return $this->ID;
+		return $this->id;
 	}
 
-	public function setID(string $ID): void
+	public function setId(string $id): void
 	{
-		$this->ID = $ID;
+		$this->id = $id;
 	}
 
 	public function getName(): string

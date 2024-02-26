@@ -81,10 +81,14 @@ class EditFormController extends BaseController
 
 		$itemId = AdminPanelRepo::getLastFreeId();
 
+		foreach ($_POST as $key => $value)
+		{
+			$_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
+		}
 		$data = $_POST;;
+
 		$validator = new Validator();
 		$rules = Bicycle::getRulesValidationItem();
-
 
 		if ($validator->validate($data, $rules->getRules()))
 		{
@@ -113,6 +117,10 @@ class EditFormController extends BaseController
 
 	public function updateValue($tableName): void
 	{
+		foreach ($_POST as $key => $value)
+		{
+			$_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
+		}
 		$data = $_POST;
 		$validator = new Validator();
 		$errors = [];

@@ -50,18 +50,18 @@ class ExceptionHandler
 		}
 	}
 
-	public function errorToLogger(int $errno = 0, string $errstr = '', string $errfile = '', ?int $errline = null, ?array $errcontext = null, $type = 'Error', ?\Error $obj = null): void
+	public function errorToLogger(int $errno = 0, string $errStr = '', string $errFile = '', ?int $errLine = null, ?array $errContext = null, $type = 'Error', ?\Error $obj = null): void
 	{
 		$trace = '';
 		if ($obj != null)
 		{
 			$errno = $obj->getCode();
-			$errstr = $obj->getMessage();
-			$errfile = $obj->getFile();
-			$errline = $obj->getLine();
+			$errStr = $obj->getMessage();
+			$errFile = $obj->getFile();
+			$errLine = $obj->getLine();
 			$trace = $obj->getTraceAsString();
 		}
-		$exc = new \ErrorException($errstr, $errno, 1, $errfile, $errline);
+		$exc = new \ErrorException($errStr, $errno, 1, $errFile, $errLine);
 		Logger::writeErrorToLog($exc, $trace, $type);
 		self::errorPageRedirect();
 	}

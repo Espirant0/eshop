@@ -86,21 +86,6 @@ class AdminPanelRepo extends BaseRepo
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
-	public static function checkItemColumns(string $table, string $field, mixed $value): bool
-	{
-		$DBOperator = DBHandler::getInstance();
-		$table = strtoupper(mysqli_real_escape_string($DBOperator, $table));
-		$fields = [];
-		$value = (ctype_digit($value)) ? 'int' : 'varchar';
-		$result = $DBOperator->query("SHOW COLUMNS FROM $table");
-		while ($row = mysqli_fetch_assoc($result))
-		{
-			$fields[] = [$row['Field'] => current(explode('(', $row['Type']))];
-		}
-
-		return in_array([$field => $value], $fields, true);
-	}
-
 	public static function getItemColumns(string $table): array
 	{
 		if ($table === '')

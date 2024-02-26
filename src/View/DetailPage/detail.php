@@ -55,7 +55,7 @@ use App\Model\Bicycle;
 			</div>
 			<div class="item_tags">
 				<?php foreach ($bicycle->getCategories() as $category): ?>
-					<a href="/<?= "?{$category->getID()}={$category->getEngName()}" ?>"
+					<a href="/<?= "?{$category->getId()}={$category->getEngName()}" ?>"
 					   class="item_tag"><?= $category->getName() ?></a>
 				<?php endforeach; ?>
 			</div>

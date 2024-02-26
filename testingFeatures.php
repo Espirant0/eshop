@@ -23,32 +23,13 @@ use App\Service\DBHandler;
 use Core\Database\ORM\QueryBuilder;
 
 /*
-#REPO оставляем
-#var_dump(DBHandler::getInstance()->getResult("SELECT DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'eshop' AND TABLE_NAME = 'item'"));
-#var_dump(DBHandler::getInstance()->getResult("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'eshop' AND TABLE_TYPE = 'BASE TABLE'"));
 #var_dump(QueryBuilder::getTableRestrictions('item'));
-#echo QueryBuilder::insert('material','name, engName','залупа, zalupaKonya');
-#QueryBuilder::update('item','title, color_id','zalupaKonya, 3',1);
+#echo QueryBuilder::insert('material','name, engName','пластик, plastic');
+#QueryBuilder::update('item','title, color_id','newTitle, 3',1);
 #var_dump(QueryBuilder::select('all','item')->aggregate('item.id',SUM)->getQuery());
 #echo QueryBuilder::select('all','item')->aggregate('item.id',SUM)->getQuery();
 
 var_dump(QueryBuilder::getTableRestrictions('item'));
-
-QueryBuilder::insert('color','engName, name', '123, asd');
-
-//TODO работа со звёздочкой
-echo QueryBuilder::select('*','item')->aggregate('*',COUNT)->getQuery();
-*/
-$DBOperator = DBHandler::getInstance();
-/*$result = $DBOperator->getResult(
-	QueryBuilder::select('id, name, engName', 'category')
-		->join('', 'items_category', flag: LEFT)
-		->join('', 'item')
-		->where('item.status = 1')->getQuery()
-);*/
-var_dump(QueryBuilder::select('id, name, engName', 'category')
-	->join(' ', 'items_category', flag: LEFT)
-	->join(' ', 'item')
-	->where('item.status = 1')->getQuery());
-
+#QueryBuilder::insert('color','engName, name', '123, asd');
+\App\Service\ClearTestData::clear();
 //var_dump(QueryBuilder::select('id','item')->join('name', 'manufacturer')->where('item.id > 10')->getQuery());

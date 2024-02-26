@@ -74,7 +74,7 @@ class User
 	public static function getRulesValidationUser(): Rules
 	{
 		return (new Rules())
-			->addRule('id', ['min_optional:10', 'numeric_optional'])
+			->addRule('id', 'required')
 			->addRule(['name', 'engName'], 'min_optional:3');
 	}
 }

@@ -26,10 +26,12 @@ $table = (new FileCache())->get($tableName);
 <body>
 <div class="auth_container">
 	<div class="auth_errors">
-		<?php if (!empty($errors)): ?>
+		<?php if (!empty($errors)):?>
 			<?php foreach ($errors as $error): ?>
 				<div>
-					<?= $error; ?>
+					<?php foreach ($error as $errorName): ?>
+						<?= $errorName; ?>
+					<?php endforeach; ?>
 				</div>
 			<?php endforeach; ?>
 		<?php endif; ?>

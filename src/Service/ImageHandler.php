@@ -63,24 +63,32 @@ class ImageHandler
 
 	public static function createNewItemImage(string $image, int|string $id, string $title, int $imageNumber): void
 	{
-		$imageData = file_get_contents($image);
-		$resizedImage = self::resizeImageFromString($imageData);
+		$config = new Config();
 
 		if (!file_exists($directory = ROOT . "/public/resources/product/img/{$id}.{$title}") && !mkdir($directory, 0777, true) && !is_dir($directory)) {
 			throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
 		}
 
-		$destinationPath = ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}.jpg";
-		copy($resizedImage, $destinationPath);
+		$imageData = file_get_contents($image);
+
+		if ($imageNumber === 1)
+		{
+			$resizedImageMain = self::resizeImageFromString($imageData, $config->option('IMAGE_MAIN_HEIGHT'),
+				$config->option('IMAGE_MAIN_WIDTH'));
+			$destinationPath = ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}_main.jpg";
+
+			copy($resizedImageMain, $destinationPath);
+		}
+
+		$resizedImageDetail = self::resizeImageFromString($imageData, $config->option('IMAGE_DETAIL_HEIGHT'),
+			$config->option('IMAGE_DETAIL_WIDTH'));
+		$destinationPath = ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}_detail.jpg";
+
+		copy($resizedImageDetail, $destinationPath);
 	}
 
-	public static function resizeImageFromString($uploadedImageString): bool|string
+	public static function resizeImageFromString($uploadedImageString, $desiredHeight, $desiredWidth): bool|string
 	{
-		$config = new Config();
-
-		$desiredWidth = 1000;
-		$desiredHeight = 1000;
-
 		$originalImage = imagecreatefromstring($uploadedImageString);
 
 		$originalWidth = imagesx($originalImage);

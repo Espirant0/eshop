@@ -32,18 +32,7 @@ class Bicycle
 	 * @param category[] $categories
 	 * @var Image[] $images
 	 */
-	public function __construct(int    $id,
-								string $name,
-								string $color,
-								string $year,
-								string $material,
-								string $price,
-								string $description,
-								string $status,
-								string $vendor,
-								int    $speed,
-								?array $categories,
-								string $target)
+	public function __construct(int $id, string $name, string $color, string $year, string $material, string $price, string $description, string $status, string $vendor, int $speed, ?array $categories, string $target)
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -61,7 +50,8 @@ class Bicycle
 		/**
 		 * @var Image[] $images
 		 */
-		foreach (ImageHandler::getAllImageNamesForItemByTitleAndId($this->id, $this->name) as $name) {
+		foreach (ImageHandler::getAllImageNamesForItemByTitleAndId($this->id, $this->name) as $name)
+		{
 			$images[] = new Image($name, ImageHandler::imageMainCheck($name));
 		}
 		$this->images = $images;
@@ -191,8 +181,10 @@ class Bicycle
 	public function getMainImageName(): string
 	{
 		$imgArray = $this->images;
-		foreach ($imgArray as $image) {
-			if ($image->isMain()) {
+		foreach ($imgArray as $image)
+		{
+			if ($image->isMain())
+			{
 				return $image->getName();
 			}
 		}
@@ -211,10 +203,8 @@ class Bicycle
 
 	public static function getRulesValidationItem(): Rules
 	{
-		return (new Rules())
-			->addRule('price', ['numeric_optional', 'min_optional:3'])
-			->addRule('description', 'min_optional:3')
-			->addRule('create_year', 'min_optional:4')
+		return (new Rules())->addRule('price', ['numeric_optional', 'min_optional:3'])
+			->addRule('description', 'min_optional:3')->addRule('create_year', 'min_optional:4')
 			->addRule('title', 'required');
 	}
 }

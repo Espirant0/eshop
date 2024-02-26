@@ -77,10 +77,7 @@ class EditFormController extends BaseController
 
 		$data = $_POST;;
 		$validator = new Validator();
-		$rules = (new Rules())->addRule('price', ['numeric', 'required'])
-			->addRule('description', ['min_optional:3', 'required'])
-			->addRule('create_year', ['required', 'min_optional:4'])
-			->addRule('title', 'required');
+		$rules = Bicycle::getRulesValidationItem();
 
 
 		if ($validator->validate($data, $rules->getRules())) {

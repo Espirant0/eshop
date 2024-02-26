@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Cache\FileCache;
 use App\Model\Bicycle;
+use App\Model\Category;
+use App\Model\Order;
+use App\Model\User;
 use App\Service\AuthService;
 use App\Service\HttpService;
 use App\Service\ImageHandler;
@@ -74,10 +77,7 @@ class EditFormController extends BaseController
 
 		$data = $_POST;;
 		$validator = new Validator();
-		$rules = (new Rules())->addRule('price', ['numeric', 'required'])
-			->addRule('description', ['min_optional:3', 'required'])
-			->addRule('create_year', ['required', 'min_optional:4'])
-			->addRule('title', 'required');
+		$rules = Bicycle::getRulesValidationItem();
 
 
 		if ($validator->validate($data, $rules->getRules())) {
@@ -119,55 +119,30 @@ class EditFormController extends BaseController
 			}
 		}
 
-		if ($table === 'item') {
-			$rules = (new Rules())
-				->addRule('price', ['numeric_optional', 'min_optional:3'])
-				->addRule('description', 'min_optional:3')
-				->addRule('create_year', 'min_optional:4');
-		}
+		switch ($table)
+		{
+			case 'item':
+				$rules = Bicycle::getRulesValidationItem();
+				break;
 
-		if ($table === 'material') {
-			$rules = (new Rules())
-				->addRule(['engName', 'name'], 'min_optional:3');
-		}
+			case 'order':
+				$rules = Order::getRulesValidationOrder();
+				break;
 
-		if ($table === 'role') {
-			$rules = (new Rules())
-				->addRule(['name'], 'min_optional:3');
-		}
+			case 'user':
+				$rules = User::getRulesValidationUser();
+				break;
 
-		if ($table === 'category') {
-			$rules = (new Rules())
-				->addRule(['engName', 'name'], 'min_optional:3');
-		}
+			case 'manufacturer':
+			case 'role':
+				$rules = Category::getRulesValidationVendor();
+				break;
 
-		if ($table === 'color') {
-			$rules = (new Rules())
-				->addRule(['engName', 'name'], 'min_optional:3');
-		}
-
-		if ($table === 'manufacturer') {
-			$rules = (new Rules())
-				->addRule(['name'], 'min_optional:3');
-		}
-
-		if ($table === 'orders') {
-			$rules = (new Rules())
-				->addRule(['item_id', 'status_id', 'price', 'user_id'], 'numeric_optional')
-				->addRule('address', 'min_optional:3')
-				->addRule('price', 'min_optional:4');
-		}
-
-
-		if ($table === 'target_audience') {
-			$rules = (new Rules())
-				->addRule(['name', 'engName'], 'min_optional:3');
-		}
-
-		if ($table === 'user') {
-			$rules = (new Rules())
-				->addRule('id', ['min_optional:10', 'numeric_optional'])
-				->addRule(['name', 'engName'], 'min_optional:3');
+			case 'category':
+			case 'material':
+			case 'color':
+			case 'target_audience':
+				$rules = Category::getRulesValidationCategory();
 		}
 
 		if (!empty($newValues)) {

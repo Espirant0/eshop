@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Service\ImageHandler;
+use Core\Validator\Rules;
 
 class Bicycle
 {
@@ -206,5 +207,14 @@ class Bicycle
 	public function setTarget(string $target): void
 	{
 		$this->target = $target;
+	}
+
+	public static function getRulesValidationItem(): Rules
+	{
+		return (new Rules())
+			->addRule('price', ['numeric_optional', 'min_optional:3'])
+			->addRule('description', 'min_optional:3')
+			->addRule('create_year', 'min_optional:4')
+			->addRule('title', 'required');
 	}
 }

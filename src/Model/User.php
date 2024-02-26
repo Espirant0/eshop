@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model;
+use Core\Validator\Rules;
 
 class User
 {
@@ -67,5 +68,12 @@ class User
 	public function setPassword(string $password): void
 	{
 		$this->password = $password;
+	}
+
+	public static function getRulesValidationUser(): Rules
+	{
+		return (new Rules())
+			->addRule('id', ['min_optional:10', 'numeric_optional'])
+			->addRule(['name', 'engName'], 'min_optional:3');
 	}
 }

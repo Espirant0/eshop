@@ -330,7 +330,7 @@ input::-webkit-input-placeholder {
 	width: 100%;
 	display: grid;
 	grid-template-columns: repeat(4, 120px);
-	column-gap: 20px;
+	column-gap: 60px;
 }
 
 .lower_poster {
@@ -664,6 +664,7 @@ input::-webkit-input-placeholder {
 	flex-direction: column;
 	font-size: 24px;
 	margin-top: 20px;
+	padding: 0 6px;
 	background-color: black;
 }
 

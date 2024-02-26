@@ -47,8 +47,8 @@ class OrderRepo extends BaseRepo
 	{
 		$DBOperator = DBHandler::getInstance();
 		$date = date('Y-m-d');
-		$number = $DBOperator->real_escape_string($number);
-		$address = $DBOperator->real_escape_string($address);
+		$number = $DBOperator->real_escape_string(htmlspecialchars($number));
+		$address = $DBOperator->real_escape_string(htmlspecialchars($address));
 		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
 		$result = $DBOperator->query(
 			"INSERT INTO orders (item_id, status_id, data_create, price, user_id, address) 

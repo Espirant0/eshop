@@ -125,7 +125,7 @@ class EditFormController extends BaseController
 				$rules = Bicycle::getRulesValidationItem();
 				break;
 
-			case 'order':
+			case 'orders':
 				$rules = Order::getRulesValidationOrder();
 				break;
 

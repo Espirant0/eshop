@@ -214,6 +214,7 @@ class Bicycle
 		return (new Rules())
 			->addRule('price', ['numeric_optional', 'min_optional:3'])
 			->addRule('description', 'min_optional:3')
-			->addRule('create_year', 'min_optional:4');
+			->addRule('create_year', 'min_optional:4')
+			->addRule('title', 'required');
 	}
 }

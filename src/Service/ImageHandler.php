@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Config\Config;
+use DeepCopy\f013\C;
 
 class ImageHandler
 {
@@ -18,7 +19,8 @@ class ImageHandler
 		if (preg_match('/^.*\.png$/', $filePath))
 		{
 			$name = explode('.png', $filePath);
-		} else
+		}
+		else
 		{
 			$name = explode('.jpg', $filePath);
 		}
@@ -30,7 +32,8 @@ class ImageHandler
 		if (preg_match('/^.*\.png$/', $filePath))
 		{
 			return '.png';
-		} else
+		}
+		else
 		{
 			return '.jpg';
 		}
@@ -61,33 +64,36 @@ class ImageHandler
 
 	public static function createNewItemDefaultImage(int|string $id, string $title): void
 	{
-		if (!mkdir($concurrentDirectory = ROOT . "/public/resources/product/img/{$id}.{$title}", 0777, true) && !is_dir($concurrentDirectory))
+		if (!mkdir($concurrentDirectory = ROOT . "/public/resources/product/img/{$id}.{$title}", 0777,
+				true) && !is_dir($concurrentDirectory))
 		{
 			throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
 		}
-		copy(ROOT . '/public/resources/img/item.jpg', ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_1.jpg");
+		copy(ROOT . '/public/resources/img/item.jpg',
+			ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_1.jpg");
 	}
 
 	public static function createNewItemImage(string $image, int|string $id, string $title, int $imageNumber): void
 	{
-		$imageData = file_get_contents($image);
-		$resizedImage = self::resizeImageFromString($imageData);
-
-		if (!file_exists($directory = ROOT . "/public/resources/product/img/{$id}.{$title}") && !mkdir($directory, 0777, true) && !is_dir($directory))
+		if (!file_exists($directory = ROOT . "/public/resources/product/img/{$id}.{$title}") && !mkdir($directory, 0777,
+				true) && !is_dir($directory))
 		{
 			throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
 		}
 
+		$imageData = file_get_contents($image);
+		$resizedImageDetail = self::resizeImageFromString($imageData);
 		$destinationPath = ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_{$imageNumber}.jpg";
-		copy($resizedImage, $destinationPath);
+
+		copy($resizedImageDetail, $destinationPath);
 	}
 
 	public static function resizeImageFromString($uploadedImageString): bool|string
 	{
 		$config = new Config();
 
-		$desiredWidth = 1000;
-		$desiredHeight = 1000;
+		$desiredHeight = $config->option('IMAGE_DETAIL_HEIGHT');
+		$desiredWidth = $config->option('IMAGE_DETAIL_WIDTH');
 
 		$originalImage = imagecreatefromstring($uploadedImageString);
 
@@ -96,7 +102,8 @@ class ImageHandler
 
 		$resizedImage = imagecreatetruecolor($desiredWidth, $desiredHeight);
 
-		imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $desiredWidth, $desiredHeight, $originalWidth, $originalHeight);
+		imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $desiredWidth, $desiredHeight, $originalWidth,
+			$originalHeight);
 
 		$tempImagePath = tempnam(sys_get_temp_dir(), 'resized_image');
 		self::convertImageToJPEG($resizedImage, $tempImagePath);

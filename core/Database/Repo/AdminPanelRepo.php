@@ -148,7 +148,11 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function getItemById(string $table, int $itemId): array
 	{
-		$itemList = self::getItemList($table);
-		return $itemList[$itemId - 1];
+		$config = new Config();
+
+		$pagesCount = ceil($itemId / $config->option('PRODUCT_LIMIT'));
+
+		$itemList = self::getItemList($table, $pagesCount);
+		return $itemList[$itemId - 1 - $config->option('PRODUCT_LIMIT') * ($pagesCount - 1)];
 	}
 }

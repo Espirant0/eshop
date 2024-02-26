@@ -159,7 +159,7 @@ class EditFormController extends BaseController
 				$this->showEditFormPage($tableName, $errors);
 			}
 		} else {
-			$errors[] = 'Введите значения!';
+			$errors[] = ['Введите значения!'];
 			$this->showEditFormPage($tableName, $errors);
 		}
 	}

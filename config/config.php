@@ -31,4 +31,6 @@ return [
 	'IMAGE_MAIN_WIDTH' => 350,
 	'IMAGE_DETAIL_HEIGHT' => 380,
 	'IMAGE_DETAIL_WIDTH' => 650,
+	'IMAGE_ALLOWED_TYPES' => ['image/jpg', 'image/png', 'image/bmp', 'image/jpeg', 'image/webp'],
+	'IMAGE_MAX_SIZE' => 20971520,
 ];

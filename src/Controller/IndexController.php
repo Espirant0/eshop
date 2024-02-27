@@ -36,11 +36,13 @@ class IndexController extends BaseController
 			if (isset($_GET['category']))
 			{
 				$categoryName[] = $_GET['category'];
-			} else
+			}
+			else
 			{
 				$categoryName[] = '';
 			}
-		} else
+		}
+		else
 		{
 			$httpQuery['category'] = $categoryName[0];
 		}
@@ -48,7 +50,8 @@ class IndexController extends BaseController
 		if (!isset($property['search']))
 		{
 			$search = null;
-		} else
+		}
+		else
 		{
 			$search = htmlspecialchars($property['search']);
 		}
@@ -57,27 +60,14 @@ class IndexController extends BaseController
 
 		if ($bicycleList == [] || $pageNumber < 1)
 		{
-			$this->render('layout.php', [
-				'content' => $this->strRender('MainPage/nullSearch.php', [
-					'search' => $search,
-				]),
-				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
-				'title' => 'Ничего не найдено'
-			]);
-		} else
+			echo $this->render('layout.php', ['content' => $this->render('MainPage/nullSearch.php',
+				['search' => $search,]), 'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(), 'title' => 'Ничего не найдено']);
+		}
+		else
 		{
-			$this->render('layout.php', [
-				'content' => $this->strRender('MainPage/index.php', [
-					'categoryName' => $categoryName[0],
-					'bicycleList' => $bicycleList,
-					'page' => $pageNumber,
-					'httpQuery' => http_build_query($httpQuery),
-					'pagesCount' => $this->getPagesCount($itemsPerPage, 'item'),
-				]),
-				'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
-				'title' => TITLE,
-				'categoryName' => $categoryName[0],
-			]);
+			echo $this->render('layout.php', ['content' => $this->render('MainPage/index.php',
+				['categoryName' => $categoryName[0], 'bicycleList' => $bicycleList, 'page' => $pageNumber, 'httpQuery' => http_build_query($httpQuery), 'pagesCount' => $this->getPagesCount($itemsPerPage,
+					'item'),]), 'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(), 'title' => TITLE, 'categoryName' => $categoryName[0],]);
 		}
 	}
 }

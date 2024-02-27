@@ -13,8 +13,8 @@ class OrderController extends BaseController
 	{
 		$categoryListRepo = new CategoryListRepo();
 		$bicycle = (new FileCache())->get('bicycle');
-		$this->render('layout.php', [
-			'content' => $this->strRender('OrderPage/order.php', [
+		echo $this->render('layout.php', [
+			'content' => $this->render('OrderPage/order.php', [
 				'bicycle' => $bicycle,
 			]),
 			'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
@@ -25,8 +25,8 @@ class OrderController extends BaseController
 	public function showConfirmedOrderPage(): void
 	{
 		$categoryListRepo = new CategoryListRepo();
-		$this->render('layout.php', [
-			'content' => $this->strRender('ConfirmPage/confirmed.php', []),
+		echo $this->render('layout.php', [
+			'content' => $this->render('ConfirmPage/confirmed.php', []),
 			'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
 			'title' => 'Заказ',
 		]);

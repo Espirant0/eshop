@@ -30,7 +30,7 @@ class AdminController extends BaseController
 		}
 		if (AuthService::checkAuth())
 		{
-			$this->render('AdminPage/admin.php', [
+			echo $this->render('AdminPage/admin.php', [
 				'objectList' => (new CategoryListRepo())->getObjectList(),
 				'pageNumber' => $pageNumber,
 				'tableName' => $tableName,
@@ -41,7 +41,7 @@ class AdminController extends BaseController
 			]);
 		} else
 		{
-			$this->render('AuthPage/auth.php', [
+			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
 			]);

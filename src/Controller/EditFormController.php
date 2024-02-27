@@ -28,7 +28,7 @@ class EditFormController extends BaseController
 		$cache->set($tableName[0], $fields, 3600);
 		if (AuthService::checkAuth())
 		{
-			$this->render('EditFormPage/edit.php', [
+			echo $this->render('EditFormPage/edit.php', [
 				'errors' => $errors,
 				'itemId' => $itemId,
 				'tableName' => $tableName[0],
@@ -36,7 +36,7 @@ class EditFormController extends BaseController
 			]);
 		} else
 		{
-			$this->render('AuthPage/auth.php', [
+			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
 			]);
@@ -47,14 +47,14 @@ class EditFormController extends BaseController
 	{
 		if (AuthService::checkAuth())
 		{
-			$this->render('AddFormPages/addItem.php', [
+			echo $this->render('AddFormPages/addItem.php', [
 				'errors' => $errors,
 				'tableName' => $tableName[0],
 				'title' => 'Добавить товар',
 			]);
 		} else
 		{
-			$this->render('AuthPage/auth.php', [
+			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
 				'title' => 'Авторизация',
 			]);

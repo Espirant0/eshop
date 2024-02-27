@@ -19,24 +19,11 @@ class ImageHandler
 		if (preg_match('/^.*\.png$/', $filePath))
 		{
 			$name = explode('.png', $filePath);
-		}
-		else
+		} else
 		{
 			$name = explode('.jpg', $filePath);
 		}
 		return $name[0];
-	}
-
-	public static function getImageExtension(string $filePath): string
-	{
-		if (preg_match('/^.*\.png$/', $filePath))
-		{
-			return '.png';
-		}
-		else
-		{
-			return '.jpg';
-		}
 	}
 
 	public static function getAllImageNamesForItemByTitleAndId(int|string $id, string $itemTitle): array
@@ -134,19 +121,41 @@ class ImageHandler
 		rename(ROOT . "/public/resources/product/img/$oldTitle", ROOT . "/public/resources/product/img/$id.$newTitle");
 	}
 
-
-	public static function can_upload($file)
+	public static function performFilesArray(array $files): array
 	{
-		for ($i = 0, $iMax = count($file['name']); $i < $iMax; $i++)
+		$performedFiles = [];
+		foreach ($files as $key => $data)
 		{
-			$getMime = explode('.', $file['name'][$i]);
-			$mime = strtolower(end($getMime));
-			$types = ['jpg', 'png', 'gif', 'bmp', 'jpeg'];
-			if (!in_array($mime, $types))
+			foreach ($data as $iterator => $value)
 			{
-				return false;
+				$performedFiles[$iterator][$key] = $value;
 			}
-			return true;
 		}
+		return $performedFiles;
+	}
+
+	public static function canUpload(array $files): string|bool
+	{
+		$files = self::performFilesArray($files);
+		$config = new Config();
+		$types = $config->option('IMAGE_ALLOWED_TYPES');
+		$maxSize = $config->option('IMAGE_MAX_SIZE');
+		$maxSizeInMb = floor($maxSize / 1024000);
+		$checkResult = true;
+		foreach ($files as $file)
+		{
+			$type = $file['type'];
+			if (!in_array($type, $types))
+			{
+				$checkResult = 'Неверный формат файла';
+				break;
+			}
+			if ($file['size'] > $maxSize)
+			{
+				$checkResult = "Файл не может весить больше $maxSizeInMb мб";
+				break;
+			}
+		}
+		return $checkResult;
 	}
 }

@@ -67,13 +67,13 @@ class EditFormController extends BaseController
 
 		if (!empty($_FILES['files']['name'][0]))
 		{
-			$check = ImageHandler::can_upload($_FILES['files']);
-			if ($check)
+			$check = ImageHandler::canUpload($_FILES['files']);
+			if ($check === true)
 			{
 				$images = $_FILES['files'];
 			} else
 			{
-				$errors[] = ['Ошибка загрузки файлов'];
+				$errors[] = [$check];
 				$this->showAddFormPage($tableName, $errors);
 				return;
 			}

@@ -19,8 +19,7 @@ class ImageHandler
 		if (preg_match('/^.*\.png$/', $filePath))
 		{
 			$name = explode('.png', $filePath);
-		}
-		else
+		} else
 		{
 			$name = explode('.jpg', $filePath);
 		}
@@ -122,24 +121,26 @@ class ImageHandler
 		rename(ROOT . "/public/resources/product/img/$oldTitle", ROOT . "/public/resources/product/img/$id.$newTitle");
 	}
 
-	public static function performFilesArray(array $files):array
+	public static function performFilesArray(array $files): array
 	{
 		$performedFiles = [];
-		foreach($files as $key => $data) {
-			foreach($data as $iterator => $value) {
+		foreach ($files as $key => $data)
+		{
+			foreach ($data as $iterator => $value)
+			{
 				$performedFiles[$iterator][$key] = $value;
 			}
 		}
 		return $performedFiles;
 	}
 
-	public static function canUpload(array $files):string|bool
+	public static function canUpload(array $files): string|bool
 	{
 		$files = self::performFilesArray($files);
 		$config = new Config();
 		$types = $config->option('IMAGE_ALLOWED_TYPES');
 		$maxSize = $config->option('IMAGE_MAX_SIZE');
-		$maxSizeInMb = floor($maxSize/1024000);
+		$maxSizeInMb = floor($maxSize / 1024000);
 		$checkResult = true;
 		foreach ($files as $file)
 		{
@@ -149,9 +150,9 @@ class ImageHandler
 				$checkResult = 'Неверный формат файла';
 				break;
 			}
-			if($file['size'] > $maxSize)
+			if ($file['size'] > $maxSize)
 			{
-				$checkResult =  "Файл не может весить больше $maxSizeInMb мб";
+				$checkResult = "Файл не может весить больше $maxSizeInMb мб";
 				break;
 			}
 		}

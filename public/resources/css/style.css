@@ -220,11 +220,12 @@ input::-webkit-input-placeholder {
 	display: flex;
 	justify-content: space-between;
 	margin-left: 39px;
-	margin-right: 41px;
+	margin-right: 100px;
 	column-gap: 45px;
 }
 
 .right_col {
+	padding-right: 10px;
 	margin-left: 50px;
 	min-width: 50%;
 }

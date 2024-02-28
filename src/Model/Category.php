@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use Core\Validator\Rules;
+use App\Model\Rule;
 
 class Category
 {
@@ -47,15 +47,15 @@ class Category
 		$this->engName = $engName;
 	}
 
-	public static function getRulesValidationCategory(): Rules
+	public static function getRulesValidationCategory(): Rule
 	{
-		return (new Rules())
+		return (new Rule())
 			->addRule(['engName', 'name'], 'min_optional:3');
 	}
 
-	public static function getRulesValidationVendor(): Rules
+	public static function getRulesValidationVendor(): Rule
 	{
-		return (new Rules())
+		return (new Rule())
 			->addRule(['name'], 'min_optional:3');
 	}
 }

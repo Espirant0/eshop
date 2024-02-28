@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use Core\Validator\Rules;
+use App\Model\Rule;
 
 class Order
 {
@@ -105,9 +105,9 @@ class Order
 		$this->price = $price;
 	}
 
-	public static function getRulesValidationOrder(): Rules
+	public static function getRulesValidationOrder(): Rule
 	{
-		return (new Rules())
+		return (new Rule())
 			->addRule('price', 'numeric_optional')
 			->addRule('user_id', 'required')
 			->addRule(['item_id','status_id'], 'numeric_optional')

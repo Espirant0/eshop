@@ -10,8 +10,8 @@ use App\Model\User;
 use App\Service\AuthService;
 use App\Service\HttpService;
 use App\Service\ImageHandler;
+use App\Service\Validator;
 use Core\Database\Repo\AdminPanelRepo;
-use Core\Validator\Validator;
 
 class EditFormController extends BaseController
 {

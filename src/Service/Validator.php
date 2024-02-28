@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Validator;
+namespace App\Service;
 
 class Validator
 {
@@ -115,62 +115,8 @@ class Validator
 				}
 				break;
 		}
-
 		return false;
 	}
-
 }
 
 
-class Rules
-{
-	private array $rules = [];
-	private array $currentRules = []; // Новое свойство для хранения текущих правил
-
-	/**
-	 * Добавляет правила валидации для указанных полей.
-	 *
-	 * @param array|string $fields Имя поля или массив имен полей
-	 * @param array|string $rules Правила валидации или массив правил валидации
-	 * @return $this
-	 */
-	public function addRule($fields, $rules): self
-	{
-		if (!is_array($fields))
-		{
-			$fields = [$fields];
-		}
-
-		if (!is_array($rules))
-		{
-			$rules = [$rules];
-		}
-
-		// Добавляем текущие правила в массив $currentRules
-		foreach ($fields as $field)
-		{
-			foreach ($rules as $rule)
-			{
-				$this->currentRules[$field][] = $rule;
-			}
-		}
-
-		// Добавляем текущие правила в массив $rules
-		$this->rules = array_merge($this->rules, $this->currentRules);
-
-		// Очищаем массив текущих правил для следующих добавлений
-		$this->currentRules = [];
-
-		return $this;
-	}
-
-	/**
-	 * Получает все правила валидации для всех полей.
-	 *
-	 * @return array
-	 */
-	public function getRules(): array
-	{
-		return $this->rules;
-	}
-}

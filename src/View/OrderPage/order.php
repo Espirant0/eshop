@@ -17,18 +17,16 @@ use App\Model\Bicycle;
 			<p class="item_price"><?= $bicycle->getPrice() ?> ₽</p>
 		</div>
 	</a>
-	<div class="auth_container">
-		<div class="auth_errors">
-			<?php if (!empty($errors)): ?>
-				<?php foreach ($errors as $error): ?>
-					<div>
-						<?php foreach ($error as $errorName): ?>
-							<?= $errorName; ?>
-						<?php endforeach; ?>
-					</div>
-				<?php endforeach; ?>
-			<?php endif; ?>
-		</div>
+	<div class="errors">
+		<?php if (!empty($errors)): ?>
+			<?php foreach ($errors as $error): ?>
+				<div>
+					<?php foreach ($error as $errorName): ?>
+						<?= $errorName; ?>
+					<?php endforeach; ?>
+				</div>
+			<?php endforeach; ?>
+		<?php endif; ?>
 	</div>
 	<div class="form_inner">
 		<form action="/order/confirm" class="order_form" method="post">

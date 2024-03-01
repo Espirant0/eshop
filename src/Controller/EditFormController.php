@@ -85,7 +85,7 @@ class EditFormController extends BaseController
 		{
 			$_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
 		}
-		$data = $_POST;;
+		$data = $_POST;
 
 		$validator = new Validator();
 		$rules = Bicycle::getRulesValidationItem();

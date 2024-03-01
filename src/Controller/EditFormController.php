@@ -153,9 +153,6 @@ class EditFormController extends BaseController
 
 			case 'manufacturer':
 			case 'role':
-				$rules = Category::getRulesValidationVendor();
-				break;
-
 			case 'category':
 			case 'material':
 			case 'color':

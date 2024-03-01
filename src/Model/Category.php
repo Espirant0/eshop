@@ -52,10 +52,4 @@ class Category
 		return (new Rule())
 			->addRule(['engName', 'name'], 'min_optional:3');
 	}
-
-	public static function getRulesValidationVendor(): Rule
-	{
-		return (new Rule())
-			->addRule(['name'], 'min_optional:3');
-	}
 }

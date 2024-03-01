@@ -8,12 +8,15 @@ class Validator
 
 	private array $data;
 
+	private array $filteredRules;
+
 	public function validate(array $data, array $rules): bool
 	{
 		$this->errors = [];
 		$this->data = $data;
+		$this->filteredRules = array_intersect_key($rules, $data);
 
-		foreach ($rules as $key => $rule)
+		foreach ($this->filteredRules as $key => $rule)
 		{
 			$rules = $rule;
 
@@ -77,14 +80,14 @@ class Validator
 			case 'confirmed':
 				if ($value !== $this->data["{$key}_confirmation"])
 				{
-					return "Field $key must be confirmed";
+					return "Поле $key должно быть подтверждено";
 				}
 				break;
 
 			case 'alpha':
 				if (!ctype_alpha($value))
 				{
-					return "Field $key must contain only alphabetic characters";
+					return "Поле $key должно содержать только буквы";
 				}
 				break;
 
@@ -108,10 +111,18 @@ class Validator
 					return "Поле $key должно иметь минимум $ruleValue символа";
 				}
 				break;
+
 			case 'alpha_optional':
 				if (!empty($value) && !ctype_alpha($value))
 				{
 					return "Поле $key может содержать только буквы";
+				}
+				break;
+
+			case 'max_optional':
+				if (!empty($value) && mb_strlen($value) > $ruleValue)
+				{
+					return "Поле $key должно иметь не более $ruleValue символа";
 				}
 				break;
 		}

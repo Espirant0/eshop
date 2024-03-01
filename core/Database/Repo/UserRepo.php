@@ -11,9 +11,9 @@ class UserRepo extends BaseRepo
 	{
 		$DBOperator = DBHandler::getInstance();
 		$login = $DBOperator->real_escape_string($login);
-		$result = $DBOperator->query("SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
+		$result = $DBOperator->query("SELECT u.login, u.name, u.address, u.password, r.name as role_name FROM user u
 	        INNER JOIN role r on u.role_id = r.id
-		    WHERE u.id = '$login';
+		    WHERE u.login = '$login';
 		    ");
 
 		if (!$result)
@@ -23,7 +23,7 @@ class UserRepo extends BaseRepo
 
 		while ($row = mysqli_fetch_assoc($result))
 		{
-			$userLogin = $row['id'];
+			$userLogin = $row['login'];
 
 			if (!isset($userLogin))
 			{

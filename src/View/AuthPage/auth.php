@@ -24,9 +24,13 @@
 	</div>
 	<div class="auth_errors">
 		<?php if (!empty($errors)): ?>
-			<div>
-				<?= implode('<br>', $errors); ?>
-			</div>
+			<?php foreach ($errors as $error): ?>
+				<div>
+					<?php foreach ($error as $errorName): ?>
+						<?= $errorName; ?>
+					<?php endforeach; ?>
+				</div>
+			<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
 	<div class="form_container">

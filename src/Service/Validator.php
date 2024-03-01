@@ -60,14 +60,14 @@ class Validator
 			case 'min':
 				if (mb_strlen($value) < $ruleValue)
 				{
-					return "Поле $key должно иметь минимум $ruleValue символа";
+					return "Поле $key должно иметь минимум $ruleValue символов";
 				}
 				break;
 
 			case 'max':
 				if (mb_strlen($value) > $ruleValue)
 				{
-					return "Поле $key должно иметь не более $ruleValue символа";
+					return "Поле $key должно иметь не более $ruleValue символов";
 				}
 				break;
 			case 'email':
@@ -98,7 +98,7 @@ class Validator
 				}
 				break;
 
-			case 'numeric_optional': // Новое правило поле может быть пустым,но иметь только числа
+			case 'numeric_optional':
 				if (!empty($value) && !ctype_digit($value))
 				{
 					return "Поле $key должно содержать только числа";
@@ -108,7 +108,7 @@ class Validator
 			case 'min_optional':
 				if (!empty($value) && mb_strlen($value) < $ruleValue)
 				{
-					return "Поле $key должно иметь минимум $ruleValue символа";
+					return "Поле $key должно иметь минимум $ruleValue символов";
 				}
 				break;
 
@@ -122,7 +122,7 @@ class Validator
 			case 'max_optional':
 				if (!empty($value) && mb_strlen($value) > $ruleValue)
 				{
-					return "Поле $key должно иметь не более $ruleValue символа";
+					return "Поле $key должно иметь не более $ruleValue символов";
 				}
 				break;
 		}

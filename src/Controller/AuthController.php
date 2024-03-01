@@ -30,12 +30,11 @@ class AuthController extends BaseController
 				$_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
 			}
 			$data = $_POST;
-			if(!$validator->validate($data, $rules))
+			if (!$validator->validate($data, $rules))
 			{
 				$errors = $validator->errors();
 				$this->showAuthPage($errors);
-			}
-			else
+			} else
 			{
 				$login = $_POST['login'];
 				if ($login[0] === '8')

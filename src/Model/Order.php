@@ -110,9 +110,9 @@ class Order
 		return (new Rule())
 			->addRule('price', 'numeric_optional')
 			->addRule('user_id', 'required')
-			->addRule(['item_id','status_id'], 'numeric_optional')
-			->addRule('address', ['required','min_optional:3'])
+			->addRule(['item_id', 'status_id'], 'numeric_optional')
+			->addRule('address', ['required', 'min_optional:3'])
 			->addRule('data_create', 'required')
-			->addRule('number', ['required','min_optional:10','max_optional:12']);
+			->addRule('number', ['required', 'min_optional:10', 'max_optional:12']);
 	}
 }

@@ -204,7 +204,9 @@ class Bicycle
 	public static function getRulesValidationItem(): Rule
 	{
 		return (new Rule())->addRule('price', 'numeric_optional')
-			->addRule('description', 'min_optional:3')->addRule('create_year', 'min_optional:4')
-			->addRule('title', 'required')->addRule('status','numeric_optional');
+			->addRule('description', 'min_optional:3')
+			->addRule('create_year', 'min_optional:4')
+			->addRule('title', 'required')
+			->addRule('status', 'numeric_optional');
 	}
 }

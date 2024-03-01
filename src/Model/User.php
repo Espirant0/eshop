@@ -76,7 +76,7 @@ class User
 		return (new Rule())
 			->addRule(['name'], 'min_optional:3')
 			->addRule(['address'], 'min_optional:3')
-			->addRule(['role_id'], ['required','numeric'])
+			->addRule(['role_id'], ['required', 'numeric'])
 			->addRule(['login'], 'min_optional:10');
 	}
 }

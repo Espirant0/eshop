@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Model\Rule;
 use App\Service\HttpService;
 use Core\Database\Repo\UserRepo;
+use App\Service\Validator;
 
 class AuthController extends BaseController
 {
@@ -17,42 +19,56 @@ class AuthController extends BaseController
 
 	public function userLogin(): void
 	{
+		$validator = new Validator();
+		$rule = (new Rule())->addRule(['login', 'password'], 'required');
+		$rules = $rule->getRules();
 		if ($_SERVER['REQUEST_METHOD'] === 'POST')
 		{
-			$error = 'Неверный логин или пароль';
-			if (!isset($_POST['login']) || !isset($_POST['password']))
+			$error = ['Неверный логин или пароль'];
+			foreach ($_POST as $key => $value)
 			{
-				$errors[] = $error;
-				$this->showAuthPage($errors);
+				$_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
 			}
-			$login = $_POST['login'];
-			if ($login[0] === '8')
+			$data = $_POST;
+			if (!$validator->validate($data, $rules))
 			{
-				$login = str_replace($login[0], '7', $login);
-			}
-			$password = $_POST['password'];
-
-			$user = UserRepo::getUserByLogin($login);
-
-			if (!$user || $user->getRole() !== 'Администратор')
-			{
-				$errors[] = $error;
+				$errors = $validator->errors();
 				$this->showAuthPage($errors);
 			} else
 			{
-				$isPasswordCorrect = password_verify($password, $user->getPassword());
+				$login = $_POST['login'];
+				if ($login[0] === '8')
+				{
+					$login = str_replace($login[0], '7', $login);
+				}
+				if ($login[0] === '+')
+				{
+					$login = substr($login, 1);
+				}
+				$password = $_POST['password'];
 
-				if (!$isPasswordCorrect)
+				$user = UserRepo::getUserByLogin($login);
+
+				if (!$user || $user->getRole() !== 'Администратор')
 				{
 					$errors[] = $error;
 					$this->showAuthPage($errors);
-				}
-
-				if (empty($errors))
+				} else
 				{
-					session_start();
-					$_SESSION['USER'] = $user;
-					HttpService::redirect('admin_panel');
+					$isPasswordCorrect = password_verify($password, $user->getPassword());
+
+					if (!$isPasswordCorrect)
+					{
+						$errors[] = $error;
+						$this->showAuthPage($errors);
+					}
+
+					if (empty($errors))
+					{
+						session_start();
+						$_SESSION['USER'] = $user;
+						HttpService::redirect('admin_panel');
+					}
 				}
 			}
 		}

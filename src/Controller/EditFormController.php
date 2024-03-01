@@ -10,8 +10,8 @@ use App\Model\User;
 use App\Service\AuthService;
 use App\Service\HttpService;
 use App\Service\ImageHandler;
+use App\Service\Validator;
 use Core\Database\Repo\AdminPanelRepo;
-use Core\Validator\Validator;
 
 class EditFormController extends BaseController
 {
@@ -85,7 +85,7 @@ class EditFormController extends BaseController
 		{
 			$_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
 		}
-		$data = $_POST;;
+		$data = $_POST;
 
 		$validator = new Validator();
 		$rules = Bicycle::getRulesValidationItem();
@@ -153,9 +153,6 @@ class EditFormController extends BaseController
 
 			case 'manufacturer':
 			case 'role':
-				$rules = Category::getRulesValidationVendor();
-				break;
-
 			case 'category':
 			case 'material':
 			case 'color':

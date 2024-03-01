@@ -493,6 +493,15 @@ input::-webkit-input-placeholder {
 	font-size: 30px;
 	color: red;
 }
+.errors{
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: 30px;
+	color: red;
+}
 
 .auth_form {
 	display: flex;

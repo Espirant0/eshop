@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use Core\Validator\Rules;
+use App\Model\Rule;
 
 class User
 {
@@ -71,10 +71,12 @@ class User
 		$this->password = $password;
 	}
 
-	public static function getRulesValidationUser(): Rules
+	public static function getRulesValidationUser(): Rule
 	{
-		return (new Rules())
-			->addRule('id', 'required')
-			->addRule(['name', 'engName'], 'min_optional:3');
+		return (new Rule())
+			->addRule(['name'], 'min_optional:3')
+			->addRule(['address'], 'min_optional:3')
+			->addRule(['role_id'], ['required', 'numeric'])
+			->addRule(['login'], 'min_optional:10');
 	}
 }

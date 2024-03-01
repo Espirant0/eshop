@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Validator;
+namespace App\Service;
 
 class Validator
 {
@@ -8,12 +8,15 @@ class Validator
 
 	private array $data;
 
+	private array $filteredRules;
+
 	public function validate(array $data, array $rules): bool
 	{
 		$this->errors = [];
 		$this->data = $data;
+		$this->filteredRules = array_intersect_key($rules, $data);
 
-		foreach ($rules as $key => $rule)
+		foreach ($this->filteredRules as $key => $rule)
 		{
 			$rules = $rule;
 
@@ -57,14 +60,14 @@ class Validator
 			case 'min':
 				if (mb_strlen($value) < $ruleValue)
 				{
-					return "Поле $key должно иметь минимум $ruleValue символа";
+					return "Поле $key должно иметь минимум $ruleValue символов";
 				}
 				break;
 
 			case 'max':
 				if (mb_strlen($value) > $ruleValue)
 				{
-					return "Поле $key должно иметь не более $ruleValue символа";
+					return "Поле $key должно иметь не более $ruleValue символов";
 				}
 				break;
 			case 'email':
@@ -77,14 +80,14 @@ class Validator
 			case 'confirmed':
 				if ($value !== $this->data["{$key}_confirmation"])
 				{
-					return "Field $key must be confirmed";
+					return "Поле $key должно быть подтверждено";
 				}
 				break;
 
 			case 'alpha':
 				if (!ctype_alpha($value))
 				{
-					return "Field $key must contain only alphabetic characters";
+					return "Поле $key должно содержать только буквы";
 				}
 				break;
 
@@ -95,7 +98,7 @@ class Validator
 				}
 				break;
 
-			case 'numeric_optional': // Новое правило поле может быть пустым,но иметь только числа
+			case 'numeric_optional':
 				if (!empty($value) && !ctype_digit($value))
 				{
 					return "Поле $key должно содержать только числа";
@@ -105,72 +108,26 @@ class Validator
 			case 'min_optional':
 				if (!empty($value) && mb_strlen($value) < $ruleValue)
 				{
-					return "Поле $key должно иметь минимум $ruleValue символа";
+					return "Поле $key должно иметь минимум $ruleValue символов";
 				}
 				break;
+
 			case 'alpha_optional':
 				if (!empty($value) && !ctype_alpha($value))
 				{
 					return "Поле $key может содержать только буквы";
 				}
 				break;
-		}
 
+			case 'max_optional':
+				if (!empty($value) && mb_strlen($value) > $ruleValue)
+				{
+					return "Поле $key должно иметь не более $ruleValue символов";
+				}
+				break;
+		}
 		return false;
 	}
-
 }
 
 
-class Rules
-{
-	private array $rules = [];
-	private array $currentRules = []; // Новое свойство для хранения текущих правил
-
-	/**
-	 * Добавляет правила валидации для указанных полей.
-	 *
-	 * @param array|string $fields Имя поля или массив имен полей
-	 * @param array|string $rules Правила валидации или массив правил валидации
-	 * @return $this
-	 */
-	public function addRule($fields, $rules): self
-	{
-		if (!is_array($fields))
-		{
-			$fields = [$fields];
-		}
-
-		if (!is_array($rules))
-		{
-			$rules = [$rules];
-		}
-
-		// Добавляем текущие правила в массив $currentRules
-		foreach ($fields as $field)
-		{
-			foreach ($rules as $rule)
-			{
-				$this->currentRules[$field][] = $rule;
-			}
-		}
-
-		// Добавляем текущие правила в массив $rules
-		$this->rules = array_merge($this->rules, $this->currentRules);
-
-		// Очищаем массив текущих правил для следующих добавлений
-		$this->currentRules = [];
-
-		return $this;
-	}
-
-	/**
-	 * Получает все правила валидации для всех полей.
-	 *
-	 * @return array
-	 */
-	public function getRules(): array
-	{
-		return $this->rules;
-	}
-}

@@ -517,7 +517,7 @@ class QueryBuilder
 			if ($maxChar != 0
 				&& $maxChar < mb_strlen($newValue[$valueKey]))
 			{
-				Logger::ORMLogging("Trying to write more chars then can! (max:$maxChar, insert:" . mb_strlen($value[$valueKey]) . " at $col)", '[INSERT]');
+				Logger::ORMLogging("Trying to write more chars then can! (max:$maxChar, insert:" . mb_strlen($newValue[$valueKey]) . " at $col)", '[INSERT]');
 				throw new \Exception('ORM-exception',-2);
 			}
 			if (in_array($columnRestrictions[$col]['DATA_TYPE'], array_keys($restrictions)))

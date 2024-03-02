@@ -274,28 +274,29 @@ class QueryBuilder
 		$conditionCheck = str_replace(' ','',$condition);
 		$conditionCheck = str_replace(['<=>','<=','>=','<>','=','<','>'],' ',$conditionCheck);
 		$conditionCheck = explode(' ', $conditionCheck);
-		$stringCondition = explode('.',$conditionCheck[0])[1];
-		$check = false;
-		foreach ($this->query->getQueryTables() as $table)
+		if ($selectQuery instanceof QueryBuilder)
 		{
-			if (in_array($stringCondition, $this->getTableColumnsNames($table)))
+			if(in_array('WHERE',$this->query->getUsedFunctions()))
 			{
-				$check = true;
-				break;
+				$this->query->addToQuery("$typeOfAddition $condition IN($selectQuery)");
 			}
+			else
+			{
+				$this->query->addToQuery("WHERE $condition IN($selectQuery)");
+			}
+			$selectQuery->query->testQuery('WHERE');
+			foreach ($selectQuery->getQueryObject()->getUsedFunctions() as $function)
+			{
+				$this->query->addUsedFunction($function);
+			}
+			$this->query->addUsedFunction('WHERE');
+			return $this;
 		}
-		if (!$check)
+		if (str_contains($conditionCheck[0],'.')
+			|| str_contains($conditionCheck[1],'.'))
 		{
-			Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.",'[WHERE]');
-			throw new \Exception('ORM-exception',-2);
-		}
-		if (count(explode('.', $conditionCheck[1]))>1)
-		{
+			$stringCondition = explode('.',$conditionCheck[0])[1];
 			$check = false;
-		}
-		if (!is_numeric($conditionCheck[1]) && !$check)
-		{
-			$stringCondition = explode('.',$conditionCheck[1])[1];
 			foreach ($this->query->getQueryTables() as $table)
 			{
 				if (in_array($stringCondition, $this->getTableColumnsNames($table)))
@@ -306,21 +307,30 @@ class QueryBuilder
 			}
 			if (!$check)
 			{
-				Logger::ORMLogging("Unknown condition column. This ($conditionCheck[1]) is not used in Query Tables.",'[WHERE]');
+				Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.",'[WHERE]');
 				throw new \Exception('ORM-exception',-2);
 			}
-		}
-		if ($selectQuery instanceof QueryBuilder)
-		{
-			$selectQuery->query->testQuery('WHERE');
-			foreach ($selectQuery->getQueryObject()->getUsedFunctions() as $function)
+			if (count(explode('.', $conditionCheck[1]))>1)
 			{
-				$this->query->addUsedFunction($function);
+				$check = false;
 			}
-			$selectQuery = $selectQuery->getQuery();
-			$this->query->addToQuery("WHERE $condition IN($selectQuery)");
-			$this->query->addUsedFunction('WHERE');
-			return $this;
+			if (!is_numeric($conditionCheck[1]) && !$check)
+			{
+				$stringCondition = explode('.',$conditionCheck[1])[1];
+				foreach ($this->query->getQueryTables() as $table)
+				{
+					if (in_array($stringCondition, $this->getTableColumnsNames($table)))
+					{
+						$check = true;
+						break;
+					}
+				}
+				if (!$check)
+				{
+					Logger::ORMLogging("Unknown condition column. This ($conditionCheck[1]) is not used in Query Tables.",'[WHERE]');
+					throw new \Exception('ORM-exception',-2);
+				}
+			}
 		}
 		if (!in_array('WHERE', $this->query->getUsedFunctions()))
 		{
@@ -340,21 +350,28 @@ class QueryBuilder
 		return $this;
 	}
 
-	public function orderBy(string $condition, int $flag = self::ASCENDING): self
+	public function orderBy(string $conditionColumn, int $flag = self::ASCENDING, ?int $limit = null): self
 	{
 		$order = match ($flag)
 		{
 			self::DESCENDING => 'DESC',
 			default => 'ASC',
 		};
-		if (in_array($condition, $this->query->getUsedColumns()))
+		if (in_array($conditionColumn, $this->query->getUsedColumns()))
 		{
-			$this->query->addToQuery(" ORDER BY $condition $order");
+			if (isset($limit))
+			{
+				$this->query->addToQuery(" ORDER BY $conditionColumn $order LIMIT $limit");
+			}
+			else
+			{
+				$this->query->addToQuery(" ORDER BY $conditionColumn $order");
+			}
 			$this->query->addUsedFunction('ORDER');
 		}
 		else
 		{
-			Logger::ORMLogging("Column $condition that is used to order query is not exists in query's tables.", '[ORDER_BY]');
+			Logger::ORMLogging("Column $conditionColumn that is used to order query is not exists in query's tables.", '[ORDER_BY]');
 			throw new \Exception('ORM-exception',-2);
 		}
 		return $this;
@@ -370,10 +387,10 @@ class QueryBuilder
 				throw new \Exception('ORM-exception',-2);
 			}
 			$maxPos = count($nameToApply);
-			for ($i = 1; $i <= $maxPos; $i++)
+			for ($i = 0; $i < $maxPos; $i++)
 			{
 				$query = explode('FROM', $this->getQuery());
-				$query[0] = str_replace("$nameToApply[$i],", "$nameToApply[$i] AS $asName[$i],", $query[0]);
+				$query[0] = str_replace("$nameToApply[$i]", "$nameToApply[$i] AS $asName[$i]", $query[0]);
 				$this->query->setQuery(implode('FROM', $query));
 				$this->query->addRenameToList($nameToApply[$i], $asName[$i]);
 			}
@@ -509,11 +526,13 @@ class QueryBuilder
 		}
 		$query = $query . ")";
 		$query = str_replace(', )', ')', $query);
+		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 0;");
 		(new Query($query,''))->testQuery('INSERT');
+		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 1;");
 		Logger::ORMLogging("All inserts done correctly!", '[INSERT]');
 	}
 
-	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions):void
+	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions):string
 	{
 		$config = Config::getInstance();
 		$queryInitiator = new QueryBuilder();
@@ -544,6 +563,7 @@ class QueryBuilder
 			throw new \Exception('ORM-exception',-2);
 		}
 		$valueKey = 0;
+		echo "\n";
 		if (count($column) != count($newValue))
 		{
 			Logger::ORMLogging("INCORRECT amount between columns and values. (" . count($column) . ' != ' . count($newValue) . ')', '[UPDATE]');
@@ -629,6 +649,7 @@ class QueryBuilder
 			(new Query($query, $table))->testQuery('UPDATE');
 		}
 		Logger::ORMLogging("All updates done correctly!", '[UPDATE]');
+		return $query;
 	}
 
 	public function aggregate(string $column, int $function = self::COUNT, ?string $as = null, ?string $groupBy = null): self
@@ -677,10 +698,6 @@ class QueryBuilder
 			{
 				$query = $query . " GROUP BY $groupBy";
 			}
-			else
-			{
-				$query = $query . " GROUP BY $as";
-			}
 		}
 		else
 		{
@@ -719,5 +736,9 @@ class QueryBuilder
 		$this->query->setQuery($query);
 		$this->query->addUsedFunction($function);
 		return $this;
+	}
+	public function __toString(): string
+	{
+		return $this->query->getQuery();
 	}
 }

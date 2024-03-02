@@ -26,6 +26,14 @@ class Query
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getUsedRenaming(): array
+	{
+		return $this->usedRenaming;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getQuery(): string
@@ -99,6 +107,8 @@ class Query
 		}
 		finally
 		{
+			set_error_handler([ExceptionHandler::getInstance(), 'errorToLogger']);
+			set_exception_handler([ExceptionHandler::getInstance(), 'exceptionToLogger']);
 			return true;
 		}
 	}

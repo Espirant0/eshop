@@ -25,6 +25,7 @@ return [
 		'varchar' => 'string',
 		'char' => 'string',
 		'date' => 'date',
+		'tinyint' => 'int',
 	],
 	'PRODUCT_LIMIT' => 9,
 	'TEXT_TRUNCATE' => 150,

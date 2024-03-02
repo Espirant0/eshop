@@ -14,7 +14,7 @@ class AdminController extends BaseController
 {
 	public function showAdminPage($tableName, ?array $errors = null): void
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$pageNumber = 1;
 		if (isset($_GET['page']))

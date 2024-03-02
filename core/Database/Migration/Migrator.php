@@ -46,7 +46,6 @@ class Migrator
 				$DBOperator->query("INSERT INTO migration (name) VALUES ('$migration')");
 			}
 		}
-		unset($DBOperator);
 	}
 
 	public static function getMigrationFiles(): array
@@ -68,7 +67,7 @@ class Migrator
 	public static function deleteData(): void
 	{
 		$DBOperator = DBHandler::getInstance();
-		$config = new Config();
+		$config = Config::getInstance();
 		$res = $DBOperator->query('SHOW TABLES');
 		$DBOperator->query('SET foreign_key_checks = 0');
 		$tables = 'Tables_in_' . $config->option('DB_NAME');

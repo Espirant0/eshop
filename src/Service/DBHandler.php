@@ -14,7 +14,7 @@ class DBHandler extends \mysqli
 
 	private function __construct()
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 		$this->dbHost = $config->option('DB_HOST');
 		$this->dbUser = $config->option('DB_USER');
 		$this->dbPassword = $config->option('DB_PASSWORD');
@@ -28,7 +28,6 @@ class DBHandler extends \mysqli
 		}
 
 		$this->set_charset('utf8');
-		unset($config);
 	}
 
 	public static function getInstance(): DBHandler
@@ -69,7 +68,7 @@ class DBHandler extends \mysqli
 	 */
 	public static function getResultStatic(string $sqlQuery): array|\Exception
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 
 		$connection = mysqli_init();
 		$connected = mysqli_real_connect(
@@ -82,12 +81,10 @@ class DBHandler extends \mysqli
 
 		if (!$connected)
 		{
-			unset($config);
 			return new \Exception($connection->connect_error);
 		}
 
 		$connection->set_charset('utf8');
-		unset($config);
 
 		return $connection->query($connection->real_escape_string($sqlQuery))->fetch_all(MYSQLI_ASSOC);
 	}

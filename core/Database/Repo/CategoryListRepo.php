@@ -42,7 +42,7 @@ class CategoryListRepo extends BaseRepo
 
 	public function getObjectList(): CategoryList
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 		$dbName = $config->option('DB_NAME');
 
 		$DBOperator = DBHandler::getInstance();

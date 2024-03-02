@@ -11,7 +11,7 @@ class BicycleRepo extends BaseRepo
 {
 	public static function getBicycleList(int $currentPage, string $categoryName = '', ?array $property = []): array
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$startId = ($currentPage - 1) * $itemsPerPage;
 		$queryDop = '';
@@ -77,7 +77,7 @@ class BicycleRepo extends BaseRepo
 
 	public static function getFilteredBicycleList(int $currentPage, string $categoryName = '', ?array $property = []): array
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 		$limit = $config->option('PRODUCT_LIMIT');
 		if (isset($property['search']))
 		{

@@ -92,7 +92,7 @@ class AdminPanelRepo extends BaseRepo
 		{
 			return [];
 		}
-		$config = new Config();
+		$config = Config::getInstance();
 		$ignoredFields = $config->option('FIELDS_STOP_LIST');
 		$DBOperator = DBHandler::getInstance();
 		$table = mysqli_real_escape_string($DBOperator, $table);
@@ -117,7 +117,7 @@ class AdminPanelRepo extends BaseRepo
 		$limit = '';
 		if (isset($currentPage))
 		{
-			$config = new Config();
+			$config = Config::getInstance();
 			$itemsPerPage = $config->option('PRODUCT_LIMIT');
 			$startId = ($currentPage - 1) * $itemsPerPage;
 			$limit = "LIMIT {$itemsPerPage}";
@@ -147,7 +147,7 @@ class AdminPanelRepo extends BaseRepo
 
 	public static function getItemById(string $table, int $itemId): array
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 
 		$pagesCount = ceil($itemId / $config->option('PRODUCT_LIMIT'));
 

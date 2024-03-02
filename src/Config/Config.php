@@ -4,6 +4,15 @@ namespace App\Config;
 
 class Config
 {
+	private static Config $instance;
+	public static function getInstance(): Config
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
 	public function option(string $name, $defaultValue = null)
 	{
 		/** @var array $config */

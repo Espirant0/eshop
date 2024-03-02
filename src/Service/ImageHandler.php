@@ -77,7 +77,7 @@ class ImageHandler
 
 	public static function resizeImageFromString($uploadedImageString): bool|string
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 
 		$desiredHeight = $config->option('IMAGE_DETAIL_HEIGHT');
 		$desiredWidth = $config->option('IMAGE_DETAIL_WIDTH');
@@ -137,7 +137,7 @@ class ImageHandler
 	public static function canUpload(array $files): string|bool
 	{
 		$files = self::performFilesArray($files);
-		$config = new Config();
+		$config = Config::getInstance();
 		$types = $config->option('IMAGE_ALLOWED_TYPES');
 		$maxSize = $config->option('IMAGE_MAX_SIZE');
 		$maxSizeInMb = floor($maxSize / 1024000);

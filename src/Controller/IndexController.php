@@ -11,7 +11,7 @@ class IndexController extends BaseController
 {
 	public function showIndexPage($categoryName): void
 	{
-		$config = new Config();
+		$config = Config::getInstance();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$pageNumber = 1;
 

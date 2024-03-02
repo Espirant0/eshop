@@ -79,7 +79,7 @@ $itemList = AdminPanelRepo::getItemList($tableName, $page);
 					<?php foreach ($itemList as $item): ?>
 						<tr>
 							<?php foreach ($item as $itemValue): ?>
-								<td><?= ViewService::truncate($itemValue, (new Config())->option('TEXT_TRUNCATE')) ?></td>
+								<td><?= ViewService::truncate($itemValue, (Config::getInstance())->option('TEXT_TRUNCATE')) ?></td>
 							<?php endforeach; ?>
 							<td>
 								<div class="edit_line">

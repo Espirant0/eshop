@@ -213,18 +213,14 @@ class QueryBuilder
 			$query = "$joinType $table ON ";
 			$by = explode('=', str_replace(' ', '', $by));
 			$tableColumns = self::getTableColumnsNames($table);
+			$check = false;
 			if (in_array(explode('.', $by[0])[1], $tableColumns))
 			{
 				$query = $query . "$by[0] = ";
-			}
-			else
-			{
-				Logger::ORMLogging("Wrong condition! $by[0] is not exists in $table's columns","[JOIN]");
-				throw new \Exception('ORM-exception',-2);
+				$check = true;
 			}
 			foreach ($usedTables as $usedTable)
 			{
-				$check = false;
 				$tableColumns = self::getTableColumnsNames($usedTable);
 				if (in_array(explode('.', $by[1])[1], $tableColumns))
 				{
@@ -233,7 +229,7 @@ class QueryBuilder
 					break;
 				}
 			}
-			if ($check)
+			if (!$check)
 			{
 				Logger::ORMLogging("Wrong condition! $by[1] is not exists in $table's columns","[JOIN]");
 				throw new \Exception('ORM-exception',-2);
@@ -385,9 +381,7 @@ class QueryBuilder
 		elseif (is_string($nameToApply) && is_string($asName))
 		{
 			$query = explode('FROM', $this->getQuery());
-			var_dump($query);
 			$query[0] = str_replace("$nameToApply", "$nameToApply AS $asName", $query[0]);
-			var_dump($query[0]);
 			$this->query->setQuery(implode('FROM', $query));
 			$this->query->addRenameToList($nameToApply, $asName);
 		}
@@ -516,7 +510,6 @@ class QueryBuilder
 		$query = $query . ")";
 		$query = str_replace(', )', ')', $query);
 		(new Query($query,''))->testQuery('INSERT');
-		var_dump($query);
 		Logger::ORMLogging("All inserts done correctly!", '[INSERT]');
 	}
 
@@ -642,12 +635,15 @@ class QueryBuilder
 	{
 		$aggregateTables = $this->query->getQueryTables();
 		$exist = false;
-		foreach ($aggregateTables as $table)
+		if(count($aggregateTables)>1)
 		{
-			if (self::isColumnExistInTable(explode('.', $column)[1], $table))
+			foreach ($aggregateTables as $table)
 			{
-				$exist = true;
-				break;
+				if (self::isColumnExistInTable(explode('.', $column)[1], $table))
+				{
+					$exist = true;
+					break;
+				}
 			}
 		}
 		if (in_array($column, $this->query->getUsedColumns()))

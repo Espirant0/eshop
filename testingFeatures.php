@@ -20,8 +20,18 @@ var_dump(QueryBuilder::getTableRestrictions('item'));
 \App\Service\ClearTestData::clear();
 //var_dump(QueryBuilder::select('id','item')->join('name', 'manufacturer')->where('item.id > 10')->getQuery());
 */
-DBHandler::getInstance()->query('SET foreign_key_checks = 0');
-QueryBuilder::insert('orders','item_id, status_id, data_create, price, user_id, address',"1, 1, 2024-02-13, 1231, 799999, улица пушкина дом колотушкина");
-#echo $quer. "\n";
+$quer = QueryBuilder::select('id, title, create_year, price, description, status, speed', 'item')
+	->join('name', 'manufacturer')
+	->join('name, engName', 'color')
+	->join('name, engName', 'material')
+	->join('name, engName', 'target_audience','target_audience.id = item.target_id')
+	->join('category_id', 'items_category')
+	->join('name, engName', 'category')->where("item.id = 1 AND item.status = 1")
+	->as('color.name', 'color')->as('color.engName', 'color_engname')
+	->as('material.name', 'material')->as('material.engName', 'material_engname')
+	->as('manufacturer.name', 'vendor')->as('target_audience.name', 'target')
+	->as('target_audience.engName', 'target_engname')->as('category.engName', 'category_engname')
+	->as('category.name', 'category_name')->getQuery();
+echo $quer;
 #var_dump(DBHandler::getInstance()->query($quer));
 DBHandler::getInstance()->query('SET foreign_key_checks = 1');

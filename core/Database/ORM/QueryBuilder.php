@@ -121,7 +121,7 @@ class QueryBuilder
 		return $table . '.' . implode(", $table.", $items);
 	}
 
-	public static function select(string|array $itemList, string $table, bool $blacklist = false): self
+	public static function select(string|array $itemList, string $table, bool $blacklist = false, bool $distinct = false): self
 	{
 		$queryInitiator = new QueryBuilder();
 		if (strtolower($itemList) === 'all')
@@ -143,8 +143,16 @@ class QueryBuilder
 			$columns = $queryInitiator->getTableColumnsNames($table);
 			$items = $queryInitiator->itemListHandler(implode(', ', array_diff($columns, explode(', ', $itemList))), $table);
 		}
-		$query = new Query("SELECT $items FROM $table", $table);
-		$query->addUsedFunction('SELECT');
+		if ($distinct)
+		{
+			$query = new Query("SELECT DISTINCT $items FROM $table", $table);
+			$query->addUsedFunction('SELECT DISTINCT');
+		}
+		else
+		{
+			$query = new Query("SELECT $items FROM $table", $table);
+			$query->addUsedFunction('SELECT');
+		}
 		$query->addUsedColumns($items);
 		$queryInitiator->setQuery($query);
 		return $queryInitiator;
@@ -244,6 +252,23 @@ class QueryBuilder
 		{
 			$query[0] = $query[0] . " FROM ";
 		}
+		if (is_array($itemList))
+		{
+			foreach ($itemList as $item)
+			{
+				if ($item != '')
+				{
+					$this->query->addUsedColumns("$table.$item");
+				}
+			}
+		}
+		else
+		{
+			if ($itemList != '')
+			{
+				$this->query->addUsedColumns("$table.$itemList");
+			}
+		}
 		$this->query->setQuery(implode('', $query));
 		return $this;
 	}
@@ -253,18 +278,42 @@ class QueryBuilder
 		$conditionCheck = str_replace(' ','',$condition);
 		$conditionCheck = str_replace(['<=>','<=','>=','<>','=','<','>'],' ',$conditionCheck);
 		$conditionCheck = explode(' ', $conditionCheck);
-		if (!in_array($conditionCheck[0], $this->query->getUsedColumns()))
+		$stringCondition = explode('.',$conditionCheck[0])[1];
+		$check = false;
+		foreach ($this->query->getQueryTables() as $table)
 		{
-			Logger::ORMLogging("Condition expression ($condition) is not in query-columns!","[WHERE]");
+			if (in_array($stringCondition, $this->getTableColumnsNames($table)))
+			{
+				$check = true;
+				break;
+			}
+		}
+		if (!$check)
+		{
+			Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.",'[WHERE]');
 			throw new \Exception('ORM-exception',-2);
+		}
+		$check = false;
+		if (!is_numeric($conditionCheck[1]))
+		{
+			$stringCondition = explode('.',$conditionCheck[1])[1];
+			foreach ($this->query->getQueryTables() as $table)
+			{
+				if (in_array($stringCondition, $this->getTableColumnsNames($table)))
+				{
+					$check = true;
+					break;
+				}
+			}
+			if (!$check)
+			{
+				Logger::ORMLogging("Unknown condition column. This ($conditionCheck[1]) is not used in Query Tables.",'[WHERE]');
+				throw new \Exception('ORM-exception',-2);
+			}
 		}
 		if ($selectQuery instanceof QueryBuilder)
 		{
-			if(!$selectQuery->query->testQuery('WHERE'))
-			{
-				Logger::ORMLogging("Wrong SELECT-query ({$selectQuery->getQuery()})!","[WHERE]");
-				throw new \Exception('ORM-exception',-2);
-			}
+			$selectQuery->query->testQuery('WHERE');
 			foreach ($selectQuery->getQueryObject()->getUsedFunctions() as $function)
 			{
 				$this->query->addUsedFunction($function);
@@ -285,7 +334,7 @@ class QueryBuilder
 				Logger::ORMLogging("Unknown condition statement ($typeOfAddition)",'[WHERE]');
 				throw new \Exception('ORM-exception',-2);
 			}
-			$this->query->addToQuery("$typeOfAddition WHERE " . $condition);
+			$this->query->addToQuery("$typeOfAddition " . $condition);
 		}
 		$this->query->addUsedFunction('WHERE');
 		$this->query->testQuery('WHERE');

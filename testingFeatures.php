@@ -19,3 +19,10 @@ var_dump(QueryBuilder::getTableRestrictions('item'));
 #QueryBuilder::insert('color','engName, name', '123, asd');
 \App\Service\ClearTestData::clear();
 //var_dump(QueryBuilder::select('id','item')->join('name', 'manufacturer')->where('item.id > 10')->getQuery());
+*/
+$quer = QueryBuilder::select('all','category', distinct:true)->
+	join('','items_category',flag:QueryBuilder::LEFT)->
+	join('','item')->
+	where('item.status = 1')->getQuery();
+echo $quer. "\n";
+var_dump(DBHandler::getInstance()->getResult($quer));

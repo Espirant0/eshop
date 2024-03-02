@@ -650,10 +650,10 @@ class QueryBuilder
 				{
 					$query = implode('', $query) . " GROUP BY $column";
 				}
-				$this->query->setQuery($query);
-				$this->query->addUsedFunction($function);
 			}
 		}
+		$this->query->setQuery($query);
+		$this->query->addUsedFunction($function);
 		return $this;
 	}
 }

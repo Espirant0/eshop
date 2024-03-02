@@ -293,8 +293,11 @@ class QueryBuilder
 			Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.",'[WHERE]');
 			throw new \Exception('ORM-exception',-2);
 		}
-		$check = false;
-		if (!is_numeric($conditionCheck[1]))
+		if (count(explode('.', $conditionCheck[1]))>1)
+		{
+			$check = false;
+		}
+		if (!is_numeric($conditionCheck[1]) && !$check)
 		{
 			$stringCondition = explode('.',$conditionCheck[1])[1];
 			foreach ($this->query->getQueryTables() as $table)
@@ -382,7 +385,9 @@ class QueryBuilder
 		elseif (is_string($nameToApply) && is_string($asName))
 		{
 			$query = explode('FROM', $this->getQuery());
-			$query[0] = str_replace("$nameToApply,", "$nameToApply AS $asName,", $query[0]);
+			var_dump($query);
+			$query[0] = str_replace("$nameToApply", "$nameToApply AS $asName", $query[0]);
+			var_dump($query[0]);
 			$this->query->setQuery(implode('FROM', $query));
 			$this->query->addRenameToList($nameToApply, $asName);
 		}

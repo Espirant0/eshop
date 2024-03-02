@@ -97,7 +97,7 @@
     - Обрабатывает список колонок, проверяет их наличие в таблице 
    и формирует их в строку для использования в запросе.
 
-9. `::select(string $itemList, string $table, bool $blacklist = false): QueryBuilder`
+9. `::select(string $itemList, string $table, bool $blacklist = false, bool $distinct = false): QueryBuilder`
     - Создать запрос на выборку данных из таблицы.
     - Параметры:
         - $itemList (string): Список столбцов для выборки. На вход принимает также варианты `all` и `*`.
@@ -105,6 +105,7 @@
           - `*` вернёт запрос вида ***SELECT * FROM table***
         - $table (string): Имя таблицы.
         - $blacklist (bool): Флаг использования черного списка столбцов. При применении select отработает так, что выберет всё, кроме перечисленного
+        - $distinct (bool): Флаг использования ключевого слова DISTINCT
 10. `obj->join(string $itemList, string $table, string $by = 'id', int $flag = INNER): self`
     - Присоединить таблицу к запросу.
     - Метод проверяет наличие указанных столбцов и формирует соответствующий SQL запрос для соединения.
@@ -193,7 +194,7 @@
    - Вернёт строку вида `SELECT color.name, color.engName FROM color` т.к. указан `blacklist=true`
 3. `QueryBuilder::insert('color', 'name, engName', 'красненький, red')`
    - Запрос будет вида `INSERT INTO color(name, engName) VALUES ('красненький', 'red')`
-     - Порядок ввода колонок не важен - он выставится в соответствии с порядком колонок в базе данных!
+     - Порядок ввода колонок важен! Если порядок такой: `engName, name`, то результатом предыдущего запроса будет уже другое добавление данных 
      - то есть `QueryBuilder::insert('color', 'name, engName', 'красненький, red')` и `QueryBuilder::insert('color', 'engName, name', 'красненький, red')` сделают одно и то же!
    - Внесёт данные в базу данных
      - Нельзя вводить несколько значений сразу (то есть как в примере сразу 2 цвета)
@@ -208,9 +209,9 @@
      - Нельзя получить строку запроса. Только true если запрос выполнился и false, если хотя бы один из подзапросов нет
      - Нельзя менять поля со значением `auto_increment`!
 # Цепной запрос. 
-Для всех нестатичных запросов (кроме select) не предусмотрены цепные запросы. 
+Для всех статичных запросов (кроме select) не предусмотрены цепные запросы. 
 Однако с select - обычно начинаются все цепные запросы
 1. `QueryBuilder::select('id','item')->join('name', 'manufacturer')->where('item.id > 10')-getQuery()`
-   - Этот запрос даст следующий результат: `SELECT item.id FROM item INNER JOIN manufacturer on manufacturer.id = item.manufacturer_id WHERE item.id > 5`
+   - Этот запрос даст следующий результат: `SELECT item.id FROM item INNER JOIN manufacturer on manufacturer.id = item.manufacturer_id WHERE item.id > 10`
    - В блоке where необходимо чётко прописывать `condition` используя полное название колонки, то есть `item.id` вместо просто id.
 

@@ -102,7 +102,6 @@ class QueryBuilder
 		}
 		return false;
 	}
-	#private function isDataTypeCorrectForDb()
 	private function itemListHandler(string|array $items, string $table, string $initiatorFunctionForLog = ''): string
 	{
 		if (!is_array($items))

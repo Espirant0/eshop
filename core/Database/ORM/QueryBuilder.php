@@ -532,7 +532,7 @@ class QueryBuilder
 		Logger::ORMLogging("All inserts done correctly!", '[INSERT]');
 	}
 
-	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions):string
+	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions):void
 	{
 		$config = Config::getInstance();
 		$queryInitiator = new QueryBuilder();
@@ -610,6 +610,15 @@ class QueryBuilder
 				Logger::ORMLogging("Incorrect DATA_TYPE matching! Check if the Config-file was correctly configured at DB_CHARACTERS", '[INSERT]');
 				throw new \Exception('ORM-exception',-2);
 			}
+			if(!isset($conditionsKey))
+			{
+				$condition = $updateConditions[0];
+			}
+			else
+			{
+				$condition = $updateConditions[$conditionsKey];
+				$conditionsKey++;
+			}
 			if ($dataType === 'int')
 			{
 				if (!is_numeric($newValue[$valueKey]))
@@ -618,28 +627,25 @@ class QueryBuilder
 					throw new \Exception('ORM-exception',-2);
 				}
 				$newValue[$valueKey] = (int)$newValue[$valueKey];
-				if (isset($conditionsKey))
+				$query = $query . "$newValue[$valueKey] WHERE $condition";
+			}
+			elseif ($dataType === 'date')
+			{
+				$date = \DateTime::createFromFormat('Y-m-d', $newValue[$valueKey]);
+				if ($date !== false && !array_sum($date::getLastErrors()))
 				{
-					$query = $query . "$newValue[$valueKey] WHERE $updateConditions[$conditionsKey]";
-					$conditionsKey++;
+					$query = $query . "$newValue[$valueKey] WHERE $condition";
 				}
 				else
 				{
-					$query = $query . "$newValue[$valueKey] WHERE $updateConditions[0]";
+					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($newValue[$valueKey]) is not of type 'date'", '[INSERT]');
+					throw new \Exception('ORM-exception',-2);
 				}
 			}
 			else
 			{
 				$newValue[$valueKey] = (string)$newValue[$valueKey];
-				if (isset($conditionsKey))
-				{
-					$query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[$conditionsKey]";
-					$conditionsKey++;
-				}
-				else
-				{
-					$query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[0]";
-				}
+				$query = $query . "'$newValue[$valueKey]' WHERE $condition";
 			}
 			$valueKey++;
 			$queryList[] = $query;
@@ -649,7 +655,6 @@ class QueryBuilder
 			(new Query($query, $table))->testQuery('UPDATE');
 		}
 		Logger::ORMLogging("All updates done correctly!", '[UPDATE]');
-		return $query;
 	}
 
 	public function aggregate(string $column, int $function = self::COUNT, ?string $as = null, ?string $groupBy = null): self

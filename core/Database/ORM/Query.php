@@ -3,6 +3,8 @@
 namespace Core\Database\ORM;
 
 use App\Service\DBHandler;
+use App\Service\ExceptionHandler;
+use App\Service\Logger;
 
 class Query
 {
@@ -21,14 +23,6 @@ class Query
 	public function addRenameToList(string $column, string $name): void
 	{
 		$this->usedRenaming[] = ["$column" => "$name"];
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getUsedRenaming(): array
-	{
-		return $this->usedRenaming;
 	}
 
 	/**
@@ -88,19 +82,25 @@ class Query
 		$this->usedFunctions[] = $usedFunction;
 	}
 
-	public function testQuery(): bool
+	public function testQuery(string $initiatorFunction): bool
 	{
+		restore_error_handler();
+		restore_exception_handler();
 		try
 		{
-			DBHandler::getInstance()->getResult($this->getQuery());
-		} catch (\Error|\Exception $e)
-		{
-			$result = false;
-		} finally
-		{
-			if (!isset($result)) $result = true;
+			DBHandler::getInstance()->query($this->getQuery());
 		}
-		return $result;
+		catch (\Error|\Exception $e)
+		{
+			set_error_handler([ExceptionHandler::getInstance(), 'errorToLogger']);
+			set_exception_handler([ExceptionHandler::getInstance(), 'exceptionToLogger']);
+			Logger::ORMLogging("Unable to proceed query [{$this->getQuery()}]!","[{$initiatorFunction}->testQuery]");
+			throw new \Exception('ORM-exception',-2);
+		}
+		finally
+		{
+			return true;
+		}
 	}
 
 	public function addUsedColumns(array|string $columns): void

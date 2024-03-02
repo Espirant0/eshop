@@ -23,7 +23,8 @@ return [
 		'int' => 'int',
 		'decimal' => 'int',
 		'varchar' => 'string',
-		'char' => 'string'
+		'char' => 'string',
+		'date' => 'date',
 	],
 	'PRODUCT_LIMIT' => 9,
 	'TEXT_TRUNCATE' => 150,

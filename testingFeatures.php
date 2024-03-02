@@ -20,8 +20,8 @@ var_dump(QueryBuilder::getTableRestrictions('item'));
 \App\Service\ClearTestData::clear();
 //var_dump(QueryBuilder::select('id','item')->join('name', 'manufacturer')->where('item.id > 10')->getQuery());
 */
-$quer = QueryBuilder::select('all', 'user')->join('name', 'role')
-	->where("user.login = '79999999999'")->as('role.name', 'role_name')
-	->getQuery();
-echo $quer. "\n";
-var_dump(DBHandler::getInstance()->getResult($quer));
+DBHandler::getInstance()->query('SET foreign_key_checks = 0');
+QueryBuilder::insert('orders','item_id, status_id, data_create, price, user_id, address',"1, 1, 2024-02-13, 1231, 799999, улица пушкина дом колотушкина");
+#echo $quer. "\n";
+#var_dump(DBHandler::getInstance()->query($quer));
+DBHandler::getInstance()->query('SET foreign_key_checks = 1');

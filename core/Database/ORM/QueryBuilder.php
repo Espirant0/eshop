@@ -493,6 +493,19 @@ class QueryBuilder
 				$value[$valueKey] = (int)$value[$valueKey];
 				$query = $query . "$value[$valueKey], ";
 			}
+			elseif ($dataType === 'date')
+			{
+				$date = \DateTime::createFromFormat('Y-m-d', $value[$valueKey]);
+				if ($date !== false && !array_sum($date::getLastErrors()))
+				{
+					$query = $query . "'$value[$valueKey]', ";
+				}
+				else
+				{
+					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($value[$valueKey]) is not of type 'date'", '[INSERT]');
+					throw new \Exception('ORM-exception',-2);
+				}
+			}
 			else
 			{
 				$value[$valueKey] = (string)$value[$valueKey];
@@ -503,6 +516,7 @@ class QueryBuilder
 		$query = $query . ")";
 		$query = str_replace(', )', ')', $query);
 		(new Query($query,''))->testQuery('INSERT');
+		var_dump($query);
 		Logger::ORMLogging("All inserts done correctly!", '[INSERT]');
 	}
 

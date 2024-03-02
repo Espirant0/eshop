@@ -4,6 +4,7 @@ namespace Core\Database\Repo;
 
 use App\Model\User;
 use App\Service\DBHandler;
+use Core\Database\ORM\QueryBuilder;
 
 class UserRepo extends BaseRepo
 {
@@ -11,10 +12,12 @@ class UserRepo extends BaseRepo
 	{
 		$DBOperator = DBHandler::getInstance();
 		$login = $DBOperator->real_escape_string($login);
-		$result = $DBOperator->query("SELECT u.login, u.name, u.address, u.password, r.name as role_name FROM user u
-	        INNER JOIN role r on u.role_id = r.id
-		    WHERE u.login = '$login';
-		    ");
+		$result = $DBOperator->query(QueryBuilder::
+			select('id, name, address, password, login','user')
+			->join('name','role')
+			->as('role.name','role_name')
+			->where("user.login = $login")
+		);
 
 		if (!$result)
 		{
@@ -37,11 +40,12 @@ class UserRepo extends BaseRepo
 	{
 		$DBOperator = DBHandler::getInstance();
 		$userList = [];
-		$result = $DBOperator->query("
-		SELECT u.id, u.name, u.address, u.password, r.name as role_name FROM user u
-		         INNER JOIN role r on u.role_id = r.id
-		ORDER BY u.id
-		");
+		$result = $DBOperator->query(QueryBuilder::
+			select('id, name, address, password','user')
+			->join('name','role')
+			->as('role.name','role_name')
+			->orderBy('user.id')
+		);
 		if (!$result)
 		{
 			throw new Exception($DBOperator->connect_error);

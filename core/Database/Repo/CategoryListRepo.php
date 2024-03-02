@@ -7,6 +7,7 @@ use App\Config\Config;
 use App\Model\Category;
 use App\Model\CategoryList;
 use App\Service\DBHandler;
+use Core\Database\ORM\QueryBuilder;
 
 class CategoryListRepo extends BaseRepo
 {
@@ -14,11 +15,12 @@ class CategoryListRepo extends BaseRepo
 	{
 		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function () {
 			$DBOperator = DBHandler::getInstance();
-			$result = $DBOperator->query('SELECT DISTINCT c.id, c.name, c.engName
-                                            FROM category c
-                                            LEFT JOIN items_category ic ON c.id = ic.category_id
-                                            JOIN item i ON i.id = ic.item_id
-												WHERE i.status = 1;');
+			$result = $DBOperator->query(QueryBuilder::
+			select('id, name, engName','category',distinct:true)
+				->join('','items_category')
+				->join('','item')
+				->where('item.status = 1')
+				);
 
 			return self::createCategoryList($result);
 		});

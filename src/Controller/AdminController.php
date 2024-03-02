@@ -28,6 +28,7 @@ class AdminController extends BaseController
 		{
 			$tableName = $tableName[0];
 		}
+		$itemCount = null;
 		if (AuthService::checkAuth())
 		{
 			echo $this->render('AdminPage/admin.php', [
@@ -36,7 +37,7 @@ class AdminController extends BaseController
 				'tableName' => $tableName,
 				'errors' => $errors,
 				'page' => $pageNumber,
-				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName),
+				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName, $itemCount),
 				'title' => 'Админ-панель',
 			]);
 		} else

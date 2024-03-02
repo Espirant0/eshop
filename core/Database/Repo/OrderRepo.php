@@ -7,18 +7,19 @@ use App\Model\Bicycle;
 use App\Model\CategoryList;
 use App\Model\Order;
 use App\Service\DBHandler;
+use Core\Database\ORM\QueryBuilder;
 
 class OrderRepo extends BaseRepo
 {
 	public static function getOrderList(): array
 	{
 		$DBOperator = DBHandler::getInstance();
-		$result = $DBOperator->query(
-			"SELECT o.id, i.title as item, s.name as status, o.data_create, o.user_id, o.price, o.address
-					FROM orders o
-						 INNER JOIN status s on s.id = o.status_id
-						 INNER JOIN item i on i.id = o.item_id
-	        ");
+		$result = $DBOperator->query(QueryBuilder::
+			select('id, data_create, user_id, price, address','orders')
+			->join('name','status')
+			->join('title','item')
+			->as(['item.title','status.name'],['item','status'])
+			);
 
 		$orders = [];
 
@@ -49,14 +50,7 @@ class OrderRepo extends BaseRepo
 		$date = date('Y-m-d');
 		$number = $DBOperator->real_escape_string(htmlspecialchars($number));
 		$address = $DBOperator->real_escape_string(htmlspecialchars($address));
-		$DBOperator->query("SET FOREIGN_KEY_CHECKS = 0;");
-		$result = $DBOperator->query(
-			"INSERT INTO orders (item_id, status_id, data_create, price, user_id, address) 
-					VALUES ($itemId, 1, '$date', '$price', '$number', '$address')
-		;");
-		if (!$result)
-		{
-			throw new \Exception($DBOperator->connect_error);
-		}
+		QueryBuilder::insert('orders','item_id, status_id, data_create, price, user_id, address',
+			"$itemId, 1, $date, $price, $number, $address");
 	}
 }

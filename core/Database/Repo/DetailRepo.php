@@ -5,29 +5,34 @@ use App\Cache\FileCache;
 use App\Model\Bicycle;
 use App\Model\Category;
 use App\Service\DBHandler;
+use Core\Database\ORM\QueryBuilder;
 
 class DetailRepo extends BaseRepo
 {
 	public static function getBicycleById(int $id): Bicycle
 	{
 		$DBOperator = DBHandler::getInstance();
-		$result = $DBOperator->query(
-			"SELECT i.id, i.title, i.create_year, i.price, i.description, i.status, i.speed, c.name as color,c.engName as color_engname, ma.name as material, ma.engName as material_engname, m.name as vendor, ta.name as target, ta.engName as target_engname, c2.engName as category_engname, ic.category_id, c2.name as category_name
-		FROM item i
-		INNER JOIN manufacturer m on m.id = i.manufacturer_id
-		INNER JOIN color c on c.id = i.color_id
-		INNER JOIN material ma on ma.id = i.material_id
-		INNER JOIN target_audience ta on ta.id = i.target_id
-		INNER JOIN items_category ic on i.id = ic.item_id
-		INNER JOIN category c2 on ic.category_id = c2.id
-		WHERE i.id = '{$id}' AND i.status = 1;
-		");
+		$result = $DBOperator->query(QueryBuilder::
+			select('id, title, create_year, price, description, status, speed','item')
+			->join('name, engName','color')
+			->join('name, engName','material')
+			->join('name','manufacturer')
+			->join('name, engName','target_audience', 'target_audience.id = item.target_id')
+			->join('category_id','items_category')
+			->join('name, engName', 'category')
+			->where("item.id = $id")
+			->where('item.status = 1')
+			->as(['color.name','color.engName','material.name','material.engName','manufacturer.name','target_audience.name','target_audience.engName','category.name','category.engName'],['color','color_engname','material','material_engname','vendor','target','target_engname','category_name','category_engname'])
+			);
 
 		if (!$result)
 		{
 			throw new \Exception($DBOperator->connect_error);
 		}
-		if($result->num_rows<1) throw new \Exception('No ID',-1);
+		if($result->num_rows<1)
+		{
+			throw new \Exception('No ID',-1);
+		}
 
 		$row = mysqli_fetch_assoc($result);
 		$itemId = $row['id'];

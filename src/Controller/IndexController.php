@@ -55,8 +55,8 @@ class IndexController extends BaseController
 		{
 			$search = htmlspecialchars($property['search']);
 		}
-
-		$bicycleList = BicycleRepo::getBicycleList($pageNumber, $categoryName[0], $property);
+		$itemCount = null;
+		$bicycleList = BicycleRepo::getBicycleList($pageNumber, $categoryName[0], $property, $itemCount);
 
 		if ($bicycleList == [] || $pageNumber < 1)
 		{
@@ -67,7 +67,7 @@ class IndexController extends BaseController
 		{
 			echo $this->render('layout.php', ['content' => $this->render('MainPage/index.php',
 				['categoryName' => $categoryName[0], 'bicycleList' => $bicycleList, 'page' => $pageNumber, 'httpQuery' => http_build_query($httpQuery), 'pagesCount' => $this->getPagesCount($itemsPerPage,
-					'item'),]), 'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(), 'title' => TITLE, 'categoryName' => $categoryName[0],]);
+					'item',$itemCount),]), 'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(), 'title' => TITLE, 'categoryName' => $categoryName[0],]);
 		}
 	}
 }

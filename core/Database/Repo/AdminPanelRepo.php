@@ -53,8 +53,10 @@ class AdminPanelRepo extends BaseRepo
 		$table = mysqli_real_escape_string($DBOperator, $table);
 		foreach ($newValues as $key => $value)
 		{
-			QueryBuilder::update("$table","$key",[$value],"id = $itemId");
+			$columns[] = $key;
+			$values[] = $value;
 		}
+		QueryBuilder::update("$table",$columns,$values,"id = $itemId");
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 

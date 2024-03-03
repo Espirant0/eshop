@@ -526,12 +526,14 @@ class QueryBuilder
 		$query = $query . ")";
 		$query = str_replace(', )', ')', $query);
 		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 0;");
-		(new Query($query,''))->testQuery('INSERT');
+		if((new Query($query,''))->testQuery('INSERT'))
+		{
+			Logger::ORMLogging("Insert at table $table done correctly!", '[INSERT]');
+		}
 		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 1;");
-		Logger::ORMLogging("All inserts done correctly!", '[INSERT]');
 	}
 
-	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions):void
+	public static function update(string $table, array|string $column, array|string $newValue, string|int $updateCondition):void
 	{
 		$config = Config::getInstance();
 		$queryInitiator = new QueryBuilder();
@@ -546,14 +548,9 @@ class QueryBuilder
 			$newValue = str_replace(', ', ',', $newValue);
 			$newValue = explode(',', $newValue);
 		}
-		if (is_string($updateConditions))
+		if (is_int($updateCondition))
 		{
-			$updateConditions = str_replace(', ', ',', $updateConditions);
-			$updateConditions = explode(',', $updateConditions);
-		}
-		if (is_int($updateConditions))
-		{
-			$updateConditions = ["id = $updateConditions"];
+			$updateCondition = "id = $updateCondition";
 		}
 		$columnRestrictions = $queryInitiator->getTableRestrictions($table);
 		if (!$queryInitiator->isTableExists($table))
@@ -562,25 +559,14 @@ class QueryBuilder
 			throw new \Exception('ORM-exception',-2);
 		}
 		$valueKey = 0;
-		echo "\n";
 		if (count($column) != count($newValue))
 		{
 			Logger::ORMLogging("INCORRECT amount between columns and values. (" . count($column) . ' != ' . count($newValue) . ')', '[UPDATE]');
 			throw new \Exception('ORM-exception',-2);
 		}
-		if (count($column) != count($updateConditions) && count($updateConditions) != 1)
-		{
-			Logger::ORMLogging("INCORRECT amount between columns and conditions. (" . count($column) . ' != ' . count($updateConditions) . ')', '[UPDATE]');
-			throw new \Exception('ORM-exception',-2);
-		}
-		if (count($updateConditions) > 1)
-		{
-			$conditionsKey = 0;
-		}
-		$queryList = [];
+		$query = "UPDATE $table SET ";
 		foreach ($column as $col)
 		{
-			$query = "UPDATE $table SET ";
 			$newValue[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(), $newValue[$valueKey]);
 			$maxChar = (int)$columnRestrictions[$col]['CHARACTER_MAXIMUM_LENGTH'];
 			if (!$queryInitiator->isColumnExistInTable($col, $table))
@@ -593,7 +579,6 @@ class QueryBuilder
 				Logger::ORMLogging("Trying to insert data in \"auto_increment\" column", '[UPDATE]');
 				throw new \Exception('ORM-exception',-2);
 			}
-			$query = $query . "$col = ";
 			if ($maxChar != 0
 				&& $maxChar < mb_strlen($newValue[$valueKey]))
 			{
@@ -609,15 +594,7 @@ class QueryBuilder
 				Logger::ORMLogging("Incorrect DATA_TYPE matching! Check if the Config-file was correctly configured at DB_CHARACTERS", '[INSERT]');
 				throw new \Exception('ORM-exception',-2);
 			}
-			if(!isset($conditionsKey))
-			{
-				$condition = $updateConditions[0];
-			}
-			else
-			{
-				$condition = $updateConditions[$conditionsKey];
-				$conditionsKey++;
-			}
+			$query = $query . "$col = ";
 			if ($dataType === 'int')
 			{
 				if (!is_numeric($newValue[$valueKey]))
@@ -626,14 +603,14 @@ class QueryBuilder
 					throw new \Exception('ORM-exception',-2);
 				}
 				$newValue[$valueKey] = (int)$newValue[$valueKey];
-				$query = $query . "$newValue[$valueKey] WHERE $condition";
+				$query = $query . "$newValue[$valueKey], ";
 			}
 			elseif ($dataType === 'date')
 			{
 				$date = \DateTime::createFromFormat('Y-m-d', $newValue[$valueKey]);
 				if ($date !== false && !array_sum($date::getLastErrors()))
 				{
-					$query = $query . "$newValue[$valueKey] WHERE $condition";
+					$query = $query . "$newValue[$valueKey], ";
 				}
 				else
 				{
@@ -644,16 +621,16 @@ class QueryBuilder
 			else
 			{
 				$newValue[$valueKey] = (string)$newValue[$valueKey];
-				$query = $query . "'$newValue[$valueKey]' WHERE $condition";
+				$query = $query . "'$newValue[$valueKey]', ";
 			}
 			$valueKey++;
-			$queryList[] = $query;
 		}
-		foreach ($queryList as $query)
+		$query = substr($query, 0, -2);
+		$query = $query . " WHERE $updateCondition";
+		if((new Query($query,''))->testQuery('UPDATE'))
 		{
-			(new Query($query, $table))->testQuery('UPDATE');
+			Logger::ORMLogging("Updates at table $table done correctly!", '[UPDATE]');
 		}
-		Logger::ORMLogging("All updates done correctly!", '[UPDATE]');
 	}
 
 	public function aggregate(string $column, int $function = self::COUNT, ?string $as = null, ?string $groupBy = null): self

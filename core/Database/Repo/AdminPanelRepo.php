@@ -18,6 +18,7 @@ class AdminPanelRepo extends BaseRepo
 		QueryBuilder::insert('item','title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id, target_id',
 			"{$bicycle->getName()},{$bicycle->getYear()},{$bicycle->getPrice()},{$bicycle->getDescription()},{$bicycle->getStatus()},{$bicycle->getVendor()},{$bicycle->getSpeed()},{$bicycle->getMaterial()},{$bicycle->getColor()}, {$bicycle->getTarget()}");
 
+		QueryBuilder::insert('items_category','item_id, category_id',[$itemId, $bicycle->getCategories()[0]]);
 		if (empty($images))
 		{
 			ImageHandler::createNewItemDefaultImage($itemId, $title);
@@ -34,7 +35,7 @@ class AdminPanelRepo extends BaseRepo
 				{
 					$isMain = 0;
 				}
-				QueryBuilder::insert('image', 'item_id, is_main, ord', "$itemId, $isMain,$number");
+				QueryBuilder::insert('image', 'item_id, is_main, ord', "$itemId, $isMain, $number");
 				$number++;
 			}
 		}

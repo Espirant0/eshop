@@ -51,7 +51,7 @@ class CategoryListRepo extends BaseRepo
 		$result = $DBOperator->query('SHOW TABLES');
 
 		$objectList = new CategoryList();
-		$tablePostfix = 'Tables_in_' . $dbName;
+		$tablePostfix = 'Tables_in_' . strtolower($dbName);
 		$categoryBlackList = $config->option('CATEGORY_BLACK_LIST');
 
 		$idIterator = 0;

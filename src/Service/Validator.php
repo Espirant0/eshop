@@ -76,7 +76,12 @@ class Validator
 					return "В поле $key должен быть корректный е-майл";
 				}
 				break;
-
+			case 'date':
+				if (!preg_match("/\\d{4}-\\d{2}-\\d{2}/", $value))
+				{
+					return "В поле $key должна быть корректная дата";
+				}
+				break;
 			case 'confirmed':
 				if ($value !== $this->data["{$key}_confirmation"])
 				{

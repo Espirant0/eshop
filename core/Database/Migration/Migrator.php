@@ -39,7 +39,11 @@ class Migrator
 
 				foreach ($commandList as $commandSQL)
 				{
-					if ($commandSQL == '') continue;
+					$testCommand = trim($commandSQL);
+					if ($testCommand == '')
+					{
+						continue;
+					}
 					$DBOperator->query($commandSQL);
 				}
 
@@ -71,7 +75,7 @@ class Migrator
 		$config = new Config();
 		$res = $DBOperator->query('SHOW TABLES');
 		$DBOperator->query('SET foreign_key_checks = 0');
-		$tables = 'Tables_in_' . $config->option('DB_NAME');
+		$tables = 'Tables_in_' . strtolower($config->option('DB_NAME'));
 
 		while ($row = mysqli_fetch_assoc($res))
 		{

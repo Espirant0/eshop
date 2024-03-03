@@ -17,7 +17,7 @@ class Logger
 			mkdir($logDir, 0777, true);
 		}
 	}
-	private static function sizeRelatedRenaming(string $logDir):void
+	public static function sizeRelatedRenaming(string $logDir):void
 	{
 		$logDayCap = Config::getInstance()->option('LOG_FILE_DAYS_CAP');
 		$errorLogFileSize = Config::getInstance()->option('ERROR_LOG_FILE_SIZE');
@@ -33,9 +33,9 @@ class Logger
 		{
 			if (in_array('latest.txt', explode('-', $logFile)))
 			{
-				if (filesize($logPath . '/' . $logFile) > $errorLogFileSize && abs((int)(date('d')) - (int)explode('-', $logFile)[2]) >= $logDayCap)
+				if (filesize($logPath . '/' . $logFile) > $errorLogFileSize || abs((int)(date('d')) - (int)explode('-', $logFile)[2]) >= $logDayCap)
 				{
-					rename($logPath . '/' . $logFile, $logPath . '/' . $logFile . '/' . explode('-latest', $logFile)[0] . '.txt');
+					rename($logPath . '/' . $logFile, $logPath . '/' . explode('-latest', $logFile)[0] . '.txt');
 				}
 			}
 		}
@@ -52,7 +52,7 @@ class Logger
 
 	public static function ORMLogging(string $message, string $ORMfunction = 'ORM-work'): void
 	{
-		$errorLogFile = ROOT . "/var/logs/ORMlogs/ORM-" . date("Y-m-d") . "-latest.txt";
+		$errorLogFile = ROOT . "/var/logs/ORMlogs/ORM_" . date("Y-m-d") . "-latest.txt";
 		self::createLogDirectory('ORMlogs');
 		self::sizeRelatedRenaming('ORMlogs');
 		file_put_contents($errorLogFile, date('[H-i-s] ') . $message . ' at ' . $ORMfunction . "\n", FILE_APPEND);

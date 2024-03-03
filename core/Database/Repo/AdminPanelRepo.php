@@ -15,8 +15,8 @@ class AdminPanelRepo extends BaseRepo
 	{
 		$itemId = $bicycle->getId();
 		$title = $bicycle->getName();
-		QueryBuilder::insert('item','title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id',
-			"{$bicycle->getName()},{$bicycle->getYear()},{$bicycle->getPrice()},{$bicycle->getDescription()},{$bicycle->getStatus()},{$bicycle->getVendor()},{$bicycle->getSpeed()},{$bicycle->getMaterial()},{$bicycle->getColor()}");
+		QueryBuilder::insert('item','title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id, target_id',
+			"{$bicycle->getName()},{$bicycle->getYear()},{$bicycle->getPrice()},{$bicycle->getDescription()},{$bicycle->getStatus()},{$bicycle->getVendor()},{$bicycle->getSpeed()},{$bicycle->getMaterial()},{$bicycle->getColor()}, {$bicycle->getTarget()}");
 
 		if (empty($images))
 		{

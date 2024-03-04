@@ -39,7 +39,8 @@ class ExceptionHandler
 			if (str_contains(get_class($exc), 'Exception'))
 			{
 				self::getInstance()->ExceptionToLogger($exc, 'TryCatch:Exception');
-			} else
+			}
+			else
 			{
 				self::getInstance()->errorToLogger(type: 'TryCatch:Error', obj: $exc);
 			}
@@ -50,7 +51,15 @@ class ExceptionHandler
 		}
 	}
 
-	public function errorToLogger(int $errno = 0, string $errStr = '', string $errFile = '', ?int $errLine = null, ?array $errContext = null, $type = 'Error', ?\Error $obj = null): void
+	public function errorToLogger(
+		int     $errno = 0,
+		string  $errStr = '',
+		string  $errFile = '',
+		?int    $errLine = null,
+		?array  $errContext = null,
+				$type = 'Error',
+		?\Error $obj = null
+	): void
 	{
 		$trace = '';
 		if ($obj != null)
@@ -76,6 +85,7 @@ class ExceptionHandler
 			http_response_code(404);
 			$err = new PageNotFoundController();
 			$err->PageNotFoundViewer();
-		} else self::errorPageRedirect();
+		}
+		else self::errorPageRedirect();
 	}
 }

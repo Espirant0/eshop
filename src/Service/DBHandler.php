@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Config\Config;
+use Exception;
 
 class DBHandler extends \mysqli
 {
@@ -45,27 +46,15 @@ class DBHandler extends \mysqli
 
 		if (!$this->real_connect($this->dbHost, $this->dbUser, $this->dbPassword, $this->dbName))
 		{
-			throw new \Exception($this->connect_error);
+			throw new Exception($this->connect_error);
 		}
 	}
 
-	/**
-	 * Функция принимает SQL-команду и возвращает ассоциативный массив вида [[№строки]=>[[имя столбца]=>[значение]]]
-	 * @param string $sqlQuery Запрос к БД
-	 * @return array Массив ответа от БД
-	 */
 	public function getResult(string $sqlQuery): array
 	{
 		return $this->query($sqlQuery)->fetch_all(MYSQLI_ASSOC);
 	}
 
-	/**
-	 * Функция принимает SQL-команду и возвращает ассоциативный массив вида [[№строки]=>[[имя столбца]=>[значение]]]
-	 * Лучше, наверное, писать через try catch
-	 * @param string $sqlQuery Запрос к БД
-	 * @return array Массив ответа от БД
-	 * @throws \Exception в случае неудачи
-	 */
 	public static function getResultStatic(string $sqlQuery): array|\Exception
 	{
 		$config = Config::getInstance();
@@ -81,7 +70,7 @@ class DBHandler extends \mysqli
 
 		if (!$connected)
 		{
-			return new \Exception($connection->connect_error);
+			return new Exception($connection->connect_error);
 		}
 
 		$connection->set_charset('utf8');

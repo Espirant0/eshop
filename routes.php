@@ -3,6 +3,7 @@
 use Core\Routing\Router;
 
 //Публичная часть
+
 Router::get('/', [new App\Controller\IndexController(), 'showIndexPage']);
 
 Router::get('/category/:categoryName/', [new App\Controller\IndexController(), "showIndexPage"]);

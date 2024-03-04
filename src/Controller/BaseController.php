@@ -36,8 +36,8 @@ abstract class BaseController
 		}
 		$table = mysqli_real_escape_string($DBOperator, $table);
 		$result = $DBOperator->query(QueryBuilder::
-		select("*","$table")
-			->aggregate('*',QueryBuilder::COUNT,'count'));
+		select("*", "$table")
+			->aggregate('*', QueryBuilder::COUNT, 'count'));
 		if (isset($itemCount))
 		{
 			return ceil($itemCount / $itemsPerPage);

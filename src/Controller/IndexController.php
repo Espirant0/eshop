@@ -13,6 +13,7 @@ class IndexController extends BaseController
 	{
 		$config = Config::getInstance();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
+		$title = $config->option('TITLE');
 		$pageNumber = 1;
 
 		if (isset($_GET['page']))
@@ -60,14 +61,35 @@ class IndexController extends BaseController
 
 		if ($bicycleList == [] || $pageNumber < 1)
 		{
-			echo $this->render('layout.php', ['content' => $this->render('MainPage/nullSearch.php',
-				['search' => $search,]), 'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(), 'title' => 'Ничего не найдено']);
+			echo $this->render('layout.php',
+				[
+					'content' => $this->render('MainPage/nullSearch.php',
+						[
+							'search' => $search,
+						]),
+					'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+					'title' => 'Ничего не найдено',
+				]
+			);
 		}
 		else
 		{
-			echo $this->render('layout.php', ['content' => $this->render('MainPage/index.php',
-				['categoryName' => $categoryName[0], 'bicycleList' => $bicycleList, 'page' => $pageNumber, 'httpQuery' => http_build_query($httpQuery), 'pagesCount' => $this->getPagesCount($itemsPerPage,
-					'item',$itemCount),]), 'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(), 'title' => TITLE, 'categoryName' => $categoryName[0],]);
+			echo $this->render('layout.php',
+				[
+					'content' => $this->render('MainPage/index.php',
+						[
+							'categoryName' => $categoryName[0],
+							'bicycleList' => $bicycleList,
+							'page' => $pageNumber,
+							'httpQuery' => http_build_query($httpQuery),
+							'pagesCount' => $this->getPagesCount($itemsPerPage, 'item', $itemCount),
+						]
+					),
+					'categoryList' => CategoryListRepo::getCategoryListConsideringExistingItem(),
+					'title' => $title,
+					'categoryName' => $categoryName[0],
+				]
+			);
 		}
 	}
 }

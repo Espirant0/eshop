@@ -6,6 +6,7 @@ return [
 	'DB_USER' => '',
 	'DB_PASSWORD' => '',
 	'DB_NAME' => '',
+	'TITLE' => 'Каталкин и ко',
 	'CATEGORY_BLACK_LIST' => ['image', 'items_category', 'migration', 'status'],
 	'FIELDS_STOP_LIST' => ['manufacturer_id', 'speed', 'material_id', 'color_id', 'target_id', 'password'],
 	'DICTIONARY' => [
@@ -35,7 +36,7 @@ return [
 	'IMAGE_DETAIL_WIDTH' => 650,
 	'IMAGE_ALLOWED_TYPES' => ['image/jpg', 'image/png', 'image/bmp', 'image/jpeg', 'image/webp'],
 	'IMAGE_MAX_SIZE' => 20971520,
-	'ERROR_LOG_FILE_SIZE' =>1024*1024,
-	'ORM_LOG_FILE_SIZE' => 1024*1024,
+	'ERROR_LOG_FILE_SIZE' => 1024 * 1024,
+	'ORM_LOG_FILE_SIZE' => 1024 * 1024,
 	'LOG_FILE_DAYS_CAP' => 2,
 ];

@@ -17,11 +17,12 @@ class Logger
 			mkdir($logDir, 0777, true);
 		}
 	}
-	private static function sizeRelatedRenaming(string $logDir):void
+
+	private static function sizeRelatedRenaming(string $logDir): void
 	{
 		$logDayCap = Config::getInstance()->option('LOG_FILE_DAYS_CAP');
 		$errorLogFileSize = Config::getInstance()->option('ERROR_LOG_FILE_SIZE');
-		$logPath = self::$errorLogPath.'/'.$logDir;
+		$logPath = self::$errorLogPath . '/' . $logDir;
 		$logFiles = scandir($logPath);
 		$logFiles = array_diff($logFiles, array('.', '..'));
 		sort($logFiles);
@@ -38,9 +39,9 @@ class Logger
 		}
 	}
 
-	private static function getLatestLogFileInLogDir(string $logDir):string
+	private static function getLatestLogFileInLogDir(string $logDir): string
 	{
-		$logPath = self::$errorLogPath.'/'.$logDir;
+		$logPath = self::$errorLogPath . '/' . $logDir;
 		$logFiles = scandir($logPath);
 		$logFiles = array_diff($logFiles, array('.', '..'));
 		foreach ($logFiles as $logFile)
@@ -52,6 +53,7 @@ class Logger
 		}
 		return date("Y-m-d") . "-latest.txt";
 	}
+
 	public static function writeErrorToLog(\ErrorException $info, string $trace = '', string $type = 'Error'): void
 	{
 		self::createLogDirectory('errorLogs');
@@ -66,7 +68,7 @@ class Logger
 		self::createLogDirectory('ORMlogs');
 		self::sizeRelatedRenaming('ORMlogs');
 		$logName = self::getLatestLogFileInLogDir('ORMlogs');
-		if (str_contains($logName,'ORM'))
+		if (str_contains($logName, 'ORM'))
 		{
 			$errorLogFile = ROOT . "/var/logs/ORMlogs/$logName";
 		}

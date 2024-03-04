@@ -24,7 +24,8 @@ class AdminController extends BaseController
 		if (empty($tableName))
 		{
 			$tableName = '';
-		} else
+		}
+		else
 		{
 			$tableName = $tableName[0];
 		}
@@ -40,7 +41,8 @@ class AdminController extends BaseController
 				'pagesCount' => $this->getPagesCount($itemsPerPage, $tableName, $itemCount),
 				'title' => 'Админ-панель',
 			]);
-		} else
+		}
+		else
 		{
 			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
@@ -65,7 +67,8 @@ class AdminController extends BaseController
 			FileCache::deleteAllCache();
 			FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 			HttpService::redirect('admin_panel');
-		} else
+		}
+		else
 		{
 			HttpService::redirect('auth');
 		}

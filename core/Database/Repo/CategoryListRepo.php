@@ -9,19 +9,18 @@ use App\Model\CategoryList;
 use App\Service\DBHandler;
 use Core\Database\ORM\QueryBuilder;
 
-class CategoryListRepo extends BaseRepo
+class CategoryListRepo
 {
 	public static function getCategoryListConsideringExistingItem(): CategoryList
 	{
 		return (new FileCache())->remember('categoriesWithoutEmptyCategory', 3600, function () {
 			$DBOperator = DBHandler::getInstance();
 			$result = $DBOperator->query(QueryBuilder::
-			select('id, name, engName','category',distinct:true)
-				->join('','items_category')
-				->join('','item')
+			select('id, name, engName', 'category', distinct: true)
+				->join('', 'items_category')
+				->join('', 'item')
 				->where('item.status = 1')
-				);
-
+			);
 			return self::createCategoryList($result);
 		});
 	}
@@ -38,7 +37,6 @@ class CategoryListRepo extends BaseRepo
 			$category = new Category($categoryId, $categoryName, $categoryEngName);
 			$categoryList->addCategory($category);
 		}
-
 		return $categoryList;
 	}
 

@@ -2,9 +2,12 @@
 
 namespace App\Config;
 
+use Exception;
+
 class Config
 {
 	private static Config $instance;
+
 	public static function getInstance(): Config
 	{
 		if (!isset(self::$instance))
@@ -13,7 +16,8 @@ class Config
 		}
 		return self::$instance;
 	}
-	public function option(string $name, $defaultValue = null)
+
+	public function option(string $name, $defaultValue = null): mixed
 	{
 		/** @var array $config */
 		static $config = null;
@@ -43,6 +47,6 @@ class Config
 			return $defaultValue;
 		}
 
-		throw new \Exception("Configuration option $name not found");
+		throw new Exception("Configuration option $name not found");
 	}
 }

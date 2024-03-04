@@ -37,7 +37,6 @@ $itemList = AdminPanelRepo::getItemList($tableName, $page);
 	<div class="buttons">
 		<a href="/" class="admin_panel_btn">Главная</a>
 		<a href="/sign_out" class="admin_panel_btn">Выйти</a>
-		<a href="/admin_panel/dev_reset" class="admin_panel_btn">Откат БД</a>
 	</div>
 	<div class="tab">
 		<div class="tab_nav">

@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use App\Service\ImageHandler;
-use App\Model\Rule;
 
 class Bicycle
 {
@@ -25,14 +24,23 @@ class Bicycle
 	private array $images;
 
 	/**
-	 * @param string $name
-	 * @param int $speed
-	 * @param string $material
-	 * @param string $vendor
 	 * @param category[] $categories
 	 * @var Image[] $images
 	 */
-	public function __construct(int $id, string $name, string $color, string $year, string $material, string $price, string $description, string $status, string $vendor, int $speed, ?array $categories, string $target)
+	public function __construct(
+		int    $id,
+		string $name,
+		string $color,
+		string $year,
+		string $material,
+		string $price,
+		string $description,
+		string $status,
+		string $vendor,
+		int    $speed,
+		?array $categories,
+		string $target
+	)
 	{
 		$this->id = $id;
 		$this->name = $name;

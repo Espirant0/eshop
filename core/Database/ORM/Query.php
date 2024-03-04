@@ -25,17 +25,11 @@ class Query
 		$this->usedRenaming[] = ["$column" => "$name"];
 	}
 
-	/**
-	 * @return array
-	 */
 	public function getUsedRenaming(): array
 	{
 		return $this->usedRenaming;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getQuery(): string
 	{
 		return $this->query;
@@ -51,39 +45,25 @@ class Query
 		$this->query = $this->query . ' ' . $query;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function getQueryTables(): array
 	{
 		return $this->queryTables;
 	}
 
-	/**
-	 * @param array $queryTables
-	 */
 	public function setQueryTables(array $queryTables): void
 	{
 		$this->queryTables = $queryTables;
 	}
-
-	/**
-	 * @param array $queryTables
-	 */
 
 	public function addQueryTable(string $table): void
 	{
 		$this->queryTables[] = $table;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function getUsedFunctions(): array
 	{
 		return $this->usedFunctions;
 	}
-
 
 	public function addUsedFunction(string $usedFunction): void
 	{
@@ -97,15 +77,13 @@ class Query
 		try
 		{
 			DBHandler::getInstance()->query($this->getQuery());
-		}
-		catch (\Error|\Exception $e)
+		} catch (\Error|\Exception $e)
 		{
 			set_error_handler([ExceptionHandler::getInstance(), 'errorToLogger']);
 			set_exception_handler([ExceptionHandler::getInstance(), 'exceptionToLogger']);
-			Logger::ORMLogging("Unable to proceed query [{$this->getQuery()}]!","[{$initiatorFunction}->testQuery]");
-			throw new \Exception('ORM-exception',-2);
-		}
-		finally
+			Logger::ORMLogging("Unable to proceed query [{$this->getQuery()}]!", "[{$initiatorFunction}->testQuery]");
+			throw new \Exception('ORM-exception', -2);
+		} finally
 		{
 			set_error_handler([ExceptionHandler::getInstance(), 'errorToLogger']);
 			set_exception_handler([ExceptionHandler::getInstance(), 'exceptionToLogger']);

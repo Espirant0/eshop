@@ -7,10 +7,11 @@ use App\Model\Category;
 use App\Service\DBHandler;
 use App\Model\Bicycle;
 use Core\Database\ORM\QueryBuilder;
+use Exception;
 
-class BicycleRepo extends BaseRepo
+class BicycleRepo
 {
-	public static function getBicycleList(int $currentPage, string $categoryName = '', ?array $property = [],int &$itemCount = null): array
+	public static function getBicycleList(int $currentPage, string $categoryName = '', ?array $property = [], int &$itemCount = null): array
 	{
 		$config = Config::getInstance();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
@@ -25,35 +26,51 @@ class BicycleRepo extends BaseRepo
 		}
 		$query = QueryBuilder::
 		select('id, title, create_year, price, description, status, speed', 'item')
-			->join('engName','color')->join('name','manufacturer')
-			->join('engName','material')
-			->join('engName','target_audience','target_audience.id = item.target_id')
-			->join('category_id','items_category')
+			->join('engName', 'color')->join('name', 'manufacturer')
+			->join('engName', 'material')
+			->join('engName', 'target_audience', 'target_audience.id = item.target_id')
+			->join('category_id', 'items_category')
 			->join('name, engName', 'category')
 			->where('item.status = 1')
-			->where('item.id',QueryBuilder::select('id','item')->where("item.id > $startId"))
-			->as(['color.engName', 'material.engName', 'manufacturer.name','target_audience.engName', 'category.name','category.engName'],['color','material','vendor', 'target', 'category_name','category'])
-			->orderBy('item.id',limit:$itemsPerPage);
+			->where('item.id', QueryBuilder::select('id', 'item')->where("item.id > $startId"))
+			->as(
+				[
+					'color.engName',
+					'material.engName',
+					'manufacturer.name',
+					'target_audience.engName',
+					'category.name',
+					'category.engName',
+				],
+				[
+					'color',
+					'material',
+					'vendor',
+					'target',
+					'category_name',
+					'category',
+				]
+			)
+			->orderBy('item.id', limit: $itemsPerPage);
 		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query($query);
 
-		$Bicycles = [];
+		$bicycles = [];
 
 		if (!$result)
 		{
-			throw new \Exception($DBOperator->connect_error);
+			throw new Exception($DBOperator->connect_error);
 		}
-
 
 		while ($row = mysqli_fetch_assoc($result))
 		{
 			$category[] = new Category(
 				$row['category_id'],
 				$row['category_name'],
-				$row['category']
+				$row['category'],
 			);
 
-			$Bicycles[] = new Bicycle
+			$bicycles[] = new Bicycle
 			(
 				$row['id'],
 				$row['title'],
@@ -66,11 +83,11 @@ class BicycleRepo extends BaseRepo
 				$row['vendor'],
 				$row['speed'],
 				$category,
-				$row['target']
+				$row['target'],
 			);
 			unset($category);
 		}
-		return $Bicycles;
+		return $bicycles;
 	}
 
 	public static function getFilteredBicycleList(int $currentPage, ?array $property = [], int &$itemCount = null): array
@@ -86,10 +103,11 @@ class BicycleRepo extends BaseRepo
 		$DBOperator = DBHandler::getInstance();
 		$query = QueryBuilder::
 		select('id, title, create_year, price, description, status, speed', 'item')
-			->join('engName','color')->join('name','manufacturer')
-			->join('engName','material')
-			->join('engName','target_audience','target_audience.id = item.target_id')
-			->join('category_id','items_category')
+			->join('engName', 'color')
+			->join('name', 'manufacturer')
+			->join('engName', 'material')
+			->join('engName', 'target_audience', 'target_audience.id = item.target_id')
+			->join('category_id', 'items_category')
 			->join('name, engName', 'category')
 			->where('item.status = 1');
 		if (isset($filter))
@@ -99,7 +117,7 @@ class BicycleRepo extends BaseRepo
 				switch ($key)
 				{
 					case 'search':
-						$query->where("item.title LIKE '%$value%'",custom:true);
+						$query->where("item.title LIKE '%$value%'", custom: true);
 						continue 2;
 					case 'target':
 						$key = 'target_audience';
@@ -112,7 +130,24 @@ class BicycleRepo extends BaseRepo
 			}
 		}
 		$query
-			->as(['color.engName', 'material.engName', 'manufacturer.name','target_audience.engName', 'category.name','category.engName'],['color','material','vendor', 'target', 'category_name','category'])
+			->as(
+				[
+					'color.engName',
+					'material.engName',
+					'manufacturer.name',
+					'target_audience.engName',
+					'category.name',
+					'category.engName',
+				],
+				[
+					'color',
+					'material',
+					'vendor',
+					'target',
+					'category_name',
+					'category',
+				]
+			)
 			->orderBy('item.id');
 		$result = $DBOperator->query($query);
 		$itemCount = count($result->fetch_all());
@@ -144,7 +179,7 @@ class BicycleRepo extends BaseRepo
 					$row['vendor'],
 					$row['speed'],
 					$category,
-					$row['target']
+					$row['target'],
 				);
 			}
 			if ($pageCounter == $currentPage * $limit) break;

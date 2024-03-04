@@ -9,20 +9,39 @@ use App\Service\DBHandler;
 use App\Service\ImageHandler;
 use Core\Database\ORM\QueryBuilder;
 
-class AdminPanelRepo extends BaseRepo
+class AdminPanelRepo
 {
 	public static function addItem(Bicycle $bicycle, array $images): void
 	{
 		$itemId = $bicycle->getId();
 		$title = $bicycle->getName();
-		QueryBuilder::insert('item','title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id, target_id',
-			"{$bicycle->getName()},{$bicycle->getYear()},{$bicycle->getPrice()},{$bicycle->getDescription()},{$bicycle->getStatus()},{$bicycle->getVendor()},{$bicycle->getSpeed()},{$bicycle->getMaterial()},{$bicycle->getColor()}, {$bicycle->getTarget()}");
+		QueryBuilder::insert(
+			'item',
+			'title, create_year, price, description, status, manufacturer_id, speed, material_id, color_id, target_id',
+			[
+				$bicycle->getName(),
+				$bicycle->getYear(),
+				$bicycle->getPrice(),
+				$bicycle->getDescription(),
+				$bicycle->getStatus(),
+				$bicycle->getVendor(),
+				$bicycle->getSpeed(),
+				$bicycle->getMaterial(),
+				$bicycle->getColor(),
+				$bicycle->getTarget()
+			]
+		);
 
-		QueryBuilder::insert('items_category','item_id, category_id',[$itemId, $bicycle->getCategories()[0]]);
+		QueryBuilder::insert(
+			'items_category',
+			'item_id, category_id',
+			[$itemId, $bicycle->getCategories()[0]]
+		);
 		if (empty($images))
 		{
 			ImageHandler::createNewItemDefaultImage($itemId, $title);
-		} else
+		}
+		else
 		{
 			$number = 1;
 			foreach ($images['tmp_name'] as $image)
@@ -31,7 +50,8 @@ class AdminPanelRepo extends BaseRepo
 				if ($number === 1)
 				{
 					$isMain = 1;
-				} else
+				}
+				else
 				{
 					$isMain = 0;
 				}
@@ -44,7 +64,12 @@ class AdminPanelRepo extends BaseRepo
 	public static function getLastFreeId(): int
 	{
 		$DBOperator = DBHandler::getInstance();
-		return ($DBOperator->query(QueryBuilder::select('id','item')->orderBy('item.id',QueryBuilder::DESCENDING,1))->fetch_row()[0] + 1);
+		return (
+			$DBOperator->query(
+				QueryBuilder::select('id', 'item')
+					->orderBy('item.id', QueryBuilder::DESCENDING, 1)
+			)->fetch_row()[0] + 1
+		);
 	}
 
 	public static function updateItem(string $table, int $itemId, array $newValues): void
@@ -56,13 +81,13 @@ class AdminPanelRepo extends BaseRepo
 			$columns[] = $key;
 			$values[] = $value;
 		}
-		QueryBuilder::update("$table",$columns,$values,"id = $itemId");
+		QueryBuilder::update("$table", $columns, $values, "id = $itemId");
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
 	public static function deleteBicycle(int $itemId): void
 	{
-		QueryBuilder::update('item','status',0,"item.id = $itemId");
+		QueryBuilder::update('item', 'status', 0, "item.id = $itemId");
 		FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
 	}
 
@@ -106,9 +131,12 @@ class AdminPanelRepo extends BaseRepo
 		$itemFields = self::getItemColumns($item);
 		$queryFields = implode(', ', $itemFields);
 		$result = $DBOperator->query(QueryBuilder::
-			select("$queryFields","$item")
-			->where("$item.id",QueryBuilder::select('id',"$item")->where("$item.id > $startId"))
-			->orderBy("$item.id",limit:$itemsPerPage)
+		select("$queryFields", "$item")
+			->where("$item.id",
+				QueryBuilder::select('id', "$item")
+					->where("$item.id > $startId")
+			)
+			->orderBy("$item.id", limit: $itemsPerPage)
 		);
 		if (!$result)
 		{

@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Config\Config;
-use DeepCopy\f013\C;
+use RuntimeException;
 
 class ImageHandler
 {
@@ -19,7 +19,8 @@ class ImageHandler
 		if (preg_match('/^.*\.png$/', $filePath))
 		{
 			$name = explode('.png', $filePath);
-		} else
+		}
+		else
 		{
 			$name = explode('.jpg', $filePath);
 		}
@@ -54,7 +55,7 @@ class ImageHandler
 		if (!mkdir($concurrentDirectory = ROOT . "/public/resources/product/img/{$id}.{$title}", 0777,
 				true) && !is_dir($concurrentDirectory))
 		{
-			throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+			throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
 		}
 		copy(ROOT . '/public/resources/img/item.jpg',
 			ROOT . "/public/resources/product/img/{$id}.{$title}/{$title}_1.jpg");
@@ -65,7 +66,7 @@ class ImageHandler
 		if (!file_exists($directory = ROOT . "/public/resources/product/img/{$id}.{$title}") && !mkdir($directory, 0777,
 				true) && !is_dir($directory))
 		{
-			throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+			throw new RuntimeException(sprintf('Directory "%s" was not created', $directory));
 		}
 
 		$imageData = file_get_contents($image);

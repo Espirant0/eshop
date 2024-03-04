@@ -16,10 +16,12 @@ class OrderController extends BaseController
 		$categoryListRepo = new CategoryListRepo();
 		$bicycle = (new FileCache())->get('bicycle');
 		echo $this->render('layout.php', [
-			'content' => $this->render('OrderPage/order.php', [
-				'bicycle' => $bicycle,
-				'errors' => $errors
-			]),
+			'content' => $this->render('OrderPage/order.php',
+				[
+					'bicycle' => $bicycle,
+					'errors' => $errors,
+				]
+			),
 			'categoryList' => $categoryListRepo::getCategoryListConsideringExistingItem(),
 			'title' => $bicycle->getName(),
 		]);
@@ -35,7 +37,7 @@ class OrderController extends BaseController
 		]);
 	}
 
-	public function saveOrder()
+	public function saveOrder():void
 	{
 		$item = (new FileCache())->get('bicycle');
 		$itemId = $item->getId();
@@ -47,7 +49,8 @@ class OrderController extends BaseController
 		{
 			OrderRepo::saveOrder($itemId, $price, $_POST['number'], $_POST['address']);
 			HttpService::redirect('confirmed');
-		} else
+		}
+		else
 		{
 			$errors = $validator->errors();
 			$this->showOrderPage($errors);

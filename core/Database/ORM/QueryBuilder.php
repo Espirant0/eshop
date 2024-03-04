@@ -18,7 +18,7 @@ class QueryBuilder
 	public const AVERAGE = 1;
 	public const COUNT = 2;
 	public const SUM = 3;
-	public const MIN =4;
+	public const MIN = 4;
 	public const MAX = 5;
 	private Query $query;
 	private array $dbScheme = [];
@@ -73,7 +73,7 @@ class QueryBuilder
 		$columns = $this->dbScheme[$table];
 		$allColumnsCount = count($columns);
 		$keys = array_keys($columns);
-		for ($i = 0; $i < $allColumnsCount; $i ++)
+		for ($i = 0; $i < $allColumnsCount; $i++)
 		{
 			$restrictions[$keys[$i]] = $columns[$keys[$i]];
 		}
@@ -82,7 +82,7 @@ class QueryBuilder
 
 	private function isTableExists(string $table): bool
 	{
-		if(in_array($table, array_keys($this->dbScheme)))
+		if (in_array($table, array_keys($this->dbScheme)))
 		{
 			return true;
 		}
@@ -102,19 +102,20 @@ class QueryBuilder
 		}
 		return false;
 	}
+
 	private function itemListHandler(string|array $items, string $table, string $initiatorFunctionForLog = ''): string
 	{
 		if (!is_array($items))
 		{
-			$items = str_replace(' ','', $items);
+			$items = str_replace(' ', '', $items);
 			$items = explode(',', $items);
 		}
 		foreach ($items as $item)
 		{
 			if (!$this->isColumnExistInTable($item, $table))
 			{
-				Logger::ORMLogging("Column \"$item\" is not exists in table \"$table\"","[{$initiatorFunctionForLog}->itemListHandler]");
-				throw new \Exception('ORM-exception',-2);
+				Logger::ORMLogging("Column \"$item\" is not exists in table \"$table\"", "[{$initiatorFunctionForLog}->itemListHandler]");
+				throw new \Exception('ORM-exception', -2);
 			}
 		}
 		return $table . '.' . implode(", $table.", $items);
@@ -161,8 +162,8 @@ class QueryBuilder
 	{
 		if (!$this->isTableExists($table))
 		{
-			Logger::ORMLogging("$table is not exists","[JOIN]");
-			throw new \Exception('ORM-exception',-2);
+			Logger::ORMLogging("$table is not exists", "[JOIN]");
+			throw new \Exception('ORM-exception', -2);
 		}
 		if ($itemList != '')
 		{
@@ -203,8 +204,8 @@ class QueryBuilder
 			}
 			else
 			{
-				Logger::ORMLogging("Can't find direct \"id\"-connection between $table and used tables(" . implode(',', $usedTables) . ")","[JOIN]");
-				throw new \Exception('ORM-exception',-2);
+				Logger::ORMLogging("Can't find direct \"id\"-connection between $table and used tables(" . implode(',', $usedTables) . ")", "[JOIN]");
+				throw new \Exception('ORM-exception', -2);
 			}
 		}
 		else
@@ -230,8 +231,8 @@ class QueryBuilder
 			}
 			if (!$check)
 			{
-				Logger::ORMLogging("Wrong condition! $by[1] is not exists in $table's columns","[JOIN]");
-				throw new \Exception('ORM-exception',-2);
+				Logger::ORMLogging("Wrong condition! $by[1] is not exists in $table's columns", "[JOIN]");
+				throw new \Exception('ORM-exception', -2);
 			}
 			$this->query->addToQuery($query);
 			$this->query->addQueryTable($table);
@@ -268,11 +269,11 @@ class QueryBuilder
 		return $this;
 	}
 
-	public function where(string $condition, ?QueryBuilder $selectQuery = null, string $typeOfAddition = 'AND',bool $custom = false): self
+	public function where(string $condition, ?QueryBuilder $selectQuery = null, string $typeOfAddition = 'AND', bool $custom = false): self
 	{
 		if ($custom)
 		{
-			if(in_array('WHERE',$this->query->getUsedFunctions()))
+			if (in_array('WHERE', $this->query->getUsedFunctions()))
 			{
 				$this->query->addToQuery("AND $condition");
 			}
@@ -283,12 +284,12 @@ class QueryBuilder
 			$this->query->testQuery('WHERE (CUSTOM)');
 			return $this;
 		}
-		$conditionCheck = str_replace(' ','',$condition);
-		$conditionCheck = str_replace(['<=>','<=','>=','<>','=','<','>'],' ',$conditionCheck);
+		$conditionCheck = str_replace(' ', '', $condition);
+		$conditionCheck = str_replace(['<=>', '<=', '>=', '<>', '=', '<', '>'], ' ', $conditionCheck);
 		$conditionCheck = explode(' ', $conditionCheck);
 		if ($selectQuery instanceof QueryBuilder)
 		{
-			if(in_array('WHERE',$this->query->getUsedFunctions()))
+			if (in_array('WHERE', $this->query->getUsedFunctions()))
 			{
 				$this->query->addToQuery("$typeOfAddition $condition IN($selectQuery)");
 			}
@@ -304,10 +305,10 @@ class QueryBuilder
 			$this->query->addUsedFunction('WHERE');
 			return $this;
 		}
-		if (str_contains($conditionCheck[0],'.')
-			|| str_contains($conditionCheck[1],'.'))
+		if (str_contains($conditionCheck[0], '.')
+			|| str_contains($conditionCheck[1], '.'))
 		{
-			$stringCondition = explode('.',$conditionCheck[0])[1];
+			$stringCondition = explode('.', $conditionCheck[0])[1];
 			$check = false;
 			foreach ($this->query->getQueryTables() as $table)
 			{
@@ -319,16 +320,16 @@ class QueryBuilder
 			}
 			if (!$check)
 			{
-				Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.",'[WHERE]');
-				throw new \Exception('ORM-exception',-2);
+				Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.", '[WHERE]');
+				throw new \Exception('ORM-exception', -2);
 			}
-			if (count(explode('.', $conditionCheck[1]))>1)
+			if (count(explode('.', $conditionCheck[1])) > 1)
 			{
 				$check = false;
 			}
 			if (!is_numeric($conditionCheck[1]) && !$check)
 			{
-				$stringCondition = explode('.',$conditionCheck[1])[1];
+				$stringCondition = explode('.', $conditionCheck[1])[1];
 				foreach ($this->query->getQueryTables() as $table)
 				{
 					if (in_array($stringCondition, $this->getTableColumnsNames($table)))
@@ -339,8 +340,8 @@ class QueryBuilder
 				}
 				if (!$check)
 				{
-					Logger::ORMLogging("Unknown condition column. This ($conditionCheck[1]) is not used in Query Tables.",'[WHERE]');
-					throw new \Exception('ORM-exception',-2);
+					Logger::ORMLogging("Unknown condition column. This ($conditionCheck[1]) is not used in Query Tables.", '[WHERE]');
+					throw new \Exception('ORM-exception', -2);
 				}
 			}
 		}
@@ -352,8 +353,8 @@ class QueryBuilder
 		{
 			if (strtolower($typeOfAddition) != ('and' || 'or' || 'not'))
 			{
-				Logger::ORMLogging("Unknown condition statement ($typeOfAddition)",'[WHERE]');
-				throw new \Exception('ORM-exception',-2);
+				Logger::ORMLogging("Unknown condition statement ($typeOfAddition)", '[WHERE]');
+				throw new \Exception('ORM-exception', -2);
 			}
 			$this->query->addToQuery("$typeOfAddition " . $condition);
 		}
@@ -384,7 +385,7 @@ class QueryBuilder
 		else
 		{
 			Logger::ORMLogging("Column $conditionColumn that is used to order query is not exists in query's tables.", '[ORDER_BY]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		return $this;
 	}
@@ -393,10 +394,10 @@ class QueryBuilder
 	{
 		if (is_array($nameToApply) && is_array($asName))
 		{
-			if(count($nameToApply) != count($asName))
+			if (count($nameToApply) != count($asName))
 			{
 				Logger::ORMLogging("Different count of arrays.", '[AS]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			$maxPos = count($nameToApply);
 			for ($i = 0; $i < $maxPos; $i++)
@@ -451,7 +452,7 @@ class QueryBuilder
 		if (!$queryInitiator->isTableExists($table))
 		{
 			Logger::ORMLogging("Table with name $table is not exists", '[INSERT]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		$requiredColumns = [];
 		foreach ($columnRestrictions as $restriction)
@@ -466,13 +467,13 @@ class QueryBuilder
 		if (array_diff($requiredColumns, $column) != [])
 		{
 			Logger::ORMLogging("INCORRECT amount of values. Want at least " . count($requiredColumns) . ' but get ' . count($column), '[INSERT]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		$columnDefaultCount = count($columnRestrictions) - count($requiredColumns);
 		if (count($value) < count($column) - $columnDefaultCount)
 		{
 			Logger::ORMLogging("INCORRECT amount of values. Want at least " . count($column) - $columnDefaultCount . ' but get ' . count($value), '[INSERT]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		$columns = implode(', ', $column);
 		$query = "INSERT INTO $table" . "($columns) VALUES(";
@@ -482,20 +483,20 @@ class QueryBuilder
 			if (!$queryInitiator->isColumnExistInTable($col, $table))
 			{
 				Logger::ORMLogging("Column with name $col is not exists in table $table", '[INSERT]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			$value[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(), $value[$valueKey]);
 			$maxChar = (int)$columnRestrictions[$col]['CHARACTER_MAXIMUM_LENGTH'];
 			if (($columnRestrictions[$col]["EXTRA"] === 'auto_increment'))
 			{
 				Logger::ORMLogging("Trying to insert data in \"auto_increment\" column", '[INSERT]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			if ($maxChar != 0
 				&& $maxChar < mb_strlen($value[$valueKey]))
 			{
 				Logger::ORMLogging("Trying to write more chars then can! (max:$maxChar, insert:" . mb_strlen($value[$valueKey]) . " at $col)", '[INSERT]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			if (in_array($columnRestrictions[$col]['DATA_TYPE'], array_keys($restrictions)))
 			{
@@ -504,14 +505,14 @@ class QueryBuilder
 			else
 			{
 				Logger::ORMLogging("Incorrect DATA_TYPE matching! Check if the Config-file was correctly configured at DB_CHARACTERS", '[INSERT]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			if ($dataType === 'int')
 			{
 				if (!is_numeric($value[$valueKey]))
 				{
 					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($value[$valueKey]) is not of type 'int'", '[INSERT]');
-					throw new \Exception('ORM-exception',-2);
+					throw new \Exception('ORM-exception', -2);
 				}
 				$value[$valueKey] = (int)$value[$valueKey];
 				$query = $query . "$value[$valueKey], ";
@@ -526,7 +527,7 @@ class QueryBuilder
 				else
 				{
 					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($value[$valueKey]) is not of type 'date'", '[INSERT]');
-					throw new \Exception('ORM-exception',-2);
+					throw new \Exception('ORM-exception', -2);
 				}
 			}
 			else
@@ -539,14 +540,14 @@ class QueryBuilder
 		$query = $query . ")";
 		$query = str_replace(', )', ')', $query);
 		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 0;");
-		if((new Query($query,''))->testQuery('INSERT'))
+		if ((new Query($query, ''))->testQuery('INSERT'))
 		{
 			Logger::ORMLogging("Insert at table $table done correctly!", '[INSERT]');
 		}
 		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 1;");
 	}
 
-	public static function update(string $table, array|string $column, array|string $newValue, string|int $updateCondition):void
+	public static function update(string $table, array|string $column, array|string $newValue, string|int $updateCondition): void
 	{
 		$config = Config::getInstance();
 		$queryInitiator = new QueryBuilder();
@@ -569,13 +570,13 @@ class QueryBuilder
 		if (!$queryInitiator->isTableExists($table))
 		{
 			Logger::ORMLogging("Table $table is not exists", '[UPDATE]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		$valueKey = 0;
 		if (count($column) != count($newValue))
 		{
 			Logger::ORMLogging("INCORRECT amount between columns and values. (" . count($column) . ' != ' . count($newValue) . ')', '[UPDATE]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		$query = "UPDATE $table SET ";
 		foreach ($column as $col)
@@ -585,18 +586,18 @@ class QueryBuilder
 			if (!$queryInitiator->isColumnExistInTable($col, $table))
 			{
 				Logger::ORMLogging("Column $col is not exists in table $table", '[UPDATE]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			if (($columnRestrictions[$col]["EXTRA"] === 'auto_increment'))
 			{
 				Logger::ORMLogging("Trying to insert data in \"auto_increment\" column", '[UPDATE]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			if ($maxChar != 0
 				&& $maxChar < mb_strlen($newValue[$valueKey]))
 			{
 				Logger::ORMLogging("Trying to write more chars then can! (max:$maxChar, insert:" . mb_strlen($newValue[$valueKey]) . " at $col)", '[INSERT]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			if (in_array($columnRestrictions[$col]['DATA_TYPE'], array_keys($restrictions)))
 			{
@@ -605,7 +606,7 @@ class QueryBuilder
 			else
 			{
 				Logger::ORMLogging("Incorrect DATA_TYPE matching! Check if the Config-file was correctly configured at DB_CHARACTERS", '[INSERT]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			$query = $query . "$col = ";
 			if ($dataType === 'int')
@@ -613,7 +614,7 @@ class QueryBuilder
 				if (!is_numeric($newValue[$valueKey]))
 				{
 					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($newValue[$valueKey]) is not of type 'int'", '[INSERT]');
-					throw new \Exception('ORM-exception',-2);
+					throw new \Exception('ORM-exception', -2);
 				}
 				$newValue[$valueKey] = (int)$newValue[$valueKey];
 				$query = $query . "$newValue[$valueKey], ";
@@ -628,7 +629,7 @@ class QueryBuilder
 				else
 				{
 					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($newValue[$valueKey]) is not of type 'date'", '[INSERT]');
-					throw new \Exception('ORM-exception',-2);
+					throw new \Exception('ORM-exception', -2);
 				}
 			}
 			else
@@ -640,7 +641,7 @@ class QueryBuilder
 		}
 		$query = substr($query, 0, -2);
 		$query = $query . " WHERE $updateCondition";
-		if((new Query($query,''))->testQuery('UPDATE'))
+		if ((new Query($query, ''))->testQuery('UPDATE'))
 		{
 			Logger::ORMLogging("Updates at table $table done correctly!", '[UPDATE]');
 		}
@@ -650,7 +651,7 @@ class QueryBuilder
 	{
 		$aggregateTables = $this->query->getQueryTables();
 		$exist = false;
-		if(count($aggregateTables)>1)
+		if (count($aggregateTables) > 1)
 		{
 			foreach ($aggregateTables as $table)
 			{
@@ -668,7 +669,7 @@ class QueryBuilder
 		if (!$exist)
 		{
 			Logger::ORMLogging("No such column ($column) in used tables OR columns!", '[AGGREGATE]');
-			throw new \Exception('ORM-exception',-2);
+			throw new \Exception('ORM-exception', -2);
 		}
 		$function = match ($function)
 		{
@@ -678,15 +679,15 @@ class QueryBuilder
 			self::MAX => 'MAX',
 			default => 'COUNT',
 		};
-		if($column === '*')
+		if ($column === '*')
 		{
 			if (isset($as))
 			{
-				$query = str_replace('*',"$function(*) AS $as", $this->getQuery());
+				$query = str_replace('*', "$function(*) AS $as", $this->getQuery());
 			}
 			else
 			{
-				$query = str_replace('*',"$function(*)", $this->getQuery());
+				$query = str_replace('*', "$function(*)", $this->getQuery());
 			}
 			if (isset($groupBy))
 			{
@@ -702,7 +703,7 @@ class QueryBuilder
 			if (!in_array($column, $matches[0]))
 			{
 				Logger::ORMLogging("No such column ($column) is used in query", '[AGGREGATE]');
-				throw new \Exception('ORM-exception',-2);
+				throw new \Exception('ORM-exception', -2);
 			}
 			else
 			{
@@ -731,6 +732,7 @@ class QueryBuilder
 		$this->query->addUsedFunction($function);
 		return $this;
 	}
+
 	public function __toString(): string
 	{
 		return $this->query->getQuery();

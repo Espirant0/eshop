@@ -21,7 +21,7 @@ class IndexController extends BaseController
 			unset($_GET['page']);
 		}
 
-		$property = [];
+		$property = null;
 		FileCache::deleteCacheByKey('bicycle');
 
 		if (count($_GET) > 0)

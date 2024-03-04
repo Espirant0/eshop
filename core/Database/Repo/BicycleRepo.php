@@ -15,7 +15,14 @@ class BicycleRepo extends BaseRepo
 		$config = Config::getInstance();
 		$itemsPerPage = $config->option('PRODUCT_LIMIT');
 		$startId = ($currentPage - 1) * $itemsPerPage;
-		$queryDop = '';
+		if ($categoryName !== '')
+		{
+			$property['category'] = $categoryName;
+		}
+		if (isset($property))
+		{
+			return BicycleRepo::getFilteredBicycleList($currentPage, $property, $itemCount);
+		}
 		$query = QueryBuilder::
 		select('id, title, create_year, price, description, status, speed', 'item')
 			->join('engName','color')->join('name','manufacturer')
@@ -27,10 +34,6 @@ class BicycleRepo extends BaseRepo
 			->where('item.id',QueryBuilder::select('id','item')->where("item.id > $startId"))
 			->as(['color.engName', 'material.engName', 'manufacturer.name','target_audience.engName', 'category.name','category.engName'],['color','material','vendor', 'target', 'category_name','category'])
 			->orderBy('item.id',limit:$itemsPerPage);
-		if ($categoryName !== '')
-		{
-			$property['category'] = $categoryName;
-		}
 		$DBOperator = DBHandler::getInstance();
 		$result = $DBOperator->query($query);
 
@@ -40,10 +43,7 @@ class BicycleRepo extends BaseRepo
 		{
 			throw new \Exception($DBOperator->connect_error);
 		}
-		if ($property != [])
-		{
-			return BicycleRepo::getFilteredBicycleList($currentPage, $property, $itemCount);
-		}
+
 
 		while ($row = mysqli_fetch_assoc($result))
 		{
@@ -77,13 +77,7 @@ class BicycleRepo extends BaseRepo
 	{
 		$config = Config::getInstance();
 		$limit = $config->option('PRODUCT_LIMIT');
-		if (isset($property['search']))
-		{
-			$filter = $property;
-			unset($filter['search']);
-			if (count($filter) == 0) unset($filter);
-			$property = $property['search'];
-		} else
+		if (isset($property))
 		{
 			$filter = $property;
 			$property = null;
@@ -100,26 +94,24 @@ class BicycleRepo extends BaseRepo
 			->where('item.status = 1');
 		if (isset($filter))
 		{
-			foreach ($filter as $value)
+			foreach ($filter as $key => $value)
 			{
-				$key = array_search($value, $filter, true);
-				if($key == 'target')
+				switch ($key)
 				{
-					$key = 'target_audience';
-				}
-				if($key == 'vendor')
-				{
-					$query = $query->where("manufacturer.name = '$value'");
-					continue;
-				}
-				if ($key === false)
-				{
-					throw new \Exception('invalid data', -1);
+					case 'search':
+						$query->where("item.title LIKE '%$value%'",custom:true);
+						continue 2;
+					case 'target':
+						$key = 'target_audience';
+						break;
+					case 'vendor':
+						$query = $query->where("manufacturer.name = '$value'");
+						continue 2;
 				}
 				$query = $query->where("$key.engName = '$value'");
 			}
 		}
-		$query = $query
+		$query
 			->as(['color.engName', 'material.engName', 'manufacturer.name','target_audience.engName', 'category.name','category.engName'],['color','material','vendor', 'target', 'category_name','category'])
 			->orderBy('item.id');
 		$result = $DBOperator->query($query);

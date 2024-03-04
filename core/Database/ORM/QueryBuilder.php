@@ -268,8 +268,21 @@ class QueryBuilder
 		return $this;
 	}
 
-	public function where(string $condition, ?QueryBuilder $selectQuery = null, string $typeOfAddition = 'AND'): self
+	public function where(string $condition, ?QueryBuilder $selectQuery = null, string $typeOfAddition = 'AND',bool $custom = false): self
 	{
+		if ($custom)
+		{
+			if(in_array('WHERE',$this->query->getUsedFunctions()))
+			{
+				$this->query->addToQuery("AND $condition");
+			}
+			else
+			{
+				$this->query->addToQuery("WHERE $condition");
+			}
+			$this->query->testQuery('WHERE (CUSTOM)');
+			return $this;
+		}
 		$conditionCheck = str_replace(' ','',$condition);
 		$conditionCheck = str_replace(['<=>','<=','>=','<>','=','<','>'],' ',$conditionCheck);
 		$conditionCheck = explode(' ', $conditionCheck);

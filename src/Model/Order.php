@@ -4,73 +4,113 @@ namespace App\Model;
 
 class Order
 {
-	private string $ID;
-	private Bicycle $order;
+	private int $orderId;
+	private string $itemName;
 	private string $status;
 	private string $deliveryAddress;
-	private User $user;
+	private string $number;
+	private string $price;
 	private string $createDate;
 
-	public function __construct(string $ID, Bicycle $order, string $status, string $deliveryAddress, User $user, string $createDate)
+	public function __construct(
+		int    $orderId,
+		string $itemName,
+		string $status,
+		string $deliveryAddress,
+		string $number,
+		string $price,
+		string $createDate
+	)
 	{
-		$this->ID = $ID;
-		$this->order = $order;
+		$this->orderId = $orderId;
+		$this->itemName = $itemName;
 		$this->status = $status;
 		$this->deliveryAddress = $deliveryAddress;
-		$this->user = $user;
+		$this->price = $price;
+		$this->number = $number;
 		$this->createDate = $createDate;
 	}
-	public function getID():string
+
+	public function getOrderId(): int
 	{
-		return $this->ID;
+		return $this->orderId;
 	}
-	public function setID(string $ID):void
+
+	public function setOrderId(int $orderId): void
 	{
-		$this->ID = $ID;
+		$this->orderId = $orderId;
 	}
-	public function getOrder():Bicycle
-	{
-		return $this->order;
-	}
-	public function setOrder(Bicycle $order):void
-	{
-		$this->order = $order;
-	}
-	public function getStatus():string
+
+
+	public function getStatus(): string
 	{
 		return $this->status;
 	}
-	public function setStatus(string $status):void
+
+	public function setStatus(string $status): void
 	{
 		$this->status = $status;
 	}
-	public function getAddress():string
+
+	public function getNumber(): string
 	{
-		return $this->deliveryAddress;
+		return $this->number;
 	}
-	public function setAddress(string $deliveryAddress):void
+
+	public function setNumber(string $number): void
 	{
-		$this->deliveryAddress = $deliveryAddress;
+		$this->number = $number;
 	}
-	public function getUser():User
-	{
-		return $this->user;
-	}
-	public function setUser(User $user):void
-	{
-		$this->user = $user;
-	}
-	public function getCreateDate():string
+
+	public function getCreateDate(): string
 	{
 		return $this->createDate;
 	}
-	public function setCreateDate(string $createDate):void
+
+	public function setCreateDate(string $createDate): void
 	{
 		$this->createDate = $createDate;
 	}
-	public function getAllOrderData():array
+
+
+	public function getItemName(): string
 	{
-		return [$this->ID, $this->order, $this->status, $this->deliveryAddress, $this->user, $this->createDate];
+		return $this->itemName;
+	}
+
+	public function setItemName(int $itemName): void
+	{
+		$this->itemName = $itemName;
+	}
+
+	public function getDeliveryAddress(): string
+	{
+		return $this->deliveryAddress;
+	}
+
+	public function setDeliveryAddress(string $deliveryAddress): void
+	{
+		$this->deliveryAddress = $deliveryAddress;
+	}
+
+	public function getPrice(): string
+	{
+		return $this->price;
+	}
+
+	public function setPrice(string $price): void
+	{
+		$this->price = $price;
+	}
+
+	public static function getRulesValidationOrder(): Rule
+	{
+		return (new Rule())
+			->addRule('price', 'numeric_optional')
+			->addRule('user_id', 'required')
+			->addRule(['item_id', 'status_id'], 'numeric_optional')
+			->addRule('address', ['required', 'min_optional:3'])
+			->addRule('data_create', ['date', 'required'])
+			->addRule('number', ['required', 'min_optional:10', 'max_optional:12']);
 	}
 }
-

@@ -1,2 +1,5 @@
 .idea
+var/cache
+var/logs
 vendor
+config/config.local.php

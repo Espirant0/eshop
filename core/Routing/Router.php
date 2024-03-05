@@ -2,6 +2,8 @@
 
 namespace Core\Routing;
 
+use Closure;
+
 class Router
 {
 	/**
@@ -11,7 +13,7 @@ class Router
 
 	public static function add(string $method, string $uri, callable $action): void
 	{
-		self::$routes[] = new Route($method, $uri, \Closure::fromCallable($action));
+		self::$routes[] = new Route($method, $uri, Closure::fromCallable($action));
 	}
 
 	public static function get(string $uri, callable $action): void
@@ -40,7 +42,6 @@ class Router
 				return $route;
 			}
 		}
-
 		return null;
 	}
 }

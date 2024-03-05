@@ -12,6 +12,7 @@ use App\Service\HttpService;
 use App\Service\ImageHandler;
 use App\Service\Validator;
 use Core\Database\Repo\AdminPanelRepo;
+use Exception;
 
 class EditFormController extends BaseController
 {
@@ -20,7 +21,7 @@ class EditFormController extends BaseController
 		$itemId = (int)$_GET['id'];
 		if ($itemId === 0)
 		{
-			throw new \Exception('ID not int', -1);
+			throw new Exception('ID not int', -1);
 		}
 		$fields = AdminPanelRepo::getItemColumns($tableName[0]);
 		array_shift($fields);
@@ -34,7 +35,8 @@ class EditFormController extends BaseController
 				'tableName' => $tableName[0],
 				'title' => 'Редактировать',
 			]);
-		} else
+		}
+		else
 		{
 			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
@@ -52,7 +54,8 @@ class EditFormController extends BaseController
 				'tableName' => $tableName[0],
 				'title' => 'Добавить товар',
 			]);
-		} else
+		}
+		else
 		{
 			echo $this->render('AuthPage/auth.php', [
 				'errors' => $errors,
@@ -67,13 +70,14 @@ class EditFormController extends BaseController
 
 		if (!empty($_FILES['files']['name'][0]))
 		{
-			$check = ImageHandler::canUpload($_FILES['files']);
-			if ($check === true)
+			$checkFiles = ImageHandler::canUpload($_FILES['files']);
+			if ($checkFiles === true)
 			{
 				$images = $_FILES['files'];
-			} else
+			}
+			else
 			{
-				$errors[] = [$check];
+				$errors[] = [$checkFiles];
 				$this->showAddFormPage($tableName, $errors);
 				return;
 			}
@@ -108,7 +112,8 @@ class EditFormController extends BaseController
 			);
 			AdminPanelRepo::addItem($bicycle, $images);
 			HttpService::redirect('admin_panel');
-		} else
+		}
+		else
 		{
 			$errors = $validator->errors();
 			$this->showAddFormPage($tableName, $errors);
@@ -142,15 +147,12 @@ class EditFormController extends BaseController
 			case 'item':
 				$rules = Bicycle::getRulesValidationItem();
 				break;
-
 			case 'orders':
 				$rules = Order::getRulesValidationOrder();
 				break;
-
 			case 'user':
 				$rules = User::getRulesValidationUser();
 				break;
-
 			case 'manufacturer':
 			case 'role':
 			case 'category':
@@ -172,12 +174,14 @@ class EditFormController extends BaseController
 				AdminPanelRepo::updateItem($table, $itemId, $newValues);
 				FileCache::deleteCacheByKey($table);
 				HttpService::redirect('admin_panel');
-			} else
+			}
+			else
 			{
 				$errors = $validator->errors();
 				$this->showEditFormPage($tableName, $errors);
 			}
-		} else
+		}
+		else
 		{
 			$errors[] = ['Введите значения!'];
 			$this->showEditFormPage($tableName, $errors);

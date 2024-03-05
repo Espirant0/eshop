@@ -5,9 +5,7 @@ namespace App\Service;
 class Validator
 {
 	private array $errors = [];
-
 	private array $data;
-
 	private array $filteredRules;
 
 	public function validate(array $data, array $rules): bool
@@ -95,7 +93,12 @@ class Validator
 					return "Поле $key должно содержать только буквы";
 				}
 				break;
-
+			case 'date':
+				if (!preg_match("/\\d{4}-\\d{2}-\\d{2}/", $value))
+				{
+					return "В поле $key должна быть корректная дата";
+				}
+				break;
 			case 'numeric':
 				if (!ctype_digit($value))
 				{

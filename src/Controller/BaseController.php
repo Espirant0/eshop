@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\DBHandler;
+use Core\Database\ORM\QueryBuilder;
 
 abstract class BaseController
 {
@@ -26,7 +27,7 @@ abstract class BaseController
 		return ob_get_clean();
 	}
 
-	public function getPagesCount(int $itemsPerPage, string $table): int
+	public function getPagesCount(int $itemsPerPage, string $table, int &$itemCount = null): int
 	{
 		$DBOperator = DBHandler::getInstance();
 		if ($table === '')
@@ -34,10 +35,13 @@ abstract class BaseController
 			return 0;
 		}
 		$table = mysqli_real_escape_string($DBOperator, $table);
-		$result = $DBOperator->query(
-			"SELECT COUNT(*) AS count FROM $table 
-					
-		");
+		$result = $DBOperator->query(QueryBuilder::
+		select("*", "$table")
+			->aggregate('*', QueryBuilder::COUNT, 'count'));
+		if (isset($itemCount))
+		{
+			return ceil($itemCount / $itemsPerPage);
+		}
 		return ceil($result->fetch_row()[0] / $itemsPerPage);
 	}
 }

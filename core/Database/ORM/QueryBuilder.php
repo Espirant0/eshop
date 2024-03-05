@@ -8,14 +8,56 @@ use App\Service\Logger;
 
 class QueryBuilder
 {
+	public const ASCENDING = 1;
+	public const DESCENDING = 2;
+	public const INNER = 1;
+	public const LEFT = 2;
+	public const RIGHT = 3;
+	public const FULL = 4;
+	public const CROSS = 5;
+	public const AVERAGE = 1;
+	public const COUNT = 2;
+	public const SUM = 3;
+	public const MIN = 4;
+	public const MAX = 5;
 	private Query $query;
+	private array $dbScheme = [];
 
 	public function __construct(Query $query = new Query('', ''))
 	{
 		$this->query = $query;
+		$config = Config::getInstance();
+		$dbName = $config->option("DB_NAME");
+		$dbTables = DBHandler::getInstance()->getResult("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = '$dbName' AND TABLE_TYPE = 'BASE TABLE'");
+		foreach ($dbTables as $dbTable)
+		{
+			$this->dbScheme[$dbTable['TABLE_NAME']] = [];
+			$columns = DBHandler::getInstance()->getResult("SHOW COLUMNS FROM {$dbTable['TABLE_NAME']}");
+			foreach ($columns as $column)
+			{
+				$result = DBHandler::getInstance()->getResult("SELECT DATA_TYPE, COLUMN_DEFAULT, CHARACTER_MAXIMUM_LENGTH, COLUMN_KEY, EXTRA  FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '$dbName' AND TABLE_NAME = '{$dbTable['TABLE_NAME']}' AND COLUMN_NAME = '{$column['Field']}'");
+				$this->dbScheme[$dbTable['TABLE_NAME']][$column['Field']] = $result[0];
+			}
+		}
 	}
 
-	public function getQueryObject(): Query
+	/**
+	 * @param Query $query
+	 */
+	public function setQuery(Query $query): void
+	{
+		$this->query = $query;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getDbScheme(): array
+	{
+		return $this->dbScheme;
+	}
+
+	private function getQueryObject(): Query
 	{
 		return $this->query;
 	}
@@ -25,142 +67,157 @@ class QueryBuilder
 		return $this->query->getQuery();
 	}
 
-	public static function getTableRestrictions(string $table): array
+	public function getTableRestrictions(string $table): array
 	{
-		$config = new Config();
-		$dbName = $config->option("DB_NAME");
-		$result = DBHandler::getInstance()->getResult("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_DEFAULT, CHARACTER_MAXIMUM_LENGTH, COLUMN_KEY, EXTRA  FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '$dbName' AND TABLE_NAME = '$table'");
 		$restrictions = [];
-		$pos = 1;
-		foreach ($result as $res)
+		$columns = $this->dbScheme[$table];
+		$allColumnsCount = count($columns);
+		$keys = array_keys($columns);
+		for ($i = 0; $i < $allColumnsCount; $i++)
 		{
-			if ($res['COLUMN_DEFAULT'] == '')
-			{
-				if ($res['CHARACTER_MAXIMUM_LENGTH'] == '') $restrictions[$res['COLUMN_NAME']] = $res['DATA_TYPE'];
-				else $restrictions[$res['COLUMN_NAME']] = $res['DATA_TYPE'] . ':' . $res['CHARACTER_MAXIMUM_LENGTH'];
-			} else
-			{
-				if ($res['CHARACTER_MAXIMUM_LENGTH'] == '') $restrictions[$res['COLUMN_NAME']] = $res['DATA_TYPE'] . ', default=' . $res['COLUMN_DEFAULT'];
-				else $restrictions[$res['COLUMN_NAME']] = $res['DATA_TYPE'] . ':' . $res['CHARACTER_MAXIMUM_LENGTH'] . ', default=' . $res['COLUMN_DEFAULT'];
-			}
-			if ($res["COLUMN_KEY"] != '') $restrictions[$res['COLUMN_NAME']] = $restrictions[$res['COLUMN_NAME']] . ", REQUIRED({$res['COLUMN_KEY']})";
-			if ($res["EXTRA"] != '') $restrictions[$res['COLUMN_NAME']] = $restrictions[$res['COLUMN_NAME']] . ", {$res['EXTRA']}";
-			$restrictions[$res['COLUMN_NAME']] = $restrictions[$res['COLUMN_NAME']] . ", pos=$pos";
-			$pos++;
+			$restrictions[$keys[$i]] = $columns[$keys[$i]];
 		}
 		return $restrictions;
 	}
 
-	public static function isTableExists(string $table): bool
+	private function isTableExists(string $table): bool
 	{
-		$config = new Config();
-		$dbName = $config->option("DB_NAME");
-		$dbTables = DBHandler::getInstance()->getResult("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = '$dbName' AND TABLE_TYPE = 'BASE TABLE'");
-		foreach ($dbTables as $dbTable)
-		{
-			if ($dbTable['TABLE_NAME'] == $table) return true;
-		}
-		return false;
-	}
-
-	public static function getTableColumnsNames(string $table): array
-	{
-		$columnNames = [];
-		$columns = DBHandler::getInstance()->getResult("SHOW COLUMNS FROM $table");
-		foreach ($columns as $column)
-		{
-			$columnNames[] = $column['Field'];
-		}
-		return $columnNames;
-	}
-
-	public static function isColumnExistInTable(string $columnName, string $table): bool
-	{
-		$columnNames = self::getTableColumnsNames($table);
-		if (in_array($columnName, $columnNames))
+		if (in_array($table, array_keys($this->dbScheme)))
 		{
 			return true;
 		}
 		return false;
 	}
 
-	private static function itemListHandler(string $items, string $table): string
+	private function getTableColumnsNames(string $table): array
 	{
-		$items = explode(', ', $items);
-		$queryItems = '';
+		return array_keys($this->dbScheme[$table]);
+	}
+
+	private function isColumnExistInTable(string $columnName, string $table): bool
+	{
+		if (in_array($columnName, array_keys($this->dbScheme[$table])))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private function itemListHandler(string|array $items, string $table, string $initiatorFunctionForLog = ''): string
+	{
+		if (!is_array($items))
+		{
+			$items = str_replace(' ', '', $items);
+			$items = explode(',', $items);
+		}
 		foreach ($items as $item)
 		{
-			if (self::isColumnExistInTable($item, $table))
+			if (!$this->isColumnExistInTable($item, $table))
 			{
-				if ($queryItems == '')
-				{
-					$queryItems = $table . '.' . $item;
-				} else $queryItems = $queryItems . ', ' . $table . '.' . $item;
-			} else Logger::ORMLogging("column $item is not exists in table $table this column will be skipped");
-		}
-		return $queryItems;
-	}
-
-	public static function select(string $itemList, string $table, bool $blacklist = false): self
-	{
-		if (strtolower($itemList) === 'all')
-		{
-			$itemList = implode(', ', self::getTableColumnsNames($table));
-			$blacklist = false;
-		}
-		foreach (explode(', ', $itemList) as $item)
-		{
-			if (!self::isColumnExistInTable($item, $table))
-			{
-				Logger::ORMLogging("column $item is not exists in $table. Orm is working in 'SELECT * from $table' mode", 'SELECT-function');
-				return new self(new Query("SELECT * FROM $table", $table));
+				Logger::ORMLogging("Column \"$item\" is not exists in table \"$table\"", "[{$initiatorFunctionForLog}->itemListHandler]");
+				throw new \Exception('ORM-exception', -2);
 			}
 		}
-		if (strtolower($itemList) != 'all') $items = self::itemListHandler($itemList, $table);
-		if ($blacklist)
-		{
-			$columns = self::getTableColumnsNames($table);
-			$items = self::itemListHandler(implode(', ', array_diff($columns, explode(', ', $itemList))), $table);
-		}
-		$query = new Query("SELECT $items FROM $table", $table);
-		$query->addUsedFunction('SELECT');
-		$query->addUsedColumns($items);
-		return new self($query);
+		return $table . '.' . implode(", $table.", $items);
 	}
 
-	public function join(string $itemList, string $table, string $by = 'id', int $flag = INNER): self
+	public static function select(string|array $itemList, string $table, bool $blacklist = false, bool $distinct = false): self
 	{
-		$items = ', ' . self::itemListHandler($itemList, $table);
+		$queryInitiator = new QueryBuilder();
+		if (strtolower($itemList) === 'all')
+		{
+			$itemList = implode(', ', $queryInitiator->getTableColumnsNames($table));
+			$blacklist = false;
+		}
+		if (strtolower($itemList) === '*')
+		{
+			$items = '*';
+			$blacklist = false;
+		}
+		else
+		{
+			$items = $queryInitiator->itemListHandler($itemList, $table, 'SELECT');
+		}
+		if ($blacklist)
+		{
+			$columns = $queryInitiator->getTableColumnsNames($table);
+			$items = $queryInitiator->itemListHandler(implode(', ', array_diff($columns, explode(', ', $itemList))), $table);
+		}
+		if ($distinct)
+		{
+			$query = new Query("SELECT DISTINCT $items FROM $table", $table);
+			$query->addUsedFunction('SELECT DISTINCT');
+		}
+		else
+		{
+			$query = new Query("SELECT $items FROM $table", $table);
+			$query->addUsedFunction('SELECT');
+		}
+		$query->addUsedColumns($items);
+		$queryInitiator->setQuery($query);
+		return $queryInitiator;
+	}
+
+	public function join(string|array $itemList, string $table, string $by = 'id', int $flag = self::INNER): self
+	{
+		if (!$this->isTableExists($table))
+		{
+			Logger::ORMLogging("$table is not exists", "[JOIN]");
+			throw new \Exception('ORM-exception', -2);
+		}
+		if ($itemList != '')
+		{
+			$items = ', ' . self::itemListHandler($itemList, $table, 'JOIN');
+		}
 		$joinType = match ($flag)
 		{
-			LEFT => 'LEFT JOIN',
-			RIGHT => 'RIGHT JOIN',
-			FULL => 'FULL JOIN',
-			CROSS => 'CROSS JOIN',
+			self::LEFT => 'LEFT JOIN',
+			self::RIGHT => 'RIGHT JOIN',
+			self::FULL => 'FULL JOIN',
+			self::CROSS => 'CROSS JOIN',
 			default => 'INNER JOIN',
 		};
 		$usedTables = $this->query->getQueryTables();
-		if ($by == 'id')
+		if ($by === 'id')
 		{
+			$check = false;
 			foreach ($usedTables as $usedTable)
 			{
 				$tableColumns = self::getTableColumnsNames($usedTable);
 				if (in_array("$table" . "_id", $tableColumns))
 				{
 					$this->query->addToQuery("$joinType $table ON $table.id = $usedTable.$table" . "_id");
-					$this->query->addQueryTable($table);
-					$this->query->addUsedFunction($joinType);
+					$check = true;
+					break;
+				}
+				if (in_array("$usedTable" . "_id", self::getTableColumnsNames($table)))
+				{
+					$this->query->addToQuery("$joinType $table ON $table.$usedTable" . "_id = $usedTable" . ".id");
+					$check = true;
 					break;
 				}
 			}
-		} else
+			if ($check)
+			{
+				$this->query->addQueryTable($table);
+				$this->query->addUsedFunction($joinType);
+			}
+			else
+			{
+				Logger::ORMLogging("Can't find direct \"id\"-connection between $table and used tables(" . implode(',', $usedTables) . ")", "[JOIN]");
+				throw new \Exception('ORM-exception', -2);
+			}
+		}
+		else
 		{
 			$query = "$joinType $table ON ";
 			$by = explode('=', str_replace(' ', '', $by));
 			$tableColumns = self::getTableColumnsNames($table);
+			$check = false;
 			if (in_array(explode('.', $by[0])[1], $tableColumns))
 			{
 				$query = $query . "$by[0] = ";
+				$check = true;
 			}
 			foreach ($usedTables as $usedTable)
 			{
@@ -168,8 +225,14 @@ class QueryBuilder
 				if (in_array(explode('.', $by[1])[1], $tableColumns))
 				{
 					$query = $query . $by[1];
+					$check = true;
 					break;
 				}
+			}
+			if (!$check)
+			{
+				Logger::ORMLogging("Wrong condition! $by[1] is not exists in $table's columns", "[JOIN]");
+				throw new \Exception('ORM-exception', -2);
 			}
 			$this->query->addToQuery($query);
 			$this->query->addQueryTable($table);
@@ -177,107 +240,199 @@ class QueryBuilder
 		}
 		$query = $this->query->getQuery();
 		$query = explode(' FROM ', $query);
-		$query[0] = $query[0] . "$items FROM ";
+		if (isset($items))
+		{
+			$query[0] = $query[0] . "$items FROM ";
+		}
+		else
+		{
+			$query[0] = $query[0] . " FROM ";
+		}
+		if (is_array($itemList))
+		{
+			foreach ($itemList as $item)
+			{
+				if ($item != '')
+				{
+					$this->query->addUsedColumns("$table.$item");
+				}
+			}
+		}
+		else
+		{
+			if ($itemList != '')
+			{
+				$this->query->addUsedColumns("$table.$itemList");
+			}
+		}
 		$this->query->setQuery(implode('', $query));
 		return $this;
 	}
 
-	public function where(string|QueryBuilder $condition, ?QueryBuilder $selectQuery = null, string $typeOfAddition = 'AND'): self
+	public function where(string $condition, ?QueryBuilder $selectQuery = null, string $typeOfAddition = 'AND', bool $custom = false): self
 	{
+		if ($custom)
+		{
+			if (in_array('WHERE', $this->query->getUsedFunctions()))
+			{
+				$this->query->addToQuery("AND $condition");
+			}
+			else
+			{
+				$this->query->addToQuery("WHERE $condition");
+			}
+			$this->query->testQuery('WHERE (CUSTOM)');
+			return $this;
+		}
+		$conditionCheck = str_replace(' ', '', $condition);
+		$conditionCheck = str_replace(['<=>', '<=', '>=', '<>', '=', '<', '>'], ' ', $conditionCheck);
+		$conditionCheck = explode(' ', $conditionCheck);
 		if ($selectQuery instanceof QueryBuilder)
 		{
-			foreach ($selectQuery->getQueryObject()->getUsedFunctions() as $function) $this->query->addUsedFunction($function);
-			$selectQuery = $selectQuery->getQueryObject();
-			$this->query->addToQuery(" WHERE $condition IN($selectQuery)");
+			if (in_array('WHERE', $this->query->getUsedFunctions()))
+			{
+				$this->query->addToQuery("$typeOfAddition $condition IN($selectQuery)");
+			}
+			else
+			{
+				$this->query->addToQuery("WHERE $condition IN($selectQuery)");
+			}
+			$selectQuery->query->testQuery('WHERE');
+			foreach ($selectQuery->getQueryObject()->getUsedFunctions() as $function)
+			{
+				$this->query->addUsedFunction($function);
+			}
 			$this->query->addUsedFunction('WHERE');
 			return $this;
+		}
+		if (str_contains($conditionCheck[0], '.')
+			|| str_contains($conditionCheck[1], '.'))
+		{
+			$stringCondition = explode('.', $conditionCheck[0])[1];
+			$check = false;
+			foreach ($this->query->getQueryTables() as $table)
+			{
+				if (in_array($stringCondition, $this->getTableColumnsNames($table)))
+				{
+					$check = true;
+					break;
+				}
+			}
+			if (!$check)
+			{
+				Logger::ORMLogging("Unknown condition column. This ($conditionCheck[0]) is not used in Query Tables.", '[WHERE]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if (count(explode('.', $conditionCheck[1])) > 1)
+			{
+				$check = false;
+			}
+			if (!is_numeric($conditionCheck[1]) && !$check)
+			{
+				$stringCondition = explode('.', $conditionCheck[1])[1];
+				foreach ($this->query->getQueryTables() as $table)
+				{
+					if (in_array($stringCondition, $this->getTableColumnsNames($table)))
+					{
+						$check = true;
+						break;
+					}
+				}
+				if (!$check)
+				{
+					Logger::ORMLogging("Unknown condition column. This ($conditionCheck[1]) is not used in Query Tables.", '[WHERE]');
+					throw new \Exception('ORM-exception', -2);
+				}
+			}
 		}
 		if (!in_array('WHERE', $this->query->getUsedFunctions()))
 		{
 			$this->query->addToQuery('WHERE ' . $condition);
-		} else
+		}
+		else
 		{
 			if (strtolower($typeOfAddition) != ('and' || 'or' || 'not'))
 			{
-				Logger::ORMLogging("unknown condition statement ($typeOfAddition) will use AND instead");
-				$typeOfAddition = 'AND';
+				Logger::ORMLogging("Unknown condition statement ($typeOfAddition)", '[WHERE]');
+				throw new \Exception('ORM-exception', -2);
 			}
-			$this->query->addToQuery("$typeOfAddition WHERE " . $condition);
+			$this->query->addToQuery("$typeOfAddition " . $condition);
 		}
 		$this->query->addUsedFunction('WHERE');
+		$this->query->testQuery('WHERE');
 		return $this;
 	}
 
-	public function orderBy(string $condition, int $flag = ASCENDING): self
+	public function orderBy(string $conditionColumn, int $flag = self::ASCENDING, ?int $limit = null): self
 	{
 		$order = match ($flag)
 		{
-			DESCENDING => 'DESC',
+			self::DESCENDING => 'DESC',
 			default => 'ASC',
 		};
-		if (in_array($condition, $this->query->getUsedColumns()))
+		if (in_array($conditionColumn, $this->query->getUsedColumns()))
 		{
-			$this->query->addToQuery(" ORDER BY $condition $order");
-			$this->query->addUsedFunction('ORDER');
-		} else Logger::ORMLogging("column $condition that is used to order query is not exists in query. This operation will be skipped");
-		return $this;
-	}
-
-	public function refactorTableName(string $nameToChange, string $asName): self
-	{
-		if (in_array($nameToChange, $this->query->getQueryTables()))
-		{
-			$query = str_replace(" $nameToChange ", " $nameToChange $asName ", $this->getQuery());
-			$query = str_replace("$nameToChange.", "$asName.", $query);
-			$this->query->setQuery($query);
-			$tables = $this->query->getQueryTables();
-			$newTables = [];
-			foreach ($tables as $table)
+			if (isset($limit))
 			{
-				if ($table === $nameToChange) $newTables[] = $nameToChange;
-				else $newTables[] = $table;
+				$this->query->addToQuery(" ORDER BY $conditionColumn $order LIMIT $limit");
 			}
-			$this->query->setQueryTables($newTables);
+			else
+			{
+				$this->query->addToQuery(" ORDER BY $conditionColumn $order");
+			}
+			$this->query->addUsedFunction('ORDER');
+		}
+		else
+		{
+			Logger::ORMLogging("Column $conditionColumn that is used to order query is not exists in query's tables.", '[ORDER_BY]');
+			throw new \Exception('ORM-exception', -2);
 		}
 		return $this;
 	}
 
 	public function as(string|array $nameToApply, string|array $asName): self
 	{
-		if (is_array($nameToApply) && is_array($asName) && count($nameToApply) == count($asName))
+		if (is_array($nameToApply) && is_array($asName))
 		{
+			if (count($nameToApply) != count($asName))
+			{
+				Logger::ORMLogging("Different count of arrays.", '[AS]');
+				throw new \Exception('ORM-exception', -2);
+			}
 			$maxPos = count($nameToApply);
-			for ($i = 1; $i <= $maxPos; $i++)
+			for ($i = 0; $i < $maxPos; $i++)
 			{
 				$query = explode('FROM', $this->getQuery());
-				$query[0] = str_replace("$nameToApply[$i],", "$nameToApply[$i] AS $asName[$i],", $query[0]);
+				$query[0] = str_replace("$nameToApply[$i]", "$nameToApply[$i] AS $asName[$i]", $query[0]);
 				$this->query->setQuery(implode('FROM', $query));
 				$this->query->addRenameToList($nameToApply[$i], $asName[$i]);
 			}
-		} elseif (is_string($nameToApply) && is_string($asName))
+		}
+		elseif (is_string($nameToApply) && is_string($asName))
 		{
 			$query = explode('FROM', $this->getQuery());
-			$query[0] = str_replace("$nameToApply,", "$nameToApply AS $asName,", $query[0]);
+			$query[0] = str_replace("$nameToApply", "$nameToApply AS $asName", $query[0]);
 			$this->query->setQuery(implode('FROM', $query));
 			$this->query->addRenameToList($nameToApply, $asName);
-		} else
-		{
-			Logger::ORMLogging("Different count of arrays. Will use first of all of arrays.", 'as-operation');
-			$nameToApply = $nameToApply[0];
-			$asName = $asName[0];
 		}
 		return $this;
 	}
 
-	public static function insert(string $table, array|string $column, array|string $value, array $validationRules = []): bool
+	public static function insert(string $table, array|string $column, array|string $value): void
 	{
-		$columnRestrictions = self::getTableRestrictions($table);
-		if ($column = '*')
+		$queryInitiator = new QueryBuilder();
+		$columnRestrictions = $queryInitiator->getTableRestrictions($table);
+		if ($column === '*')
 		{
 			$column = '';
-			foreach ($columnRestrictions as $res)
+			$keys = array_keys($columnRestrictions);
+			$maxColumnCount = count($keys);
+			for ($i = 0; $i < $maxColumnCount; $i++)
 			{
-				if (!str_contains($res, 'auto_increment')) $column = $column . array_search($res, $columnRestrictions) . ', ';
+				if ($columnRestrictions[$keys[$i]]["EXTRA"] != 'auto_increment')
+				{
+					$column = $column . $keys[$i] . ', ';
+				}
 			}
 			$column = $column . ',';
 			$column = str_replace(', ,', '', $column);
@@ -292,86 +447,110 @@ class QueryBuilder
 			$value = str_replace(', ', ',', $value);
 			$value = explode(',', $value);
 		}
-		$config = new Config();
+		$config = Config::getInstance();
 		$restrictions = $config->option("DB_CHARACTERS");
-		if (!self::isTableExists($table)) return false;
+		if (!$queryInitiator->isTableExists($table))
+		{
+			Logger::ORMLogging("Table with name $table is not exists", '[INSERT]');
+			throw new \Exception('ORM-exception', -2);
+		}
 		$requiredColumns = [];
 		foreach ($columnRestrictions as $restriction)
 		{
-			if (str_contains($restriction, 'REQUIRED') && !str_contains($restriction, 'auto_increment')) $requiredColumns[] = array_search($restriction, $columnRestrictions);
+			if ($restriction['COLUMN_KEY'] === 'MUL'
+				&& $restriction['COLUMN_DEFAULT'] === null
+				&& $restriction['EXTRA'] != 'auto_increment')
+			{
+				$requiredColumns[] = array_search($restriction, $columnRestrictions);
+			}
 		}
-		if (is_array($column) && is_array($value))
+		if (array_diff($requiredColumns, $column) != [])
 		{
-			if (array_diff($requiredColumns, $column) != [])
-			{
-				Logger::ORMLogging("INCORRECT amount of values. Want at least " . count($requiredColumns) . ' and get ' . count($column), 'ORM-INSERT');
-				return false;
-			}
-			$columnDefaultCount = 0;
-			foreach ($column as $col) if (str_contains('default', $columnRestrictions[$col]) || str_contains('auto_increment', $columnRestrictions[$col])) $columnDefaultCount++;
-			if (count($value) >= count($column) - $columnDefaultCount)
-			{
-				$columns = implode(', ', $column);
-				$query = "INSERT INTO $table" . "($columns) VALUES(";
-				$valueKey = 0;
-				foreach ($column as $col)
-				{
-					if (!self::isColumnExistInTable($col, $table)) return false;
-					$value[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(), $value[$valueKey]);
-					$splittedString = explode(', ', $columnRestrictions[$col])[0];
-					$maxChar = explode(':', $splittedString);
-					if (count($maxChar) > 1) $maxChar = $maxChar[1];
-					else unset($maxChar);
-					if (str_contains('auto_increment', $columnRestrictions[$col])) return false;
-					if (array_search(explode(':', $splittedString)[0], $restrictions) === 'int')
-					{
-						if (is_numeric($value[$valueKey]))
-						{
-							if (isset($maxChar))
-							{
-								if ($maxChar > mb_strlen($value[$valueKey]))
-								{
-									$value[$valueKey] = (int)$value[$valueKey];
-									$query = $query . "$value[$valueKey], ";
-									$valueKey++;
-								} else return false;
-							} else
-							{
-								$value[$valueKey] = (int)$value[$valueKey];
-								$query = $query . "$value[$valueKey], ";
-								$valueKey++;
-							}
-						} else return false;
-					} else
-					{
-						if (isset($maxChar))
-						{
-							if ($maxChar > mb_strlen($value[$valueKey]))
-							{
-								$value[$valueKey] = (string)$value[$valueKey];
-								$query = $query . "'$value[$valueKey]', ";
-								$valueKey++;
-							} else return false;
-						} else
-						{
-							$value[$valueKey] = (string)$value[$valueKey];
-							$query = $query . "'$value[$valueKey]', ";
-							$valueKey++;
-						}
-					}
-				}
-				$query = $query . ")";
-				$query = str_replace(', )', ')', $query);
-			}
+			Logger::ORMLogging("INCORRECT amount of values. Want at least " . count($requiredColumns) . ' but get ' . count($column), '[INSERT]');
+			throw new \Exception('ORM-exception', -2);
 		}
-		if (!isset($query)) return false;
-		DBHandler::getInstance()->query($query);
-		return true;
+		$columnDefaultCount = count($columnRestrictions) - count($requiredColumns);
+		if (count($value) < count($column) - $columnDefaultCount)
+		{
+			Logger::ORMLogging("INCORRECT amount of values. Want at least " . count($column) - $columnDefaultCount . ' but get ' . count($value), '[INSERT]');
+			throw new \Exception('ORM-exception', -2);
+		}
+		$columns = implode(', ', $column);
+		$query = "INSERT INTO $table" . "($columns) VALUES(";
+		$valueKey = 0;
+		foreach ($column as $col)
+		{
+			if (!$queryInitiator->isColumnExistInTable($col, $table))
+			{
+				Logger::ORMLogging("Column with name $col is not exists in table $table", '[INSERT]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			$value[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(), $value[$valueKey]);
+			$maxChar = (int)$columnRestrictions[$col]['CHARACTER_MAXIMUM_LENGTH'];
+			if (($columnRestrictions[$col]["EXTRA"] === 'auto_increment'))
+			{
+				Logger::ORMLogging("Trying to insert data in \"auto_increment\" column", '[INSERT]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if ($maxChar != 0
+				&& $maxChar < mb_strlen($value[$valueKey]))
+			{
+				Logger::ORMLogging("Trying to write more chars then can! (max:$maxChar, insert:" . mb_strlen($value[$valueKey]) . " at $col)", '[INSERT]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if (in_array($columnRestrictions[$col]['DATA_TYPE'], array_keys($restrictions)))
+			{
+				$dataType = $restrictions[$columnRestrictions[$col]['DATA_TYPE']];
+			}
+			else
+			{
+				Logger::ORMLogging("Incorrect DATA_TYPE matching! Check if the Config-file was correctly configured at DB_CHARACTERS", '[INSERT]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if ($dataType === 'int')
+			{
+				if (!is_numeric($value[$valueKey]))
+				{
+					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($value[$valueKey]) is not of type 'int'", '[INSERT]');
+					throw new \Exception('ORM-exception', -2);
+				}
+				$value[$valueKey] = (int)$value[$valueKey];
+				$query = $query . "$value[$valueKey], ";
+			}
+			elseif ($dataType === 'date')
+			{
+				$date = \DateTime::createFromFormat('Y-m-d', $value[$valueKey]);
+				if ($date !== false && !array_sum($date::getLastErrors()))
+				{
+					$query = $query . "'$value[$valueKey]', ";
+				}
+				else
+				{
+					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($value[$valueKey]) is not of type 'date'", '[INSERT]');
+					throw new \Exception('ORM-exception', -2);
+				}
+			}
+			else
+			{
+				$value[$valueKey] = (string)$value[$valueKey];
+				$query = $query . "'$value[$valueKey]', ";
+			}
+			$valueKey++;
+		}
+		$query = $query . ")";
+		$query = str_replace(', )', ')', $query);
+		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 0;");
+		if ((new Query($query, ''))->testQuery('INSERT'))
+		{
+			Logger::ORMLogging("Insert at table $table done correctly!", '[INSERT]');
+		}
+		DBHandler::getInstance()->query("SET FOREIGN_KEY_CHECKS = 1;");
 	}
 
-	public static function update(string $table, array|string $column, array|string $newValue, array|string|int $updateConditions, array $validationRules = [])
+	public static function update(string $table, array|string $column, array|string $newValue, string|int $updateCondition): void
 	{
-		$config = new Config();
+		$config = Config::getInstance();
+		$queryInitiator = new QueryBuilder();
 		$restrictions = $config->option("DB_CHARACTERS");
 		if (is_string($column))
 		{
@@ -383,143 +562,179 @@ class QueryBuilder
 			$newValue = str_replace(', ', ',', $newValue);
 			$newValue = explode(',', $newValue);
 		}
-		if (is_string($updateConditions) && !is_int($updateConditions))
+		if (is_int($updateCondition))
 		{
-			$updateConditions = str_replace(', ', ',', $updateConditions);
-			$updateConditions = explode(',', $updateConditions);
+			$updateCondition = "id = $updateCondition";
 		}
-		if (is_int($updateConditions))
+		$columnRestrictions = $queryInitiator->getTableRestrictions($table);
+		if (!$queryInitiator->isTableExists($table))
 		{
-			$updateConditions = ["id = $updateConditions"];
+			Logger::ORMLogging("Table $table is not exists", '[UPDATE]');
+			throw new \Exception('ORM-exception', -2);
 		}
-		$columnRestrictions = self::getTableRestrictions($table);
-		if (self::isTableExists($table))
+		$valueKey = 0;
+		if (count($column) != count($newValue))
 		{
-			$valueKey = 0;
-			if (count($column) != count($newValue)) return false;
-			if (count($column) != count($updateConditions) && count($updateConditions) != 1) return false;
-			if (count($updateConditions) > 1) $conditionsKey = 0;
-			$queryList = [];
-			foreach ($column as $col)
+			Logger::ORMLogging("INCORRECT amount between columns and values. (" . count($column) . ' != ' . count($newValue) . ')', '[UPDATE]');
+			throw new \Exception('ORM-exception', -2);
+		}
+		$query = "UPDATE $table SET ";
+		foreach ($column as $col)
+		{
+			$newValue[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(), $newValue[$valueKey]);
+			$maxChar = (int)$columnRestrictions[$col]['CHARACTER_MAXIMUM_LENGTH'];
+			if (!$queryInitiator->isColumnExistInTable($col, $table))
 			{
-				$query = "UPDATE $table SET ";
-				$newValue[$valueKey] = mysqli_real_escape_string(DBHandler::getInstance(), $newValue[$valueKey]);
-				$splittedString = explode(', ', $columnRestrictions[$col])[0];
-				$maxChar = explode(':', $splittedString);
-				if (count($maxChar) > 1) $maxChar = $maxChar[1];
-				else unset($maxChar);
-				if (self::isColumnExistInTable($col, $table))
+				Logger::ORMLogging("Column $col is not exists in table $table", '[UPDATE]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if (($columnRestrictions[$col]["EXTRA"] === 'auto_increment'))
+			{
+				Logger::ORMLogging("Trying to insert data in \"auto_increment\" column", '[UPDATE]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if ($maxChar != 0
+				&& $maxChar < mb_strlen($newValue[$valueKey]))
+			{
+				Logger::ORMLogging("Trying to write more chars then can! (max:$maxChar, insert:" . mb_strlen($newValue[$valueKey]) . " at $col)", '[INSERT]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			if (in_array($columnRestrictions[$col]['DATA_TYPE'], array_keys($restrictions)))
+			{
+				$dataType = $restrictions[$columnRestrictions[$col]['DATA_TYPE']];
+			}
+			else
+			{
+				Logger::ORMLogging("Incorrect DATA_TYPE matching! Check if the Config-file was correctly configured at DB_CHARACTERS", '[INSERT]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			$query = $query . "$col = ";
+			if ($dataType === 'int')
+			{
+				if (!is_numeric($newValue[$valueKey]))
 				{
-					if (str_contains('auto_increment', $columnRestrictions[$col])) return false;
-					$query = $query . "$col = ";
-					if (array_search(explode(':', $splittedString)[0], $restrictions) === 'int')
-					{
-						if (is_numeric($newValue[$valueKey]))
-						{
-							if (isset($maxChar))
-							{
-								if ($maxChar > mb_strlen($newValue[$valueKey]))
-								{
-									$newValue[$valueKey] = (int)$newValue[$valueKey];
-									if (isset($conditionsKey))
-									{
-										$query = $query . "$newValue[$valueKey] WHERE $updateConditions[$conditionsKey]";
-										$conditionsKey++;
-									} else $query = $query . "$newValue[$valueKey] WHERE $updateConditions[0]";
-									$valueKey++;
-								} else return false;
-							} else
-							{
-								if (isset($conditionsKey))
-								{
-									$query = $query . "$newValue[$valueKey] WHERE $updateConditions[$conditionsKey]";
-									$conditionsKey++;
-								} else $query = $query . "$newValue[$valueKey] WHERE $updateConditions[0]";
-								$valueKey++;
-							}
-						} else return false;
-					} else
-					{
-						if (isset($maxChar))
-						{
-							if ($maxChar > mb_strlen($newValue[$valueKey]))
-							{
-								$newValue[$valueKey] = (string)$newValue[$valueKey];
-								if (isset($conditionsKey))
-								{
-									$query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[$conditionsKey]";
-									$conditionsKey++;
-								} else $query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[0]";
-								$valueKey++;
-							} else return false;
-						} else
-						{
-							$newValue[$valueKey] = (string)$newValue[$valueKey];
-							if (isset($conditionsKey))
-							{
-								$query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[$conditionsKey]";
-								$conditionsKey++;
-							} else $query = $query . "'$newValue[$valueKey]' WHERE $updateConditions[0]";
-							$valueKey++;
-						}
-					}
-				} else return false;
-				$queryList[] = $query;
+					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($newValue[$valueKey]) is not of type 'int'", '[INSERT]');
+					throw new \Exception('ORM-exception', -2);
+				}
+				$newValue[$valueKey] = (int)$newValue[$valueKey];
+				$query = $query . "$newValue[$valueKey], ";
 			}
-			var_dump($queryList);
-			foreach ($queryList as $query)
+			elseif ($dataType === 'date')
 			{
-				if (!(new Query($query, $table))->testQuery()) return false;
+				$date = \DateTime::createFromFormat('Y-m-d', $newValue[$valueKey]);
+				if ($date !== false && !array_sum($date::getLastErrors()))
+				{
+					$query = $query . "$newValue[$valueKey], ";
+				}
+				else
+				{
+					Logger::ORMLogging("Incorrect DATA_TYPE matching! Input value ($newValue[$valueKey]) is not of type 'date'", '[INSERT]');
+					throw new \Exception('ORM-exception', -2);
+				}
 			}
-			foreach ($queryList as $query)
+			else
 			{
-				DBHandler::getInstance()->query($query);
+				$newValue[$valueKey] = (string)$newValue[$valueKey];
+				$query = $query . "'$newValue[$valueKey]', ";
 			}
+			$valueKey++;
 		}
-		return true;
+		$query = substr($query, 0, -2);
+		$query = $query . " WHERE $updateCondition";
+		if ((new Query($query, ''))->testQuery('UPDATE'))
+		{
+			Logger::ORMLogging("Updates at table $table done correctly!", '[UPDATE]');
+		}
 	}
 
-	public function aggregate(string $column, int $function = COUNT, ?string $as = null, ?string $groupBy = null): self
+	public function aggregate(string $column, int $function = self::COUNT, ?string $as = null, ?string $groupBy = null): self
 	{
-		$agregateTable = $this->query->getQueryTables();
+		$aggregateTables = $this->query->getQueryTables();
 		$exist = false;
-		foreach ($agregateTable as $table)
+		if (count($aggregateTables) > 1)
 		{
-			if (self::isColumnExistInTable(explode('.', $column)[1], $table))
+			foreach ($aggregateTables as $table)
 			{
-				$exist = true;
-				break;
+				if (self::isColumnExistInTable(explode('.', $column)[1], $table))
+				{
+					$exist = true;
+					break;
+				}
 			}
 		}
-		if (!$exist) return $this;
+		if (in_array($column, $this->query->getUsedColumns()))
+		{
+			$exist = true;
+		}
+		if (!$exist)
+		{
+			Logger::ORMLogging("No such column ($column) in used tables OR columns!", '[AGGREGATE]');
+			throw new \Exception('ORM-exception', -2);
+		}
 		$function = match ($function)
 		{
-			AVERAGE => 'AVG',
-			SUM => 'SUM',
-			MIN => 'MIN',
-			MAX => 'MAX',
+			self::AVERAGE => 'AVG',
+			self::SUM => 'SUM',
+			self::MIN => 'MIN',
+			self::MAX => 'MAX',
 			default => 'COUNT',
 		};
-		$query = explode(' FROM ', $this->getQuery())[0];
-		$pattern = '/[A-Za-z]+\.[A-Za-z]+/';
-		$matches = [];
-		preg_match_all($pattern, $query, $matches);
-		var_dump($matches);
-		if (!in_array($column, $matches[0])) return $this;
-		else
+		if ($column === '*')
 		{
-			$query = $this->getQuery();
-			$query = explode("$column", $query);
 			if (isset($as))
 			{
-				$query[0] = $query[0] . "$function($column) AS $as";
-				$this->query->addRenameToList("$column", "$as");
-			} else $query[0] = $query[0] . "$function($column)";
-			if (isset($groupBy)) $query = implode('', $query) . " GROUP BY $groupBy";
-			else $query = implode('', $query) . " GROUP BY $column";
-			$this->query->setQuery($query);
-			$this->query->addUsedFunction($function);
+				$query = str_replace('*', "$function(*) AS $as", $this->getQuery());
+			}
+			else
+			{
+				$query = str_replace('*', "$function(*)", $this->getQuery());
+			}
+			if (isset($groupBy))
+			{
+				$query = $query . " GROUP BY $groupBy";
+			}
 		}
+		else
+		{
+			$query = explode(' FROM ', $this->getQuery())[0];
+			$pattern = '/[A-Za-z]+\.[A-Za-z]+/';
+			$matches = [];
+			preg_match_all($pattern, $query, $matches);
+			if (!in_array($column, $matches[0]))
+			{
+				Logger::ORMLogging("No such column ($column) is used in query", '[AGGREGATE]');
+				throw new \Exception('ORM-exception', -2);
+			}
+			else
+			{
+				$query = $this->getQuery();
+				$query = explode("$column", $query);
+				if (isset($as))
+				{
+					$query[0] = $query[0] . "$function($column) AS $as";
+					$this->query->addRenameToList("$column", "$as");
+				}
+				else
+				{
+					$query[0] = $query[0] . "$function($column)";
+				}
+				if (isset($groupBy))
+				{
+					$query = implode('', $query) . " GROUP BY $groupBy";
+				}
+				else
+				{
+					$query = implode('', $query) . " GROUP BY $column";
+				}
+			}
+		}
+		$this->query->setQuery($query);
+		$this->query->addUsedFunction($function);
 		return $this;
+	}
+
+	public function __toString(): string
+	{
+		return $this->query->getQuery();
 	}
 }

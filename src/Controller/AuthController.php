@@ -34,7 +34,8 @@ class AuthController extends BaseController
 			{
 				$errors = $validator->errors();
 				$this->showAuthPage($errors);
-			} else
+			}
+			else
 			{
 				$login = $_POST['login'];
 				if ($login[0] === '8')
@@ -53,7 +54,8 @@ class AuthController extends BaseController
 				{
 					$errors[] = $error;
 					$this->showAuthPage($errors);
-				} else
+				}
+				else
 				{
 					$isPasswordCorrect = password_verify($password, $user->getPassword());
 

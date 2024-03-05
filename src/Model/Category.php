@@ -2,8 +2,6 @@
 
 namespace App\Model;
 
-use App\Model\Rule;
-
 class Category
 {
 	private string $id;

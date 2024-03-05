@@ -43,7 +43,6 @@ class CategoryList implements \Iterator
 
 	/**
 	 * @param $categories category[]
-	 * @return void
 	 */
 	public function setCategories(array $categories): void
 	{
@@ -52,42 +51,9 @@ class CategoryList implements \Iterator
 
 	/**
 	 * @param Category $category
-	 * @return void
 	 */
 	public function addCategory(Category $category): void
 	{
 		$this->data[] = $category;
-	}
-
-	/**
-	 * @param string $name
-	 * @return void
-	 */
-	public function removeCategoryByName(string $name): void
-	{
-		foreach ($this->data as $category)
-		{
-			if ($category->getName() === $name)
-			{
-				unset($this->data[$name]);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * @param string $id
-	 * @return void
-	 */
-	public function removeCategoryById(string $id): void
-	{
-		foreach ($this->data as $category)
-		{
-			if ($category->getId() === $id)
-			{
-				unset($this->data[$id]);
-				break;
-			}
-		}
 	}
 }

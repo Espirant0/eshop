@@ -37,7 +37,6 @@ $itemList = AdminPanelRepo::getItemList($tableName, $page);
 	<div class="buttons">
 		<a href="/" class="admin_panel_btn">Главная</a>
 		<a href="/sign_out" class="admin_panel_btn">Выйти</a>
-		<a href="/admin_panel/dev_reset" class="admin_panel_btn">Откат БД</a>
 	</div>
 	<div class="tab">
 		<div class="tab_nav">
@@ -79,7 +78,7 @@ $itemList = AdminPanelRepo::getItemList($tableName, $page);
 					<?php foreach ($itemList as $item): ?>
 						<tr>
 							<?php foreach ($item as $itemValue): ?>
-								<td><?= ViewService::truncate($itemValue, (new Config())->option('TEXT_TRUNCATE')) ?></td>
+								<td><?= ViewService::truncate($itemValue, (Config::getInstance())->option('TEXT_TRUNCATE')) ?></td>
 							<?php endforeach; ?>
 							<td>
 								<div class="edit_line">

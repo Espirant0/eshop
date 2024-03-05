@@ -624,7 +624,7 @@ class QueryBuilder
 				$date = \DateTime::createFromFormat('Y-m-d', $newValue[$valueKey]);
 				if ($date !== false && !array_sum($date::getLastErrors()))
 				{
-					$query = $query . "$newValue[$valueKey], ";
+					$query = $query . "'$newValue[$valueKey]', ";
 				}
 				else
 				{

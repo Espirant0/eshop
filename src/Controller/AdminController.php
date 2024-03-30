@@ -59,18 +59,4 @@ class AdminController extends BaseController
 		$this->showAdminPage($tableName);
 	}
 
-	public function resetData(): void
-	{
-		if (AuthService::checkAuth())
-		{
-			ClearTestData::clear();
-			FileCache::deleteAllCache();
-			FileCache::deleteCacheByKey('categoriesWithoutEmptyCategory');
-			HttpService::redirect('admin_panel');
-		}
-		else
-		{
-			HttpService::redirect('auth');
-		}
-	}
 }

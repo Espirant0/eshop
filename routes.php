@@ -44,6 +44,4 @@ Router::get('/admin_panel/:tableName/add_form', [new App\Controller\EditFormCont
 
 Router::post('/admin_panel/:tableName/add', [new App\Controller\EditFormController(), 'addItem']);
 
-Router::get('/admin_panel/dev_reset', [new App\Controller\AdminController(), 'resetData']);
-
 Router::post('/admin_panel/add', [new App\Controller\EditFormController(), 'addItem']);
